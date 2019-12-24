@@ -18,7 +18,7 @@ import { Observable, of, Observer, Subject, BehaviorSubject } from 'rxjs';
 /** ioBroker adapter namespace */
 const namespace = 'homeOverview.0';
 /** ioBroker url */
-const url = 'http://192.168.90.1:8082'; // user in app.module to connect the socket
+const url = 'http://localhost:8082'; // user in app.module to connect the socket
 /** socket.io connection configuration */
 const socketConfig = {
   query: 'key=',
