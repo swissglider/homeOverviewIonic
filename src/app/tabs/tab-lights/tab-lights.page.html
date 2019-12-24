@@ -7,10 +7,6 @@
 </ion-header>
 
 <ion-content fullscreen>
-  <ion-label>===========================</ion-label><br>
-  <ion-label>{{message}}</ion-label><br>
-  <ion-label>===========================</ion-label><br>
-  <hr>
   <div *ngIf="!loaded; else loaded_1">
     Loading : {{ loaded$ | async }}
   </div>

@@ -38,8 +38,6 @@ export class TabLightsPage implements OnInit {
   public loaded$: Observable<boolean>;
   private filter = (element, index, array): boolean => { return true};
   private sort = (firstEl, secondEl): number => { return 1};
-  public message = 'Hallo Keine Meldung';
-  private counter = 0;
 
   /** @ignore */
   constructor(
@@ -58,8 +56,6 @@ export class TabLightsPage implements OnInit {
     this.loaded$ = this.ioBrokerService.selectLoaded();
     this.loaded$.subscribe(e => {
       this.ngZone.run(() => {
-        this.message = 'Geladen - ' + e + ' - ' + this.counter;
-        this.counter = this.counter + 1;
         this.loaded = e;
       });
     });
