@@ -17,4 +17,8 @@ export class IoBObjectQuery extends QueryEntity<IoBObjectState> {
     return this.selectEntity(id, entity => entity.common.name)
   }
 
+  public getWritableByID (id:string): boolean {
+    return this.getEntity(id).common.write;
+  }
+
 }

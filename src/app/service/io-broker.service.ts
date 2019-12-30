@@ -14,11 +14,13 @@ import { ErrorMsgQuery } from '../store/error/error-msg.query';
 import { IoBEnumStore } from '../store/enum/io-benum.store';
 import { IoBEnumQuery } from '../store/enum/io-benum.query';
 import { Observable, of, Observer, Subject, BehaviorSubject } from 'rxjs';
+import { IoBObjectQuery } from '../store/object/io-bobject.query';
+import { IoBStateQuery } from '../store/state/io-bstate.query';
 
 /** ioBroker adapter namespace */
 const namespace = 'homeOverview.0';
 /** ioBroker url */
-const url = 'http://localhost:8082'; // user in app.module to connect the socket
+const url = 'http://192.168.90.1:8082'; // user in app.module to connect the socket
 /** socket.io connection configuration */
 const socketConfig = {
   query: 'key=',
@@ -85,6 +87,8 @@ export class IOBrokerService {
     private ioBobjectStore: IoBObjectStore,
     private ioBenumStore: IoBEnumStore,
     private newIOBStateQuery: NewIOBStateQuery,
+    private ioBobjectQuery: IoBObjectQuery,
+    private ioBstateQuery: IoBStateQuery,
     private ioBenumQuery: IoBEnumQuery,
     private errorMsgQuery: ErrorMsgQuery,
     private errorMsgStore: ErrorMsgStore,
@@ -401,29 +405,30 @@ export class IOBrokerService {
     socket.on('objectChange', (id, obj) => {
       if (this.loaded) {
         if(obj && 'type' in obj && obj.type === 'enum'){
-          if (obj === null) {
-            this.ioBenumStore.remove(id);
-          } else {
-            let newMembers = []
-            obj.common.members.forEach((member:string) => {
-              if(member.startsWith('enum.')){
-                let tempData = this.ioBenumQuery.getMembersPerEntity(member);
-                if(tempData.length > 0) {
-                  newMembers = newMembers.concat(tempData)
-                }
-              } else {
-                newMembers.push(member)
+          let newMembers = []
+          obj.common.members.forEach((member:string) => {
+            if(member.startsWith('enum.')){
+              let tempData = this.ioBenumQuery.getMembersPerEntity(member);
+              if(tempData.length > 0) {
+                newMembers = newMembers.concat(tempData);
               }
-            });
-            try{
-              obj.common.allMembers = newMembers;
-              this.ioBenumStore.upsert(id, obj);
-            }catch(e){}
-          }
+            } else {
+              newMembers.push(member)
+            }
+          });
+          try{
+            obj.common.allMembers = newMembers;
+            this.ioBenumStore.upsert(id, obj);
+          }catch(e){}
         }
         else {
           if (obj === null) {
+            if(this.ioBenumQuery.hasEntity(id)){
+              this.ioBenumStore.remove(id);
+            }
+            if(this.ioBobjectQuery.hasEntity(id))
             this.ioBobjectStore.remove(id);
+            
           } else {
             this.ioBobjectStore.upsert(id, obj);
           }
@@ -433,8 +438,12 @@ export class IOBrokerService {
 
     socket.on('stateChange', (id, state) => {
       if (this.loaded) {
-        state.id = id;
-        this.ioBstateStore.upsert(id, state);
+        if(state === null){
+          this.ioBstateStore.remove(id)
+        } else {
+          state.id = id;
+          this.ioBstateStore.upsert(id, state);
+        }
       }
     });
 
@@ -554,6 +563,23 @@ export class IOBrokerService {
     socket.emit('setState', id, value, (error) => {
       if (error) {
         const msg: string = '!! SetState Error :' + error;
+        const act: string = 'Repeat last transaction';
+        this.errorMsgStore.add({
+          id: this.RID(),
+          type: 'danger',
+          text: msg,
+          action: act,
+          scope: 'global'
+        });
+      }
+    });
+  }
+
+  /** sets the new Object to IoBroker */
+  public setObject(id, obj) {
+    socket.emit('setObject', id, obj, (error) => {
+      if (error) {
+        const msg: string = '!! setObject Error :' + error;
         const act: string = 'Repeat last transaction';
         this.errorMsgStore.add({
           id: this.RID(),

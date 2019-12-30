@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { QueryEntity } from '@datorama/akita';
+import { QueryEntity, EntityActions } from '@datorama/akita';
 import { IoBEnumStore, IoBEnumState } from './io-benum.store';
 import { Observable } from 'rxjs';
 import { IoBEnum } from './io-benum.model';
@@ -29,6 +29,30 @@ export class IoBEnumQuery extends QueryEntity<IoBEnumState> {
   /** Returns all Device ID's as observers that fits the functional requirements */
   public selectDeviceIDByFunctionalEnum(functionalEnum:string){
     return this.selectEntity(functionalEnum, entity => entity.common.allMembers);
+  }
+
+  public getAllMembersPerEnumID(objectID: string): Observable<string[]> {
+    return this.selectEntity(objectID, entity => entity.common.members);
+  }
+
+  /** get all Device ID's as observers */
+  public selectEnumsID(): Observable<any[]> {
+    return new Observable(observer => {
+      this.selectEntityAction(EntityActions.Add).subscribe(iDS => {
+        observer.next(iDS);
+      });
+      this.selectEntityAction(EntityActions.Set).subscribe(iDS => {
+        observer.next(iDS);
+      });
+      this.selectEntityAction(EntityActions.Remove).subscribe(iDS => {
+        observer.next(iDS);
+      });
+    });
+  }
+
+  /** select the name Obserbable by id */
+  public selectNameByID (id:string) : Observable<string | object>{
+    return this.selectEntity(id, entity => entity.common.name)
   }
 
   /** select first roomName enum where the object id belongs to */

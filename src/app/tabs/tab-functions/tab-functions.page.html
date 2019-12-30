@@ -1,0 +1,99 @@
+<ion-header>
+  <br>
+  <div [ngSwitch]="templateToShow">
+    <ng-template [ngSwitchCase]= "'loaded'">
+      <ion-toolbar>
+        <ion-buttons slot="start">
+          <ion-button color="medium" (click)="templateToShow = 'filter'">
+            <ion-icon slot="icon-only" name="funnel" ></ion-icon>
+          </ion-button>
+        </ion-buttons>
+        <app-menu-bar></app-menu-bar>
+        <ng-container *ngIf="writable">
+          <ion-buttons slot="end">
+            <ion-button fill="outline" color="medium" (click)="switchAll(true)">
+              ON
+            </ion-button>
+            <ion-button disabled="true" color="dark">
+              /
+            </ion-button>
+            <ion-button fill="outline" color="medium" (click)="switchAll(false)">
+              OFF
+            </ion-button>
+          </ion-buttons>
+        </ng-container>
+      </ion-toolbar>
+    </ng-template>
+
+    <ng-template [ngSwitchCase]= "'filter'">
+      <ion-toolbar>
+        <ion-buttons slot="start">
+          <ion-button color="medium" (click)="templateToShow = 'loaded'">
+            <ion-icon slot="icon-only" name="arrow-back" ></ion-icon>
+          </ion-button>
+        </ion-buttons>
+        <app-menu-bar></app-menu-bar>
+      </ion-toolbar>
+    </ng-template>
+    <ng-template ngSwitchDefault></ng-template>
+  </div>
+  
+</ion-header>
+
+
+<ion-content fullscreen>
+
+  <div [ngSwitch]="templateToShow">
+
+    <ng-template [ngSwitchCase]= "'notLoaded'">
+      <div>loading</div>
+    </ng-template>
+
+    <ng-template [ngSwitchCase]= "'loaded'">
+      <ion-list>
+        <ion-item-group>
+          <div *ngFor="let simpleFunctionStateStruct of simpleFunctionStatesViewGrouped | keyvalue">
+            <div *ngIf="simpleFunctionStateStruct.value.selected">
+              <ion-item-divider>
+                <ion-label slot="end"><b>{{simpleFunctionStateStruct.value.name}}</b></ion-label>
+                <ng-container *ngIf="writable">
+                  <ion-buttons slot="start">
+                    <ion-button fill="outline" color="medium" (click)="switchGrouped(simpleFunctionStateStruct.value, true)" size="large">
+                      ON
+                    </ion-button>
+                    <ion-button disabled="true" color="dark" size="small">
+                      /
+                    </ion-button>
+                    <ion-button fill="outline" color="medium" (click)="switchGrouped(simpleFunctionStateStruct.value, false)" size="small">
+                      OFF
+                    </ion-button>
+                  </ion-buttons>
+                </ng-container>
+              </ion-item-divider>
+              <ion-item lines="none" *ngFor="let simpleFunctionState of simpleFunctionStateStruct.value.values" 
+              (click)="helperService.functionToggle([simpleFunctionState.id], !simpleFunctionState.state)" >
+                <ion-label>{{helperService.getByLanguage(simpleFunctionState.name)}}</ion-label>
+                <ion-note slot="end" color="success">
+                  <ion-button (click)="helperService.functionToggle([simpleFunctionState.id], !simpleFunctionState.state)" size="small" color="light" fill="clear">
+                    <img [src]="iconsService.getIcon(function.substring(function.lastIndexOf('.')+1), 'blue-ui-' + simpleFunctionState.state, '20')">
+                  </ion-button>
+                </ion-note>
+              </ion-item>
+            </div>
+          </div>
+        </ion-item-group>
+      </ion-list>
+    </ng-template>
+
+    <ng-template [ngSwitchCase]= "'filter'">
+      <ion-list>
+        <ion-list-header>Wähle anzuzeigende Stockwerke</ion-list-header>
+        <ion-item *ngFor="let simpleFunctionStateStruct of simpleFunctionStatesViewGrouped | keyvalue">
+          <ion-label>{{helperService.getByLanguage(simpleFunctionStateStruct.value.name)}}</ion-label>
+          <ion-checkbox slot="start" [(ngModel)]="simpleFunctionStateStruct.value.selected"></ion-checkbox>
+        </ion-item>
+      </ion-list>
+    </ng-template>
+    <ng-template ngSwitchDefault> No Direction </ng-template>
+  </div> 
+</ion-content>

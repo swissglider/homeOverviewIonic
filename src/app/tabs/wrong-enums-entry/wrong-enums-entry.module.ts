@@ -3,7 +3,7 @@ import { RouterModule } from '@angular/router';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Tab3Page } from './tab3.page';
+import { WrongEnumEntry } from './wrong-enums-entry';
 import { MenuModule } from '../menu/menu.module';
 
 @NgModule({
@@ -12,8 +12,8 @@ import { MenuModule } from '../menu/menu.module';
     CommonModule,
     FormsModule,
     MenuModule,
-    RouterModule.forChild([{ path: '', component: Tab3Page }])
+    RouterModule.forChild([{ path: '', component: WrongEnumEntry }])
   ],
-  declarations: [Tab3Page]
+  declarations: [WrongEnumEntry]
 })
-export class Tab3PageModule {}
+export class WrongEnumEntryModule {}

@@ -1,0 +1,35 @@
+<ion-header>
+    <br>
+    <ion-toolbar>
+        <ion-buttons slot="start">
+            <ion-button color="medium" (click)="back()">
+                <ion-icon slot="icon-only" name="arrow-back"></ion-icon>
+            </ion-button>
+        </ion-buttons>
+        <app-menu-bar></app-menu-bar>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content>
+    <ion-item-group *ngFor="let menuItem of menuStructs">
+        <div *ngIf="menuItem.values.length > 0">
+            <ion-item-divider sticky="true" (click)="menuItem.menuEntry.defaultOpen = !menuItem.menuEntry.defaultOpen">
+                <ion-icon *ngIf="menuItem.menuEntry.defaultOpen" slot="end" name="arrow-down"></ion-icon>
+                <ion-icon *ngIf="!menuItem.menuEntry.defaultOpen" slot="end" name="arrow-back" ></ion-icon>
+                <ion-label>{{helperService.getByLanguage(menuItem.menuEntry.menuName)}}</ion-label>
+            </ion-item-divider>
+            <div *ngIf="menuItem.menuEntry.defaultOpen">
+                <ion-item *ngFor="let page of menuItem.values" (click)="openPage(page.fullPath)">
+                    <ng-container *ngIf="page.fullPath === getLastPage()">
+                        <img slot="start" [src]="iconsService.getIcon(page.tabIcon, 'blue-ui-false', '20')">
+                        <ion-label color="dark">{{helperService.getByLanguage(page.name)}}</ion-label>
+                    </ng-container>
+                    <ng-container *ngIf="page.fullPath !== getLastPage()">
+                        <img slot="start" [src]="iconsService.getIcon(page.tabIcon, 'blue-ui-false', '20')">
+                        <ion-label color="medium">{{helperService.getByLanguage(page.name)}}</ion-label>
+                    </ng-container>
+                </ion-item>
+            </div>
+        </div>
+    </ion-item-group>
+</ion-content>
