@@ -11,6 +11,7 @@ export let PageDeclarations = {
     asTab: true,
     tabIcon: "light",
     fullPath: "/tabs/tab-lights",
+    redirect: ['/tabs/tab-functions?function=enum.functions.light', '/'],
     menuID: 'function',
   },
   doors: {
@@ -23,6 +24,7 @@ export let PageDeclarations = {
     asTab: true,
     tabIcon: "doors",
     fullPath: "/tabs/tab-doors",
+    redirect: '/tabs/tab-functions?function=enum.functions.doors',
     menuID: 'function',
   },
   windows: {
@@ -35,6 +37,7 @@ export let PageDeclarations = {
     asTab: true,
     tabIcon: "window",
     fullPath: "/tabs/tab-windows",
+    redirect: '/tabs/tab-functions?function=enum.functions.window',
     menuID: 'function',
   },
   tab1: {
@@ -86,7 +89,7 @@ export let PageDeclarations = {
     fullPath: "/tabs/menu",
   },
   wrongEnumEntry: {
-    order: 7,
+    order: 8,
     name: {
       en: "Wrong Enum Entry",
       de: "Falsche Enum Einträge",
@@ -95,7 +98,19 @@ export let PageDeclarations = {
     asTab: false,
     tabIcon: "wrong-entry",
     fullPath: "/tabs/wrong-enum-entry",
-    menuID: 'advanced',
+    menuID: 'maintenance',
+  },
+  longNotUpdated: {
+    order: 9,
+    name: {
+      en: "Long time not updated",
+      de: "Lange nicht aktualisiert",
+    },
+    path: 'long-not-updated',
+    asTab: false,
+    tabIcon: "wrong-entry",
+    fullPath: "/tabs/long-not-updated",
+    menuID: 'maintenance',
   }
 };
 
@@ -117,10 +132,10 @@ export const MenuDeclarations = [
     defaultOpen: true,
   },
   {
-    menuID: 'advanced',
+    menuID: 'maintenance',
     menuName: {
-      en: 'Advanced Sites',
-      de: 'Experten Seiten'
+      en: 'Maintenance Sites',
+      de: 'Wartungs Seiten'
     },
     defaultOpen: false,
   },

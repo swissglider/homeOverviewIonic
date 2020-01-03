@@ -1,5 +1,4 @@
 <ion-header>
-  <br>
   <div [ngSwitch]="templateToShow">
     <ng-template [ngSwitchCase]= "'loaded'">
       <ion-toolbar>
@@ -8,7 +7,8 @@
             <ion-icon slot="icon-only" name="funnel" ></ion-icon>
           </ion-button>
         </ion-buttons>
-        <app-menu-bar></app-menu-bar>
+        <!-- <app-menu-bar [menuTitle]="pageService.getCurrentPageName()" [icon]="pageService.getStandardIcon()"></app-menu-bar> -->
+        <app-menu-bar [menu]="pageService.getActiveMenuModel()"></app-menu-bar>
         <ng-container *ngIf="writable">
           <ion-buttons slot="end">
             <ion-button fill="outline" color="medium" (click)="switchAll(true)">

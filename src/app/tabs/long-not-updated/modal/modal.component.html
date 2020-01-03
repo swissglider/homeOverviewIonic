@@ -1,0 +1,63 @@
+<ion-header>
+    <br>
+    <ion-toolbar *ngIf="treeData">
+        <ion-title>Details: {{helperService.getByLanguage(treeData['__name__'])}}</ion-title>
+        <ion-buttons slot="end">
+            <ion-button (click)="myDismiss()">Close</ion-button>
+        </ion-buttons>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content *ngIf="treeData">
+    <div style="margin: 1em">
+        <ion-segment>
+            <ion-segment-button value="general" (click)="templateToShow='general'" [checked]="templateToShow === 'general'">
+                <ion-label>Overview</ion-label>
+            </ion-segment-button>
+            <ion-segment-button value="Object" (click)="templateToShow='Object'" [checked]="templateToShow==='Object'">
+                <ion-label>Object</ion-label>
+            </ion-segment-button>
+            <ion-segment-button value="State" (click)="templateToShow='State'" [checked]="templateToShow==='State'">
+                <ion-label>State</ion-label>
+            </ion-segment-button>
+        </ion-segment>
+    </div>
+
+    <div [ngSwitch]="templateToShow">
+        <ng-template [ngSwitchCase]="'general'">
+            <ion-list inset="true" lines="inset">
+                <ion-list-header>
+                    <ion-label>{{helperService.getByLanguage(treeData['__name__'])}}</ion-label>
+                </ion-list-header>
+                <ion-item-group>
+                    <ion-item>
+                        <ion-label class="textSize" (click)="onNavigate(treeData['__url__'])">{{treeData['__id__']}}</ion-label>
+                        <ion-button slot="end" (click)="onNavigate(treeData['__url__'])"> see on ioBroker</ion-button>
+                    </ion-item>
+                    <ion-item>
+                        <ion-label class="textSize" slot="start">TimeStamp Object Update</ion-label>
+                        <ion-note class="textSize" slot="end"> {{treeData['__ts_object__']}}</ion-note>
+                    </ion-item>
+                    <ion-item>
+                        <ion-label class="textSize" slot="start">TimeStamp State Update</ion-label>
+                        <ion-note class="textSize" slot="end"> {{treeData['__ts_state__']}}</ion-note>
+                    </ion-item>
+                    <ion-item>
+                        <ion-label class="textSize" slot="start">LastChange State Update</ion-label>
+                        <ion-note class="textSize" slot="end"> {{treeData['__lc_state__']}}</ion-note>
+                    </ion-item>
+                </ion-item-group>
+            </ion-list>
+        </ng-template>
+        <ng-template [ngSwitchCase]="'Object'">
+            <div *ngIf="treeData['__object__'] !== {}" style="margin:2em;">
+                <app-tree [treeData]="treeData['__object__']"></app-tree>
+            </div>
+        </ng-template>
+        <ng-template [ngSwitchCase]="'State'">
+            <div *ngIf="treeData['__state__'] !== {}" style="margin:2em;">
+                <app-tree [treeData]="treeData['__state__'] "></app-tree>
+            </div>
+        </ng-template>
+    </div>
+</ion-content>

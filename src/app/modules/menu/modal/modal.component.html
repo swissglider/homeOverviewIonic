@@ -1,0 +1,17 @@
+<ion-header>
+    <ion-toolbar (click)="myDismiss()">
+        <div style="padding:0.1em">
+            <ion-toolbar color="light">
+                <img style="padding:0.5em" slot="secondary" [src]="menu.menuIcon">
+                <div style="margin-left:1em;">Menu</div>
+            </ion-toolbar>
+        </div>
+        <ion-buttons slot="end">
+            <ion-button (click)="myDismiss()">Close</ion-button>
+        </ion-buttons>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content>
+    <app-menu-tree style="padding:1em" [menuData]="menu" [level]="0" (navigateTo)="navigate($event)"></app-menu-tree>
+</ion-content>

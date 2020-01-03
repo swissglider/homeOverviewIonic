@@ -20,7 +20,12 @@ import { IoBStateQuery } from '../store/state/io-bstate.query';
 /** ioBroker adapter namespace */
 const namespace = 'homeOverview.0';
 /** ioBroker url */
-const url = 'http://192.168.90.1:8082'; // user in app.module to connect the socket
+export const server_url = '192.168.90.1';
+export const server_protocol = 'http';
+export const server_visual_port = 8082;
+export const server_admin_port = 8081;
+// const url = 'http://192.168.90.1:8082'; // user in app.module to connect the socket
+const url = server_protocol + '://' + server_url + ':' + server_visual_port; // user in app.module to connect the socket
 /** socket.io connection configuration */
 const socketConfig = {
   query: 'key=',

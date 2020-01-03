@@ -1,0 +1,20 @@
+<ion-header>
+  <br>
+  <ion-toolbar>
+    <app-menu-bar [menu]="pageService.getActiveMenuModel()"></app-menu-bar>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+    <ion-list lines="full" class="ion-no-margin ion-no-padding">
+      <ion-item>
+        <ion-label position="stacked">Since how many days not updated <ion-text color="danger">*</ion-text>
+        </ion-label>
+        <ion-input #days required type="number" value="5"></ion-input>
+      </ion-item>
+    </ion-list>
+    <ion-button color="primary" expand="full" size="small" (click)="search()">Search</ion-button>
+    <div *ngIf="resultStruct !== {}" style="margin:2em;">
+      <app-tree [treeData]="resultStruct"></app-tree>
+    </div>
+</ion-content>

@@ -5,6 +5,7 @@ import { IoBEnum } from 'src/app/store/enum/io-benum.model';
 import { IoBObjectQuery } from 'src/app/store/object/io-bobject.query';
 import { HelperService } from 'src/app/service/helper.service';
 import { EntityActions } from '@datorama/akita';
+import { PageService } from 'src/app/service/page.service';
 
 
 interface EnumGroupStruct {
@@ -40,18 +41,17 @@ export class WrongEnumEntry {
     private enumQuery: IoBEnumQuery,
     private objectQuery: IoBObjectQuery,
     public helperService: HelperService,
+    public pageService:PageService,
   ) { }
 
   /** @ignore */
   ionViewWillEnter(): void {
-    console.log("ionViewWillEnter")
     this.ioBrokerService.selectLoaded().subscribe(e => {
       this.ngZone.run(() => {
         this.loaded = e;
         this.templateToShow = (this.loaded) ? 'loaded' : 'notLoaded'
       });
       if (e === true) {
-        //this.enumQuery.selectAllDeviceIDInAnyEnums().subscribe((enums: Array<IoBEnum>) => {
         this.enumQuery.selectEnumsID().subscribe(addedIds => {
           this.initEnumGroupStruct();
         });
@@ -139,5 +139,13 @@ export class WrongEnumEntry {
     Object.values(this.groups).forEach((enumGroup: EnumGroupStruct) => {
       this.removeAllEnumMembersFromEnumGroupStruct(enumGroup.enumGroupID);
     });
+  }
+
+  getTotalCount(): number {
+    let counter = 0
+    Object.values(this.groups).forEach((enumGroup: EnumGroupStruct) => {
+      counter = counter + enumGroup.counterWrongMembersEntry;
+    });
+    return counter;
   }
 }

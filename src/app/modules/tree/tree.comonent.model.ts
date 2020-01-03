@@ -1,9 +1,8 @@
 import { IonicModule } from '@ionic/angular';
-import { RouterModule } from '@angular/router';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { MenuBarComponent } from './menu-bar/menu-bar.component';
+import { TreeComponent } from './tree.component';
 
 @NgModule({
   imports: [
@@ -11,7 +10,7 @@ import { MenuBarComponent } from './menu-bar/menu-bar.component';
     CommonModule,
     FormsModule
   ],
-  declarations: [MenuBarComponent],
-  exports: [MenuBarComponent]
+  declarations: [TreeComponent],
+  exports: [TreeComponent]
 })
-export class MenuModule {}
+export class TreeModule {}

@@ -7,6 +7,7 @@ import { IoBStateQuery } from '../../store/state/io-bstate.query';
 import { IconsService } from '../../service/icons.service';
 import { HelperService } from '../../service/helper.service';
 import { ActivatedRoute } from '@angular/router';
+import { PageService } from 'src/app/service/page.service';
 
 export interface SimpleFunctionState{
   id: string;
@@ -48,16 +49,15 @@ export class TabFunctionsPage implements OnInit {
     public iconsService: IconsService,
     public helperService: HelperService,
     private route: ActivatedRoute,
+    public pageService:PageService,
   ) {
     this.function = '';
   }
 
   ionViewDidEnter(){
-    // console.log('ionViewDidEnter')
   }
 
   ionViewWillEnter(){
-    // console.log('ionViewWillEnter')
     if(this.templateToShow === 'filter'){
       this.templateToShow = 'loaded'
     }
@@ -71,8 +71,6 @@ export class TabFunctionsPage implements OnInit {
 
   /** @ignore */
   ngOnInit(): void {
-    // console.log('ngOnInit')
-    // this.init();
   }
 
   private init(): void {
@@ -125,7 +123,6 @@ export class TabFunctionsPage implements OnInit {
     let allIDs = [];
     Object.values(this.simpleFunctionStatesViewGrouped).forEach(simpleFunctionStates => {
       if(simpleFunctionStates['selected']){
-        // console.log(simpleFunctionStates['values'])
         allIDs = allIDs.concat(simpleFunctionStates['values'].map(e => e.id));
       }
     });
@@ -135,7 +132,6 @@ export class TabFunctionsPage implements OnInit {
   switchGrouped(grouped, state){
     let allIDs = [];
     if(grouped['selected']){
-      // console.log(simpleFunctionStates['values'])
       allIDs = allIDs.concat(grouped['values'].map(e => e.id));
     }
     this.helperService.functionToggle(allIDs, state);

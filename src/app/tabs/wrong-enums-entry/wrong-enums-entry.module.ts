@@ -4,7 +4,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { WrongEnumEntry } from './wrong-enums-entry';
-import { MenuModule } from '../menu/menu.module';
+import { MenuModule } from '../../modules/menu/menu.module';
 
 @NgModule({
   imports: [

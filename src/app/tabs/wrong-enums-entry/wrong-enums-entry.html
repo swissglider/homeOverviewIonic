@@ -1,7 +1,6 @@
 <ion-header>
-  <br>
   <ion-toolbar>
-    <app-menu-bar></app-menu-bar>
+    <app-menu-bar [menu]="pageService.getActiveMenuModel()"></app-menu-bar>
   </ion-toolbar>
 </ion-header>
 
@@ -17,14 +16,15 @@
         <ion-list-header>
           <ion-text style="margin:1em;">Here you can find all Members(Devices)-ID defined in enums, that are no longer available and can be deleted...</ion-text>
         </ion-list-header>
-        <ion-button size="small" color="danger" expand="full" (click)="removeAllEnumMembersFromGroup()">delete all</ion-button>
+        <ion-button *ngIf="getTotalCount() > 0" size="small" color="danger" expand="full" (click)="removeAllEnumMembersFromGroup()">delete all</ion-button>
+        <ion-button *ngIf="getTotalCount() < 1" size="small" color="success" disabled="true" expand="full">All ok</ion-button>
         <ion-item-group *ngFor="let group of groups | keyvalue">
           <ng-container *ngIf="group.value.counterWrongMembersEntry > 0">
             <ion-item-divider sticky="true" color="medium">
               <ion-label (click)="group.value.expanded = !group.value.expanded"><b>{{helperService.getByLanguage(group.value.name)}}</b></ion-label>
               <ion-icon (click)="group.value.expanded = !group.value.expanded" *ngIf="group.value.expanded" slot="start" name="arrow-down"></ion-icon>
               <ion-icon (click)="group.value.expanded = !group.value.expanded" *ngIf="!group.value.expanded" slot="start" name="arrow-forward" ></ion-icon>
-              <ion-note (click)="group.value.expanded = !group.value.expanded" slot="end" color="danger" style="margin-right:1em;">{{group.value.counterWrongMembersEntry}}</ion-note>
+              <ion-badge (click)="group.value.expanded = !group.value.expanded" slot="end" color="danger" style="margin-right:1em;">{{group.value.counterWrongMembersEntry}}</ion-badge>
               <ion-button color="danger" fill="solid" slot="end" (click)="removeAllEnumMembersFromEnumGroupStruct(group.key)">delete all</ion-button>
             </ion-item-divider>
             <div *ngIf="group.value.expanded">
@@ -34,7 +34,7 @@
                     <ion-label (click)="enums.value.expanded = !enums.value.expanded">{{helperService.getByLanguage(enums.value.name)}}</ion-label>
                     <ion-icon (click)="enums.value.expanded = !enums.value.expanded" *ngIf="enums.value.expanded" style="margin-right:1em;"slot="start" name="arrow-down" ></ion-icon>
                     <ion-icon (click)="enums.value.expanded = !enums.value.expanded" *ngIf="!enums.value.expanded" style="margin-right:1em;"slot="start" name="arrow-forward" ></ion-icon>
-                    <ion-note (click)="enums.value.expanded = !enums.value.expanded" slot="end" color="danger" style="margin-right:1em;">{{enums.value.counterWrongMembersEntry}}</ion-note>
+                    <ion-badge (click)="enums.value.expanded = !enums.value.expanded" slot="end" color="danger" style="margin-right:1em;">{{enums.value.counterWrongMembersEntry}}</ion-badge>
                     <ion-button color="danger" fill="solid" slot="end" (click)="removeAllEnumMebersFromEnumStruct(group.key, enums.key)">delete all</ion-button>
                   </ion-item-divider>
                   <div *ngIf="enums.value.expanded">

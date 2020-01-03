@@ -1,0 +1,60 @@
+<ng-container *ngIf="treeData && hasEntries(treeData)">
+    <ul class="tree">
+        <ng-container *ngIf="isNestedType(treeData) === 'nested'">
+            <li *ngFor="let node of treeData | keyvalue">
+                <ng-container *ngIf="getType(node.value, node.key) === 'nested' || getType(node.value, node.key) === 'mixed'">
+                    <span (click)="toggleChild(node)">{{ node.key }} </span>
+                    <app-tree *ngIf="node.showChildren" [treeData]="node.value"></app-tree>
+                </ng-container>
+                <ng-container *ngIf="getType(node.value, node.key) === 'not_nested'">
+                    <span (click)="toggleChild(node)" class="not_nested">{{ node.key }} </span>
+                    <app-tree *ngIf="node.showChildren" [treeData]="node.value"></app-tree>
+                </ng-container>
+                <ng-container *ngIf="getType(node.value, node.key) === 'value'">
+                    <span *ngIf="!isTime(node.key)" (click)="toggleChild(node)" class="value">{{ node.key }} : {{ node.value }} </span>
+                    <span *ngIf="isTime(node.key)" (click)="toggleChild(node)" class="value">{{ node.key }} : {{ getLocal(node.value) }} </span>
+                </ng-container>
+                <ng-container *ngIf="getType(node.value, node.key) === 'tmp'">
+                    <span (click)="toggleChild(node)" class="not_nested">{{ node.key }} </span>
+                    <app-tree *ngIf="node.showChildren" [treeData]="node.value"></app-tree>
+                </ng-container>
+            </li>
+        </ng-container>
+        <ng-container *ngIf="isNestedType(treeData) === 'mixed' && test()">
+            <li>
+                <div class="button" color="secondary" (click)="presentModal(treeData)">
+                    <div>{{helperService.getByLanguage(treeData['__name__'])}}</div>
+                    <div>Last Update: {{treeData['__ts_object__']}}</div>
+                    <div style="font-size:x-small">click to see more</div>
+                </div>
+            </li>
+            <ng-container *ngFor="let node of treeData | keyvalue">
+                <ng-container *ngIf="getType(node.value, node.key) !== 'tmp'">
+                    <li>
+                        <ng-container *ngIf="getType(node.value, node.key) === 'nested' || getType(node.value, node.key) === 'mixed'">
+                            <span (click)="toggleChild(node)">{{ node.key }} </span>
+                            <app-tree *ngIf="node.showChildren" [treeData]="node.value"></app-tree>
+                        </ng-container>
+                        <ng-container *ngIf="getType(node.value, node.key) === 'not_nested'">
+                            <span (click)="toggleChild(node)" class="not_nested">{{ node.key }} </span>
+                            <app-tree *ngIf="node.showChildren" [treeData]="node.value"></app-tree>
+                        </ng-container>
+                        <ng-container *ngIf="getType(node.value, node.key) === 'value'">
+                            <span *ngIf="!isTime(node.key)" (click)="toggleChild(node)" class="value">{{ node.key }} : {{ node.value }} </span>
+                            <span *ngIf="isTime(node.key)" (click)="toggleChild(node)" class="value">{{ node.key }} : {{ getLocal(node.value) }} </span>
+                        </ng-container>
+                    </li>
+                </ng-container >
+            </ng-container>
+        </ng-container>
+        <ng-container *ngIf="isNestedType(treeData) === 'not_nested'">
+            <li>
+                <div class="button" color="secondary" (click)="presentModal(treeData)">
+                    <div>{{helperService.getByLanguage(treeData['__name__'])}}</div>
+                    <div>Last Update: {{treeData['__ts_object__']}}</div>
+                    <div style="font-size:x-small">click to see more</div>
+                </div>
+            </li>
+        </ng-container>
+    </ul>
+</ng-container>

@@ -1,8 +1,20 @@
 <ion-header>
-  <br>
   <ion-toolbar>
-    <app-menu-bar></app-menu-bar>
+    <app-menu-bar [menu]="pageService.getActiveMenuModel()"></app-menu-bar>
   </ion-toolbar>
 </ion-header>
 
-<ion-content></ion-content>
+<ion-content>
+  <ng-container [ngSwitch]="loaded">
+    <ng-template [ngSwitchCase]="false">
+      <h1>Loading: {{loaded}}</h1>
+    </ng-template>
+    <ng-template [ngSwitchCase]="true">
+      <h1>Loading: {{loaded}}</h1>
+      <p>Test3 - Tree</p>
+      <div style="margin:2em;">
+        <app-tree [treeData]="returnStruct"></app-tree>
+      </div>
+    </ng-template>
+  </ng-container>
+</ion-content>

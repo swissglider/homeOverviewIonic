@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Router, RouterEvent } from '@angular/router';
 import { HelperService } from './helper.service';
-import { PageDeclarations } from '../declaration/page.declaration';
+import { PageDeclarations, MenuDeclarations } from '../declaration/page.declaration';
+import { IconsService } from './icons.service';
+import { MenuModel, MenuEntryModel, MenuFolderModel } from '../modules/menu/menu.model';
 
 
 
@@ -9,17 +11,17 @@ import { PageDeclarations } from '../declaration/page.declaration';
   providedIn: 'root'
 })
 export class PageService {
-
   private currentPath = '/tabs/tab-lights';
   private previousPath: string;
 
   constructor(
     private router: Router,
     private helperService: HelperService,
+    public iconsService: IconsService,
   ) {
     this.router.events.subscribe((event: RouterEvent) => {
-      if(event && event.url){
-        if(this.currentPath !== event.url){
+      if (event && event.url) {
+        if (this.currentPath !== event.url) {
           this.previousPath = this.currentPath
           this.currentPath = event.url;
         }
@@ -29,18 +31,18 @@ export class PageService {
 
   getCurrentPageDeclaration(): {} {
     let tmpPageDecl = Object.values(PageDeclarations).filter(e => e.fullPath === this.currentPath);
-    // if(tmpPageDecl.length === 0){
-    //   routes.forEach(root => {
-    //     if('children' in root){
-    //       root.children.forEach(route => {
-    //         if('redirectTo' in route && route.redirectTo === this.currentPath){
-    //           this.currentPath = route.path;
-    //         }
-    //       });
-    //     }
-    //   });
-    //   tmpPageDecl = Object.values(PageDeclarations.pages).filter(e => e.path === this.currentPath);
-    // }
+    if (tmpPageDecl.length === 0) {
+      const t = Object.values(PageDeclarations).filter(e => 'redirect' in e);
+      tmpPageDecl = Object.values(t).filter(e => e['redirect'].includes(this.currentPath));
+    }
+    return tmpPageDecl[0];
+  }
+  getCurrentPageID(): string {
+    let tmpPageDecl = Object.entries(PageDeclarations).filter(([key, val]) => val.fullPath === this.currentPath).map(([key, val]) => key);
+    if (tmpPageDecl.length === 0) {
+      const t = Object.entries(PageDeclarations).filter(([key, val]) => 'redirect' in val);
+      tmpPageDecl = t.filter(([key, val]) => val['redirect'].includes(this.currentPath)).map(([key, val]) => key);
+    }
     return tmpPageDecl[0];
   }
   getCurrentPageName(): string {
@@ -57,10 +59,10 @@ export class PageService {
     } catch (error) {
     }
   }
-  getCurrentPath():string{
+  getCurrentPath(): string {
     return this.currentPath
   }
-  getPreviousPath():string{
+  getPreviousPath(): string {
     return this.previousPath;
   }
   navigate(uri: string) {
@@ -80,8 +82,54 @@ export class PageService {
     this.router.navigate([url], { queryParams: params })
   }
 
-  navigateBack(){
+  navigateBack() {
     this.navigate(this.getPreviousPath());
+  }
+
+  getStandardIcon() {
+    return this.iconsService.getIcon(this.getCurrentPageIcon(), 'default', '20')
+  }
+
+  getActiveMenuModel(): MenuModel {
+    var tmpMenuModule: MenuModel = {
+      activeID: this.getCurrentPageID(),
+      name: this.getCurrentPageName(),
+      activeIcon: this.getStandardIcon(),
+      defaultOpen: true,
+      menuIcon: this.iconsService.getIcon('menu', 'default', '20'),
+    }
+    tmpMenuModule.folders = [];
+    MenuDeclarations.forEach(e => {
+      let tmpFolder: MenuFolderModel = {
+        menuID: e.menuID,
+        name: this.helperService.getByLanguage(e.menuName),
+        defaultOpen: true,
+      }
+      tmpFolder.entries = Object.entries(PageDeclarations)
+        .filter(([key, val]) => val['menuID'] === e.menuID)
+        .map(([key, val]) => {
+          return <MenuEntryModel>{
+            id: key,
+            name: this.helperService.getByLanguage(val.name),
+            icon: this.iconsService.getIcon(val.tabIcon, 'default', '20'),
+            order: val.order,
+            path: val.fullPath,
+          }
+      });
+      tmpMenuModule.folders.push(tmpFolder);
+    });
+
+    tmpMenuModule.entries = [
+      {
+        id: 'home',
+        name: 'Home',
+        order: 0,
+        icon: this.iconsService.getIcon('home', 'default', '20'),
+        path: '/'
+      }
+    ]
+
+    return tmpMenuModule;
   }
 
 }

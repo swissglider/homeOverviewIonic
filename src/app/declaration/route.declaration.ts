@@ -19,12 +19,12 @@ export const routes: Routes = [
           children: [{ path: '', loadChildren: () => import('../tabs/tab3/tab3.module').then(m => m.Tab3PageModule) }]
         },
         {
-          path: 'menu',
-          children: [{ path: '', loadChildren: () => import('../tabs/menu/menu-page/menu.module').then(m => m.MenuPageModule) }]
-        },
-        {
           path: 'wrong-enum-entry',
           children: [{ path: '', loadChildren: () => import('../tabs/wrong-enums-entry/wrong-enums-entry.module').then(m => m.WrongEnumEntryModule) }]
+        },
+        {
+          path: 'long-not-updated',
+          children: [{ path: '', loadChildren: () => import('../tabs/long-not-updated/long-not-updated.module').then(m => m.LongNotUpdatedModule) }]
         },
         {
           path: 'tab-functions',

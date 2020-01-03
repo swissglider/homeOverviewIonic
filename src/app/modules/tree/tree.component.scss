@@ -1,0 +1,83 @@
+
+
+.container{
+    padding-left:15px;
+    padding-top:3px
+}
+
+.folderIcon{
+    background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAABmJLR0QA/wD/AP+gvaeTAAAAj0lEQVQ4jWNgGOyAMWrqhekSIrweyIL///1jfPvx+6ZFGXp5pBrIwsLExOlirKiALvHo5cdE5jmXPdiYmP4Ra9jP33+XsjAzMUhfvP0MU/LXb54MV2VVMX4Ool3XuupKPAszI4NihKUU0ZoIASaqmTRq4KiBowaSAFh+/v37c/Wxh7+pYdjPv39/UsMc2gIADiYqi9q8ZvIAAAAASUVORK5CYII=);
+    width: 20px;
+    height: 20px;
+    border: none;
+    float: left;
+ }
+
+ .folderText{
+    padding-top:3px;
+    padding-left:1.8em;
+    color: #369;
+    font-weight: bold;
+ }
+
+ .specialFolderIcon{
+     background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAABmJLR0QA/wD/AP+gvaeTAAAAj0lEQVQ4jWNgGOyAMWrqhekSIrweyIL///1jfPvx+6ZFGXp5pBrIwsLExOlirKiALvHo5cdE5jmXPdiYmP4Ra9jP33+XsjAzMUhfvP0MU/LXb54MV2VVMX4Ool3XuupKPAszI4NihKUU0ZoIASaqmTRq4KiBowaSAFh+/v37c/Wxh7+pYdjPv39/UsMc2gIADiYqi9q8ZvIAAAAASUVORK5CYII=);
+     width: 20px;
+     height: 20px;
+     border: none;
+     float: left;
+  }
+ 
+  .specialFolderText{
+     padding-top:3px;
+     padding-left:1.8em;
+     color: red;
+     font-weight: bold;
+  }
+
+ .valueIcon{
+     background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAABmJLR0QA/wD/AP+gvaeTAAABeklEQVQ4je2UPU/CUBSGX0r5KFCKGExoAFnQLhCiJhpmXd0YnSBRF36Dv8HFKCExYeMfuDiocXGAGIyiiwmIkQ8RSmhpoXXQKEYlgeLmu93cc5889+bcA0w4OgDYTl3uUkaC0gISJEXYi4USJAAE57wbBGV3aAEqQusFQILQAvkpJACgJ4qLbkYT6OJWFD+BsigusTptwKs34MSv/EdvOJD7agd+lwU35TbO756HHo4EnOBY23Cg32UBAHCs7Vvxv+EXw0ZHMk7UUO4r9FiGkYATlVYXhcc2SIJAT1Ew77ZhfcHd3xnVUFFVpE9LCPsZzPp8KLZU+BkdGAOP43zVGs1k9CM1dvqshLWgCyYLjUJVRrtRAd/tw0TRiC6zBlbg0qP9FBVQB5b5Io+HpvKxB7wP2Fgye2giCfNvnDovc9EV1u5xmsWT67pnNTRjrfVoothU4WV0mNbzylHuqZaVcuONmM1UbsvtMMcZyjjVFKRGuSEmD+LhfQB4BWn0m3u7pZC4AAAAAElFTkSuQmCC);
+     width: 20px;
+     height: 20px;
+     border: none;
+     float: left;
+  }
+ 
+  .valueText{
+     padding-top:3px;
+     padding-left:1.8em;
+     font-weight: normal;
+  }
+ 
+  .valueValue{
+     padding-left:1em;
+     color: green;
+  }
+
+  .specialValueIcon{
+      background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAABmJLR0QA/wD/AP+gvaeTAAABeklEQVQ4je2UPU/CUBSGX0r5KFCKGExoAFnQLhCiJhpmXd0YnSBRF36Dv8HFKCExYeMfuDiocXGAGIyiiwmIkQ8RSmhpoXXQKEYlgeLmu93cc5889+bcA0w4OgDYTl3uUkaC0gISJEXYi4USJAAE57wbBGV3aAEqQusFQILQAvkpJACgJ4qLbkYT6OJWFD+BsigusTptwKs34MSv/EdvOJD7agd+lwU35TbO756HHo4EnOBY23Cg32UBAHCs7Vvxv+EXw0ZHMk7UUO4r9FiGkYATlVYXhcc2SIJAT1Ew77ZhfcHd3xnVUFFVpE9LCPsZzPp8KLZU+BkdGAOP43zVGs1k9CM1dvqshLWgCyYLjUJVRrtRAd/tw0TRiC6zBlbg0qP9FBVQB5b5Io+HpvKxB7wP2Fgye2giCfNvnDovc9EV1u5xmsWT67pnNTRjrfVoothU4WV0mNbzylHuqZaVcuONmM1UbsvtMMcZyjjVFKRGuSEmD+LhfQB4BWn0m3u7pZC4AAAAAElFTkSuQmCC);
+      width: 20px;
+      height: 20px;
+      border: none;
+      float: left;
+   }
+  
+   .specialValueText{
+      padding-top:3px;
+      padding-left:1.8em;
+      font-weight: normal;
+      color: red
+   }
+
+   div.button {
+       display:inline-block;
+       color:#444;
+       border:1px solid #CCC;
+       box-shadow: 0 0 5px -1px rgba(0,0,0,0.2);
+       cursor:pointer;
+       vertical-align:middle;
+       // max-width: 100px;
+       padding: 5px;
+       text-align: center;
+       font-size: small;
+   }

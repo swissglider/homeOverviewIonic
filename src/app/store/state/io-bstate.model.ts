@@ -1,7 +1,7 @@
 /** represent a state on ioBroker */
 export interface IoBState {
   /** id */
-  id: number | string;
+  id: string;
   /** value */
   val: number | string | boolean | object;
   /** last change in ms */

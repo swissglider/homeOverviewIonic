@@ -1,7 +1,7 @@
 /** represents an Object on ioBroker --> should not be used by component itself */
 export interface IoBObject {
   /** id */
-  id: number | string;
+  id: string;
   /** _id same as id */
   _id?: string;
   /** common */
@@ -28,6 +28,7 @@ export interface IoBObject {
   /** type */
   type?: string;
   native?: {};
+  ts?: number;
 }
 
 /** @ignore */

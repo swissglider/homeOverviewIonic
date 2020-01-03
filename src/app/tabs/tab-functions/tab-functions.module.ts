@@ -4,7 +4,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TabFunctionsPage } from './tab-functions.page';
-import { MenuModule } from '../menu/menu.module';
+import { MenuModule } from '../../modules/menu/menu.module';
 
 @NgModule({
   imports: [

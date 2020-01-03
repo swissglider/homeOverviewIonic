@@ -1,0 +1,31 @@
+<ng-container *ngIf="hasFolders(treeData) || hasEntries(treeData)">
+    <ng-container *ngIf="level !== 0">
+        <ion-item-divider sticky="true" (click)="treeData.defaultOpen = !treeData.defaultOpen">
+            <ion-icon [ngStyle]="{'padding-left': padding_left}" *ngIf="treeData.defaultOpen" slot="start"
+                name="arrow-down"></ion-icon>
+            <ion-icon [ngStyle]="{'padding-left': padding_left}" *ngIf="!treeData.defaultOpen" slot="start"
+                name="arrow-forward"></ion-icon>
+            <ion-label style="padding-left: 0.3em">{{treeData.name}}</ion-label>
+        </ion-item-divider>
+    </ng-container>
+    <ng-container *ngIf="level === 0 || (treeData.defaultOpen && hasEntries(treeData))">
+        <ion-item *ngFor="let menuEntry of treeData.entries" [ngStyle]="{'padding-left': entry_pedding_left}"
+            (click)="navigate(menuEntry.path)">
+            <ng-container *ngIf="menuEntry.icon">
+                <img slot="start" [src]="menuEntry.icon">
+            </ng-container>
+            <ng-container *ngIf="activeID === menuEntry.id">
+                <ion-label color="tertiary">{{menuEntry.name}}</ion-label>
+            </ng-container>
+                <ng-container *ngIf="activeID !== menuEntry.id">
+            <ion-label>{{menuEntry.name}}</ion-label>
+        </ng-container>
+        </ion-item>
+    </ng-container>
+    <ng-container *ngIf="level === 0 || (treeData.defaultOpen && hasFolders(treeData))">
+        <ion-item-group *ngFor="let menuFolderEntry of treeData.folders">
+            <app-menu-tree [menuData]="menuFolderEntry" [level]="level + 1" [activeID]="activeID"
+                (navigateTo)="navigate($event)"></app-menu-tree>
+        </ion-item-group>
+    </ng-container>
+</ng-container>

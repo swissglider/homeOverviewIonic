@@ -1,0 +1,46 @@
+import { Component, Input} from '@angular/core';
+import { Router } from '@angular/router';
+import { ModalController } from '@ionic/angular';
+import { ModalComponent } from './modal/modal.component';
+import { MenuModel } from './menu.model';
+
+
+@Component({
+  selector: 'app-menu-bar',
+  templateUrl: 'menu-bar.component.html',
+  styleUrls: ['menu-bar.component.scss']
+})
+export class MenuBarComponent {
+
+  @Input('menuTitle') menuTitle: string;
+  @Input('icon') icon: string;
+  @Input('menu') menu: MenuModel;
+
+  constructor(
+    private router: Router,
+    public modalController: ModalController,
+  ) {}
+
+  openMenu(){
+    this.router.navigate(['/tabs/menu'])
+  }
+  
+  async presentModal(menu) {
+    const modal = await this.modalController.create({
+      component: ModalComponent,
+      componentProps: {
+        'menu': menu,
+      }
+    });
+    modal.onDidDismiss().then((detail) => {
+      if (detail !== null) {
+      }
+    });
+    return await modal.present();
+  }
+
+  // openMenu(){
+  //   this.router.navigate(['/tabs/menu'])
+  // }
+
+}
