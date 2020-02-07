@@ -16,6 +16,7 @@ import { IoBEnumQuery } from '../store/enum/io-benum.query';
 import { Observable, of, Observer, Subject, BehaviorSubject } from 'rxjs';
 import { IoBObjectQuery } from '../store/object/io-bobject.query';
 import { IoBStateQuery } from '../store/state/io-bstate.query';
+import { IoBObject } from '../store/object/io-bobject.model';
 
 /** ioBroker adapter namespace */
 const namespace = 'homeOverview.0';
@@ -68,7 +69,7 @@ export class IOBrokerService {
   }
 
   /** @ignore */
-  public set loaded(conn: boolean) {}
+  public set loaded(conn: boolean) { }
 
   /** sets one pice for loading (if one of Objects, Enums or States are loaded) */
   private setLoaded(name: string, value: boolean) {
@@ -97,7 +98,7 @@ export class IOBrokerService {
     private ioBenumQuery: IoBEnumQuery,
     private errorMsgQuery: ErrorMsgQuery,
     private errorMsgStore: ErrorMsgStore,
-  ) {}
+  ) { }
 
   /** this initiate the connection to the ioBroker and has only to be called from the app.component */
   public init() {
@@ -216,7 +217,13 @@ export class IOBrokerService {
                   });
                 }
                 if (data) {
-                  this.ioBobjectStore.upsertMany(Object.values(data));
+                  let rows = Object.values(data).map((t:IoBObject) => {
+                    if('_id' in t){
+                      t['id'] = t['_id'];
+                    }
+                    return t;
+                   });
+                  this.ioBobjectStore.upsertMany(rows);
                 }
                 socket.emit('subscribeObjects', '*', () => {
                   this.setLoaded('objects', true);
@@ -227,7 +234,14 @@ export class IOBrokerService {
                 endkey: '' + '\u9999'
               }, (err, data) => {
                 if (data) {
-                  this.ioBobjectStore.upsertMany(data.rows.map(x => x.value));
+                  let rows = data.rows.map(x => {
+                    let t = x.value;
+                    if('_id' in t){
+                      t.id = t._id;
+                    }
+                    return t;
+                  });
+                  this.ioBobjectStore.upsertMany(rows);
                 }
               });
               socket.emit('getObjectView', 'system', 'channel', {
@@ -235,7 +249,31 @@ export class IOBrokerService {
                 endkey: '' + '\u9999'
               }, (err, data) => {
                 if (data) {
-                  this.ioBobjectStore.upsertMany(data.rows.map(x => x.value));
+                  let rows = data.rows.map(x => {
+                    let t = x.value;
+                    if('_id' in t){
+                      t.id = t._id;
+                    }
+                    return t;
+                  });
+                  this.ioBobjectStore.upsertMany(rows);
+                }
+              });
+              socket.emit('getObjectView', 'system', 'instance', {
+                startkey: '',
+                endkey: '' + '\u9999'
+              }, (err, data) => {
+                if (data) {
+                  let rows = data.rows.map(x => {
+                    let t = x.value;
+                    t.org_id = t._id;
+                    let id_split = t._id.split('.');
+                    t.id = id_split[id_split.length - 2] + '.' + id_split[id_split.length - 1];
+                    t._id = t.id;
+                    t.common.name = t.common.title;
+                    return t;
+                  });
+                  this.ioBobjectStore.upsertMany(rows);
                 }
               });
               socket.emit('getObjectView', 'system', 'enum', {
@@ -261,10 +299,10 @@ export class IOBrokerService {
                       let value = Object.values(data.rows)[id]['value'];
                       value['id'] = value._id;
                       let newMembers = []
-                      value.common.members.forEach((member:string) => {
-                        if(member.startsWith('enum.')){
+                      value.common.members.forEach((member: string) => {
+                        if (member.startsWith('enum.')) {
                           let tempData = data.rows.filter(e => e.id === member);
-                          if(tempData.length > 0) {
+                          if (tempData.length > 0) {
                             newMembers = newMembers.concat(tempData[0].value.common.members)
                           }
                         } else {
@@ -409,31 +447,31 @@ export class IOBrokerService {
 
     socket.on('objectChange', (id, obj) => {
       if (this.loaded) {
-        if(obj && 'type' in obj && obj.type === 'enum'){
+        if (obj && 'type' in obj && obj.type === 'enum') {
           let newMembers = []
-          obj.common.members.forEach((member:string) => {
-            if(member.startsWith('enum.')){
+          obj.common.members.forEach((member: string) => {
+            if (member.startsWith('enum.')) {
               let tempData = this.ioBenumQuery.getMembersPerEntity(member);
-              if(tempData.length > 0) {
+              if (tempData.length > 0) {
                 newMembers = newMembers.concat(tempData);
               }
             } else {
               newMembers.push(member)
             }
           });
-          try{
+          try {
             obj.common.allMembers = newMembers;
             this.ioBenumStore.upsert(id, obj);
-          }catch(e){}
+          } catch (e) { }
         }
         else {
           if (obj === null) {
-            if(this.ioBenumQuery.hasEntity(id)){
+            if (this.ioBenumQuery.hasEntity(id)) {
               this.ioBenumStore.remove(id);
             }
-            if(this.ioBobjectQuery.hasEntity(id))
-            this.ioBobjectStore.remove(id);
-            
+            if (this.ioBobjectQuery.hasEntity(id))
+              this.ioBobjectStore.remove(id);
+
           } else {
             this.ioBobjectStore.upsert(id, obj);
           }
@@ -443,7 +481,7 @@ export class IOBrokerService {
 
     socket.on('stateChange', (id, state) => {
       if (this.loaded) {
-        if(state === null){
+        if (state === null) {
           this.ioBstateStore.remove(id)
         } else {
           state.id = id;

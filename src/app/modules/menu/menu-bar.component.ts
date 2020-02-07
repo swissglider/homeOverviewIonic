@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { ModalController } from '@ionic/angular';
 import { ModalComponent } from './modal/modal.component';
 import { MenuModel } from './menu.model';
+import { IconsService } from 'src/app/service/icons.service';
 
 
 @Component({
@@ -19,6 +20,7 @@ export class MenuBarComponent {
   constructor(
     private router: Router,
     public modalController: ModalController,
+    public iconsService: IconsService,
   ) {}
 
   openMenu(){

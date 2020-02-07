@@ -27,12 +27,13 @@
 
     <ng-template [ngSwitchCase]= "'filter'">
       <ion-toolbar>
+        <ion-title>Filter</ion-title>
         <ion-buttons slot="start">
           <ion-button color="medium" (click)="templateToShow = 'loaded'">
             <ion-icon slot="icon-only" name="arrow-back" ></ion-icon>
           </ion-button>
         </ion-buttons>
-        <app-menu-bar></app-menu-bar>
+        <!-- <app-menu-bar></app-menu-bar> -->
       </ion-toolbar>
     </ng-template>
     <ng-template ngSwitchDefault></ng-template>

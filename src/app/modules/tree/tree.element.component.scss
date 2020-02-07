@@ -5,6 +5,10 @@
     padding-top:3px
 }
 
+.folderText-state{
+   color:green;
+}
+
 .folderIcon{
     background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAABmJLR0QA/wD/AP+gvaeTAAAAj0lEQVQ4jWNgGOyAMWrqhekSIrweyIL///1jfPvx+6ZFGXp5pBrIwsLExOlirKiALvHo5cdE5jmXPdiYmP4Ra9jP33+XsjAzMUhfvP0MU/LXb54MV2VVMX4Ool3XuupKPAszI4NihKUU0ZoIASaqmTRq4KiBowaSAFh+/v37c/Wxh7+pYdjPv39/UsMc2gIADiYqi9q8ZvIAAAAASUVORK5CYII=);
     width: 20px;
@@ -16,7 +20,27 @@
  .folderText{
     padding-top:3px;
     padding-left:1.8em;
-    color: #369;
+   //  color: #369;
+   //  font-weight: bold;
+ }
+
+ .folderText-standard{
+    color:#369;
+    font-weight: bold;
+ }
+
+ .folderText-state{
+    color:green;
+    font-weight: bold;
+ }
+
+ .folderText-device{
+    color:burlywood;
+    font-weight: bold;
+ }
+
+ .folderText-channel{
+    color:pink;
     font-weight: bold;
  }
 
@@ -72,7 +96,7 @@
    div.button {
        display:inline-block;
        color:#444;
-       border:1px solid #CCC;
+       border:none;
        box-shadow: 0 0 5px -1px rgba(0,0,0,0.2);
        cursor:pointer;
        vertical-align:middle;
@@ -80,4 +104,17 @@
        padding: 5px;
        text-align: center;
        font-size: small;
+       width: 100%;
    }
+
+   table {
+      table-layout: auto;
+      border-collapse: collapse;
+      width: 100%;
+  }
+  table td {
+      border: 1px solid #ccc;
+  }
+  table .absorbing-column {
+      width: 100%;
+  }

@@ -1,6 +1,8 @@
 <div style="padding:0.1em">
     <ion-toolbar color="light" (click)="presentModal(menu)" >
-        <img style="padding:0.5em" slot="secondary" [src]="menu.activeIcon">
-        <div  style="margin-left:1em;">{{menu.name}}</div>
+        <img *ngIf="!icon" style="padding:0.5em" slot="secondary" [src]="menu.activeIcon">
+        <img *ngIf="icon" style="padding:0.5em" slot="secondary" [src]="iconsService.getIcon(icon, 'blue-ui', '20')">
+        <div *ngIf="menuTitle" style="margin-left:1em;">{{menuTitle}}</div>
+        <div *ngIf="!menuTitle" style="margin-left:1em;">{{menu.name}}</div>
     </ion-toolbar>
 </div>

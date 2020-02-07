@@ -1,49 +1,23 @@
-<!-- <ul class="tree" *ngFor="let subTree of treeData | keyvalue">
-    <ng-container *ngIf="hasMoreSubtrees(subTree.value)">
-        <li>{{subTree.key}}</li>
-        <app-tree [treeData]="subTree.value"></app-tree>
-    </ng-container>
-    <ng-container *ngIf="!hasMoreSubtrees(subTree.value)">
-        <li><span class="value">{{subTree.key}}:{{subTree.value}}</span></li>
-    </ng-container>
-</ul> -->
-
-<ng-container *ngFor="let subTree of treeData | keyvalue">
-    <ng-container [ngSwitch]="getTreeType(subTree.key, subTree.value)">
-        <ng-template [ngSwitchCase]="'folder'">
-            <div class="container">
-                <div class="folderIcon" (click)="subTree.value.__visible__ = !subTree.value.__visible__"></div>
-                <div class="folderText" (click)="subTree.value.__visible__ = !subTree.value.__visible__">{{subTree.key}}</div>
-                <app-tree *ngIf="isVisible(subTree.value)" [treeData]="subTree.value"></app-tree>
-            </div>
-        </ng-template>
-        <ng-template [ngSwitchCase]="'specialFolder'">
-            <div class="container">
-                <div class="specialFolderIcon" (click)="subTree.value.__visible__ = !subTree.value.__visible__"></div>
-                <div class="specialFolderText" (click)="subTree.value.__visible__ = !subTree.value.__visible__">{{subTree.key}}</div>
-                <app-tree *ngIf="isVisible(subTree.value)" [treeData]="subTree.value"></app-tree>
-            </div>
-        </ng-template>
-        <ng-template [ngSwitchCase]="'value'">
-            <div class="container">
-                <div class="valueIcon"></div>
-                <div class="valueText"><span class="valueKey">{{subTree.key}} :</span> <span class="valueValue">{{subTree.value}}</span></div>
-            </div>
-        </ng-template>
-        <ng-template [ngSwitchCase]="'specialValue'">
-            <div class="container">
-                <div class="specialValueIcon"></div>
-                <div class="specialValueText"><span class="valueKey">{{subTree.key}} :</span> <span class="valueValue">{{subTree.value}}</span></div>
-            </div>
-        </ng-template>
-        <ng-template [ngSwitchCase]="'infoTag'">
-            <div class="button" color="secondary">
-                <div>{{subTree.value['name']}}</div>
-                <div>State: {{subTree.value['current_state']}}</div>
-                <div>Time Stamp: {{subTree.value['ts_state']}}</div>
-                <div>Last Change: {{subTree.value['lc_state']}}</div>
-                <div style="font-size:x-small">click to see more</div>
-            </div>
-        </ng-template>
-    </ng-container>
+<ion-item>
+  <app-tree-element [treeData]="treeData" (moreInfoFor)="getMoreInfo($event)"></app-tree-element>
+</ion-item>
+<ng-container *ngIf="!withoutAgenda">
+  <ion-item>
+    <ion-label>Show Legende</ion-label>
+    <ion-checkbox slot="end" [(ngModel)]="showAgenda"></ion-checkbox>
+  </ion-item>
+  <ng-container *ngIf="showAgenda">
+    <ion-card>
+      <ion-card-content>
+        <ion-item>Legende</ion-item>
+        <ion-item lines="none" [ngClass]="['folderText-standard']">standard</ion-item>
+        <ion-item lines="none" [ngClass]="['folderText-state']">state</ion-item>
+        <ion-item lines="none" [ngClass]="['folderText-device']">device</ion-item>
+        <ion-item lines="none" [ngClass]="['folderText-channel']">channel</ion-item>
+        <ion-item lines="none"><span [ngClass]="['valueKey']">key: </span><span [ngClass]="['valueValue']">value</span>
+        </ion-item>
+        <ion-item lines="none" [ngClass]="['specialFolderText']">specialFolder</ion-item>
+      </ion-card-content>
+    </ion-card>
+  </ng-container>
 </ng-container>

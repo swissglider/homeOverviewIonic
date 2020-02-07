@@ -49,8 +49,7 @@ export class PageService {
     try {
       return this.helperService.getByLanguage(this.getCurrentPageDeclaration()['name']);
     } catch (error) {
-      console.error(error);
-      console.error(this.router.url);
+      return '';
     }
   }
   getCurrentPageIcon(): string {

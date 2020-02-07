@@ -2,8 +2,7 @@ import { IonicModule } from '@ionic/angular';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { TreeComponent } from './tree.component';
-import { TreeElementComponent } from './tree.element.component';
+import { AppStatesComponent } from './app.states/app.states.component';
 
 @NgModule({
   imports: [
@@ -11,7 +10,7 @@ import { TreeElementComponent } from './tree.element.component';
     CommonModule,
     FormsModule
   ],
-  declarations: [TreeComponent, TreeElementComponent],
-  exports: [TreeComponent, TreeElementComponent]
+  declarations: [AppStatesComponent],
+  exports: [AppStatesComponent]
 })
-export class TreeModule {}
+export class AppStatesViewModule {}

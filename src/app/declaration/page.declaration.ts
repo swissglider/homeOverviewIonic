@@ -111,6 +111,18 @@ export let PageDeclarations = {
     tabIcon: "wrong-entry",
     fullPath: "/tabs/long-not-updated",
     menuID: 'maintenance',
+  },
+  functions: {
+    order: 9,
+    name: {
+      en: "Functions",
+      de: "Functions",
+    },
+    path: 'functions',
+    asTab: false,
+    tabIcon: "wrong-entry",
+    fullPath: "/tabs/functions",
+    menuID: 'test',
   }
 };
 

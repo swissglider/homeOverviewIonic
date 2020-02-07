@@ -1,0 +1,96 @@
+<ion-header *ngIf="object">
+    <br>
+    <ion-toolbar>
+        <ion-title>Details: {{helperService.getByLanguage(object['common']['name'])}}</ion-title>
+        <ion-buttons slot="end">
+            <ion-button (click)="dismiss()">Close</ion-button>
+        </ion-buttons>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content>
+    <div style="margin: 1em">
+        <ion-segment>
+            <ion-segment-button value="general" (click)="templateToShow='general'"
+                [checked]="templateToShow === 'general'">
+                <ion-label>Overview</ion-label>
+            </ion-segment-button>
+            <ion-segment-button value="Object" (click)="templateToShow='Object'" [checked]="templateToShow==='Object'">
+                <ion-label>Object</ion-label>
+            </ion-segment-button>
+            <ion-segment-button value="State" (click)="templateToShow='State'" [checked]="templateToShow==='State'">
+                <ion-label>State</ion-label>
+            </ion-segment-button>
+            <ion-segment-button value="Relation" (click)="templateToShow='Relation'"
+                [checked]="templateToShow==='Relation'">
+                <ion-label>Relation</ion-label>
+            </ion-segment-button>
+        </ion-segment>
+    </div>
+
+    <div [ngSwitch]="templateToShow">
+        <ng-template [ngSwitchCase]="'general'">
+            <ion-list inset="true" lines="inset">
+                <ion-list-header>
+                    <ion-label *ngIf="object">{{helperService.getByLanguage(object['common']['name'])}}</ion-label>
+                    <ion-badge *ngIf="state" color="success">{{state['val']}}</ion-badge>
+                </ion-list-header>
+                <ion-item-group>
+                    <ion-item *ngIf="object">
+                        <ion-label class="textSize" (click)="onNavigate(object['_id'])">{{object['_id']}}</ion-label>
+                        <ion-button slot="end" (click)="onNavigate(object['_id'])"> see on ioBroker</ion-button>
+                    </ion-item>
+                    <ion-item *ngIf="object">
+                        <ion-label class="textSize" slot="start">TimeStamp Object Update</ion-label>
+                        <ion-note class="textSize" slot="end"> {{getTime(object['ts'])}}</ion-note>
+                    </ion-item>
+                    <ion-item *ngIf="state">
+                        <ion-label class="textSize" slot="start">TimeStamp State Update</ion-label>
+                        <ion-note class="textSize" slot="end"> {{getTime(state['ts'])}}</ion-note>
+                    </ion-item>
+                    <ion-item *ngIf="state">
+                        <ion-label class="textSize" slot="start">LastChange State Update</ion-label>
+                        <ion-note class="textSize" slot="end"> {{getTime(state['lc'])}}</ion-note>
+                    </ion-item>
+                </ion-item-group>
+            </ion-list>
+        </ng-template>
+        <ng-template [ngSwitchCase]="'Object'">
+            <div *ngIf="object" style="margin:2em;">
+                <app-tree [treeData]="object" [withoutAgenda]="true" (moreInfoFor)="getMoreInfo($event)"></app-tree>
+            </div>
+            <div *ngIf="!object" style="margin:2em;">
+                No Object
+            </div>
+        </ng-template>
+        <ng-template [ngSwitchCase]="'State'">
+            <div *ngIf="state" style="margin:2em;">
+                <app-tree [treeData]="state" [withoutAgenda]="true"></app-tree>
+            </div>
+            <div *ngIf="!state" style="margin:2em;">
+                No State
+            </div>
+        </ng-template>
+        <ng-template [ngSwitchCase]="'Relation'">
+            <ion-item-group *ngFor="let relation of relations | keyvalue">
+                <ion-item-divider (click)="relation.value.visible = !relation.value.visible">
+                    <ion-label style="padding-left: 0.3em; font-weight: bold;">
+                        {{helperService.getByLanguage(relation.value.name)}}</ion-label>
+                    <ion-icon *ngIf="relation.value.visible" slot="start" name="arrow-down"></ion-icon>
+                    <ion-icon *ngIf="!relation.value.visible" slot="start" name="arrow-forward"></ion-icon>
+                </ion-item-divider>
+                <ng-container *ngIf="relation.value.visible">
+                    <ion-item *ngFor="let obj of relation.value.values; index as i" (click)="switchToObject(obj.id)" >
+                        <ion-label slot="start">{{helperService.getByLanguage(obj.name)}}</ion-label>
+                        <ion-label *ngIf="obj.hasObject">
+                            <p class="small_p" *ngIf="obj.hasState">TS:{{obj.state_TS}}</p>
+                            <p class="small_p" *ngIf="obj.hasState">LC:{{obj.state_LC}}</p>
+                            <p class="small_p" *ngIf="!obj.hasState && obj.hasObject">TS:{{obj.obj_TS}}</p>
+                            <ion-badge class="small_p" *ngIf="obj.hasState" color="success" slot="end">{{obj.val}}</ion-badge>
+                        </ion-label>
+                    </ion-item>
+                </ng-container>
+            </ion-item-group>
+        </ng-template>
+    </div>
+</ion-content>

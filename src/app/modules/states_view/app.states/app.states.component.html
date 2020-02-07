@@ -1,0 +1,135 @@
+<ng-container *ngIf="!hide">
+    <ng-container [ngSwitch]="view">
+        <ng-template [ngSwitchCase]="'chip'">
+            <ion-chip>
+                <ion-label color="primary">{{value}}</ion-label>
+            </ion-chip>
+        </ng-template>
+        <!-- ========================================================================================================================== -->
+        <ng-template [ngSwitchCase]="'badge'">
+            <ion-badge color="primary">{{value}}</ion-badge>
+        </ng-template>
+        <!-- ========================================================================================================================== -->
+        <ng-template [ngSwitchCase]="'total_toolbar'">
+            <ng-container [ngSwitch]="selection">
+                <!-- ------------------------------------------------------------------------------------------------------------------ -->
+                <ng-template [ngSwitchCase]="'icon_switch'">
+                    <ion-buttons slot="start">
+                        <ion-button fill="outline" color="medium" (click)="doSwitchFunc(true)" size="large">
+                            ON
+                        </ion-button>
+                        <ion-button disabled="true" color="dark" size="small">
+                            /
+                        </ion-button>
+                        <ion-button fill="outline" color="medium" (click)="doSwitchFunc(false)" size="small">
+                            OFF
+                        </ion-button>
+                    </ion-buttons>
+                </ng-template>
+                <!-- ------------------------------------------------------------------------------------------------------------------ -->
+                <ng-template [ngSwitchCase]="'icon_boolean'">
+                    <ion-button (click)="doSwitchFunc(!value)" size="small" fill="clear">
+                        <img [src]="getIconValue()">
+                    </ion-button>
+                </ng-template>
+                <!-- ------------------------------------------------------------------------------------------------------------------ -->
+                <ng-template [ngSwitchCase]="'number_avarage'"></ng-template>
+                <!-- ------------------------------------------------------------------------------------------------------------------ -->
+                <ng-template [ngSwitchCase]="'empty'"></ng-template>
+                <!-- ------------------------------------------------------------------------------------------------------------------ -->
+                <ng-template ngSwitchDefault>
+                    <ion-button (click)="doSwitchFunc(!value)" size="small" fill="clear">
+                        <img [src]="getIconValue()">
+                    </ion-button>
+                </ng-template>
+                <!-- ------------------------------------------------------------------------------------------------------------------ -->
+            </ng-container>
+        </ng-template>
+        <!-- ========================================================================================================================== -->
+        <ng-template [ngSwitchCase]="'standard_list_divider'">
+            <ion-item-divider>
+                <ion-label slot="end" (click)="doMenuToggleFunc()"><b>{{helperService.getByLanguage(name)}}</b>
+                </ion-label>
+                <ng-container [ngSwitch]="selection">
+                    <!-- ------------------------------------------------------------------------------------------------------------------ -->
+                    <ng-template [ngSwitchCase]="'icon_switch'">
+                        <ion-buttons slot="start">
+                            <ion-button fill="outline" color="medium" (click)="doSwitchFunc(true)" size="large">
+                                ON
+                            </ion-button>
+                            <ion-button disabled="true" color="dark" size="small">
+                                /
+                            </ion-button>
+                            <ion-button fill="outline" color="medium" (click)="doSwitchFunc(false)" size="small">
+                                OFF
+                            </ion-button>
+                        </ion-buttons>
+                    </ng-template>
+                    <!-- ------------------------------------------------------------------------------------------------------------------ -->
+                    <ng-template [ngSwitchCase]="'icon_boolean'">
+                        <ion-button slot="start" (click)="doSwitchFunc(!value)" size="small" fill="clear">
+                            <img [src]="getIconValue()">
+                        </ion-button>
+                    </ng-template>
+                    <!-- ------------------------------------------------------------------------------------------------------------------ -->
+                    <ng-template [ngSwitchCase]="'number_avarage'">
+                        <img slot="start" [src]="getIcon()">
+                        <ion-note slot="start" style="padding-left:5px; font-size: smaller;">{{value}}</ion-note>
+                    </ng-template>
+                    <!-- ------------------------------------------------------------------------------------------------------------------ -->
+                    <ng-template [ngSwitchCase]="'empty'"></ng-template>
+                    <!-- ------------------------------------------------------------------------------------------------------------------ -->
+                    <ng-template ngSwitchDefault>
+                        <ion-button (click)="doSwitchFunc(!value)" size="small" fill="clear">
+                            <img [src]="getIconValue()">
+                        </ion-button>
+                    </ng-template>
+                    <!-- ------------------------------------------------------------------------------------------------------------------ -->
+                </ng-container>
+            </ion-item-divider>
+        </ng-template>
+        <!-- ========================================================================================================================== -->
+        <ng-template [ngSwitchCase]="'icon_list'">
+            <ion-item lines="none" (click)="doSwitchFunc(!value)">
+                <ion-label>{{helperService.getByLanguage(name)}}</ion-label>
+                <ng-container [ngSwitch]="selection">
+                    <!-- ------------------------------------------------------------------------------------------------------------------ -->
+                    <ng-template [ngSwitchCase]="'icon_switch'">
+                        <ion-note slot="end" color="success">
+                            <ion-button (click)="doSwitchFunc(!value)" fill="clear" size="small" color="dark">
+                                <img [src]="getIconValue()">
+                            </ion-button>
+                        </ion-note>
+                    </ng-template>
+                    <!-- ------------------------------------------------------------------------------------------------------------------ -->
+                    <!-- <ng-template [ngSwitchCase]="'icon_boolean'"></ng-template> -->
+                    <!-- ------------------------------------------------------------------------------------------------------------------ -->
+                    <ng-template [ngSwitchCase]="'number_avarage'">
+                        <ion-note slot="end" color="success">
+                            <ion-button fill="clear" size="small" color="dark">
+                                <!-- <img [src]="getIcon()"> -->
+                                <ion-label style="padding-left:5px">{{value}}</ion-label>
+                            </ion-button>
+                        </ion-note>
+                    </ng-template>
+                    <!-- ------------------------------------------------------------------------------------------------------------------ -->
+                    <!-- <ng-template [ngSwitchCase]="'empty'"></ng-template> -->
+                    <!-- ------------------------------------------------------------------------------------------------------------------ -->
+                    <ng-template ngSwitchDefault>
+                        <ion-note slot="end" color="success" outline="false">
+                            <ion-button (click)="doSwitchFunc(!value)" size="small" fill="clear">
+                                <img [src]="getIconValue()">
+                            </ion-button>
+                        </ion-note>
+                    </ng-template>
+                    <!-- ------------------------------------------------------------------------------------------------------------------ -->
+                </ng-container>
+            </ion-item>
+        </ng-template>
+        <!-- ========================================================================================================================== -->
+        <ng-template ngSwitchDefault>
+            <ion-badge color="primary">{{value}}</ion-badge>
+        </ng-template>
+
+    </ng-container>
+</ng-container>

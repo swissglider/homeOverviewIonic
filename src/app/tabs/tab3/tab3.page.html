@@ -7,13 +7,12 @@
 <ion-content>
   <ng-container [ngSwitch]="loaded">
     <ng-template [ngSwitchCase]="false">
-      <h1>Loading: {{loaded}}</h1>
+      <h1>Loaded: {{loaded}}</h1>
     </ng-template>
     <ng-template [ngSwitchCase]="true">
-      <h1>Loading: {{loaded}}</h1>
-      <p>Test3 - Tree</p>
+      <h1>Loaded: {{loaded}}</h1>
       <div style="margin:2em;">
-        <app-tree [treeData]="returnStruct"></app-tree>
+        <app-tree [treeData]="returnStruct" [showAgenda]="showAgenda" (moreInfoFor)="getMoreInfo($event)"></app-tree>
       </div>
     </ng-template>
   </ng-container>
