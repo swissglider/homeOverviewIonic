@@ -498,7 +498,10 @@ export class FunctionsPage implements OnInit {
     const modal = await this.modalController.create({
       component: ModalDynamicComponent,
       componentProps: {
-        inputLevelObject: JSON.parse(this.testString),
+        // inputLevelObject: JSON.parse(this.testString),
+        inputLevelObject: JSON.parse(this.testString2),
+        valueSelectionID: 'enum.functions',
+        valueSelectionFilters: ["enum.functions.light","enum.functions.rain"],
       }
     });
     modal.onDidDismiss().then((detail) => {
@@ -547,6 +550,33 @@ export class FunctionsPage implements OnInit {
           "subLevelFilters": []
         }
       }
+    }
+  `
+
+  testString2 = `
+    {
+      "id": "enum.area",
+      "subLevelFilters": [
+        "enum.area.inside_home"
+      ],
+      "subLevel": {
+        "id": "enum.floor",
+        "subLevelFilters": [
+          "enum.floor.1-dachgeschoss",
+          "enum.floor.3-erdgeschoss",
+          "enum.floor.2-mittelgeschoss"
+        ],
+        "subLevel": {
+          "id": "states",
+          "subLevelFilters": []
+        }
+      }
+    }
+  `
+  testString3 = `
+    {
+      "id": "enum.floor",
+      "subLevelFilters": []
     }
   `
 

@@ -14,27 +14,38 @@ export class IoBObjectQuery extends QueryEntity<IoBObjectState> {
   }
 
   /** select the name Obserbable by id */
-  public selectNameByID (id:string) : Observable<string | object>{
+  public selectNameByID(id: string): Observable<string | object> {
     return this.selectEntity(id, entity => entity.common.name)
   }
 
-  public getWritableByID (id:string): boolean {
+  public getWritableByID(id: string): boolean {
     return this.getEntity(id).common.write;
   }
 
-  public getAllChildrenIDsByParentID(id:string): Array<string>{
+  public getAllChildrenIDsByParentID(id: string): Array<string> {
     return this.getAll({
       filterBy: entity => entity._id.startsWith(id + '.')
     }).map(e => e._id);
   }
 
-  public getDirectChildrenIDsByParentID(id:string): Array<string>{
+  public getDirectChildrenIDsByParentID(id: string): Array<string> {
     const pointCounter = id.split('.').length;
     return this.getAllChildrenIDsByParentID(id).filter(e => e.split('.').length - 1 === pointCounter);
   }
 
-  getBrothersIDsByParentID(id:string): Array<string>{
+  getBrothersIDsByParentID(id: string): Array<string> {
     return this.getDirectChildrenIDsByParentID(id.substr(0, id.lastIndexOf(".")))
+  }
+
+  /** get all states withIn an ObjectID (parentDomain) */
+  getAllStatesIDWithinParentID(id: string): string[] {
+    return this.getAll({ filterBy: entity => entity._id.startsWith(id) && entity.type === 'state' }).map(e => e.id);
+  }
+
+  /** get the root domain Objects 'instances' ids */
+  getAllInstanceIDS(exclusionFilter?: string[]): string[] {
+    if (!exclusionFilter) { exclusionFilter = [] }
+    return this.getAll({ filterBy: entity => entity.type === 'instance' && !exclusionFilter.includes(entity.id) }).map(e => e.id);
   }
 
 }
