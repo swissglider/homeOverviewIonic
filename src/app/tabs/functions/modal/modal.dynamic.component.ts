@@ -2,7 +2,8 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { Input } from '@angular/core';
 import { HelperService } from 'src/app/service/helper.service';
 import { ModalController } from '@ionic/angular';
-import { AdminLevelStructService, IAdminLevelStruct, IInputLevelObject, levelIDCases } from '../admin.level.struct.service';
+import { AdminLevelStructService} from '../admin.level.struct.service';
+import { IInputLevelObject, IAdminLevelStruct, levelIDCases } from '../level.struct.model';
 
 export enum TemplatesToShow {
     row1,

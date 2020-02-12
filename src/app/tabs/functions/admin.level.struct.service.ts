@@ -1,74 +1,12 @@
-import { Injector, Injectable } from "@angular/core";
+import { Injectable } from "@angular/core";
 import { IoBObjectQuery } from 'src/app/store/object/io-bobject.query';
 import { IoBEnumQuery } from 'src/app/store/enum/io-benum.query';
 import { isArray } from 'util';
-
-
-export interface ElementStates {
-    name: string | object,
-    functionStates: {
-        [key: string]: {                // key = functionID
-            [key: string]: string[],    // key = enumID         value = stateIDs
-        },
-    },
-}
-
-export enum levelIDCases {
-    instances = 0,
-    channels = 1,
-    devices = 2,
-    states = 3,
-    enums = 4,
-}
-
-/**
- * Naming convention:
- *  -    Level          => corrent level of the ILevelStruct
- *  -    RootLevel      => all EnumRootDomain or RootInstance
- *  -    SubLevel       => all Defined SubLevel, must follow the rules described below
- *  -    SubLevelFilter => if empty no Filter. Filter are direct EnumSubDomain or Members. Only the one in the Filter will be accepted for SubLevels
- *  -    EnumRootDomain => all enums only have one points (normally they have no members)
- *  -    EnumSubDomain  => all enums that have two points. Sub because they are a subEnumDomain of EnumRootDomain (normally they have members)
- * 
- * 
- * SubLevel Rules
- *  -    subLevel ID's must be in the enumSubDomain or in any of the enumSubDomain/members -members 
- *         or any of the levelIDCases it can be 'instances' 'channels', 'devices', 'states', 'enums'; than all ... for all enumSubDomains/members will be taken
- * 
- * 
- */
-export interface ILevelStruct {
-    id: string,
-    name?: string | object,
-    subLevels?: ILevelStruct[],
-    subLevelFilters?: string[],
-    elementStates?: ElementStates,
-}
-
-export interface IAdminLevelStruct {
-    id?: string,
-    // name?: string | object,
-    level: number,
-    subLevel?: IAdminLevelStruct,
-    availableLevelIDs?: string[],
-    subLevelFilters?: string[],
-    subLevelAvailableFilters?: string[],
-    parent: IAdminLevelStruct
-}
-
-export interface IInputLevelObject {
-    id?: string,
-    // name?: string | object,
-    subLevel?: IInputLevelObject,
-    subLevelFilters?: string[],
-}
-
+import { levelIDCases, IAdminLevelStruct, IInputLevelObject } from './level.struct.model';
 
 
 /**
- * Creates an empty/base IAdminLevelStruct to be used for example in a Form to select the Levels
- * Creates an IAdminLevelStruct from HTML Input values
- * Creates an ILevelStruct from a IAdminLevelStruct
+ * Used to dynamically create an IInputLevelObject i.e. for Admin Panel
  */
 @Injectable({
     providedIn: 'root'
