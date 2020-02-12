@@ -1,8 +1,8 @@
-import { Component, OnInit, ViewChild, NgZone } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { Input } from '@angular/core';
 import { HelperService } from 'src/app/service/helper.service';
 import { ModalController } from '@ionic/angular';
-import { LevelStructService, IInputLevelStruct, IInputLevelObject, levelIDCases } from '../level.struct.service';
+import { AdminLevelStructService, IAdminLevelStruct, IInputLevelObject, levelIDCases } from '../admin.level.struct.service';
 
 export enum TemplatesToShow {
     row1,
@@ -32,9 +32,9 @@ export class ModalDynamicComponent implements OnInit {
     @ViewChild('HTMLvalueSelction', { static: false }) HTMLvalueSelction: Selection;
     @ViewChild('HTMLvalueSelctionID', { static: false }) HTMLvalueSelctionID: Selection;
 
-    inputLevelStruct: IInputLevelStruct;
-    tmpInputLevelStruct: {} = {};
-    tmpInputLevelString: string = '';
+    adminLevelStruct: IAdminLevelStruct;
+    tmpAdminLevelStruct: {} = {};
+    tmpAdminLevelString: string = '';
 
     valueSelectionAvailableIds: string[] = [];
     valueSelectionAvailableFilters: string[];
@@ -47,24 +47,20 @@ export class ModalDynamicComponent implements OnInit {
     constructor(
         private modalController: ModalController,
         public helperService: HelperService,
-        public levelStructService: LevelStructService,
-        private ngZone: NgZone,
+        public adminLevelStructService: AdminLevelStructService,
     ) { }
 
     ngOnInit() { }
 
     ionViewWillEnter() {
-        // this.inputLevelObject = null;
-        // this.valueSelectionID = null;
-        // this.valueSelectionFilters = null;
         this.initValueSelection();
-        // this.levelStructService.test();
+        // this.adminLevelStructService.test();
     }
 
     private initValueSelection() {
-        this.valueSelectionAvailableIds = this.levelStructService.getAllRootEnumIDS();
+        this.valueSelectionAvailableIds = this.adminLevelStructService.getAllRootEnumIDS();
         if (this.valueSelectionID && this.valueSelectionID !== '') {
-            this.valueSelectionAvailableFilters = this.levelStructService.getAllValueSelectionAvailableFilterIDS(this.valueSelectionID, exclusion);
+            this.valueSelectionAvailableFilters = this.adminLevelStructService.getAllValueSelectionAvailableFilterIDS(this.valueSelectionID, exclusion);
         } else {
             this.valueSelectionID = '';
             this.valueSelectionAvailableFilters = [];
@@ -74,17 +70,17 @@ export class ModalDynamicComponent implements OnInit {
         } else {
             this.valueSelectionFilters = [];
         }
-        this.initRootInputLevelStruct();
+        this.initRootAdminLevelStruct();
     }
 
-    private initRootInputLevelStruct() {
-        this.inputLevelStruct === null;
-        if (this.inputLevelObject === undefined || this.inputLevelObject === null) {
-            this.inputLevelStruct = { level: 0, parent: null }
-            this.inputLevelStruct.availableLevelIDs = this.levelStructService.getAllPossibleLevelIDS(
-                this.inputLevelStruct, this.valueSelectionID, this.valueSelectionFilters, exclusion);
+    private initRootAdminLevelStruct() {
+        this.adminLevelStruct === null;
+        if (this.inputLevelObject === null) {
+            this.adminLevelStruct = { level: 0, parent: null }
+            this.adminLevelStruct.availableLevelIDs = this.adminLevelStructService.getAllPossibleLevelIDS(
+                this.adminLevelStruct, this.valueSelectionID, this.valueSelectionFilters, exclusion);
         } else {
-            this.inputLevelStruct = this.levelStructService.getInputLevelStructFromInputLevelObject(
+            this.adminLevelStruct = this.adminLevelStructService.getLevelStructFromAdminLevelObject(
                 this.inputLevelObject, this.valueSelectionID, this.valueSelectionFilters, exclusion);
             this.inputLevelObject = null;
         }
@@ -106,25 +102,28 @@ export class ModalDynamicComponent implements OnInit {
     }
 
     async CTRLclose() {
-        // console.log(this.inputDev)
-        await this.modalController.dismiss('bla');
+        let returnArray = {
+            inputLevelObject: this.adminLevelStructService.CTRLgetLevelObjectFromAdminLevelStruct(this.adminLevelStruct),
+            valueSelectionID: this.valueSelectionID,
+            valueSelectionFilters: this.valueSelectionFilters,
+        }
+        await this.modalController.dismiss(returnArray);
     }
 
-    CTRLsubLevelFilterChanged(e, inputLevelStruct: IInputLevelStruct) {
+    CTRLsubLevelFilterChanged(e, als: IAdminLevelStruct) {
         if (e.detail.value && Array.isArray(e.detail.value)) {
-            inputLevelStruct.subLevelFilters = e.detail.value;
-            inputLevelStruct.subLevel = null;
+            als.subLevelFilters = e.detail.value;
+            als.subLevel = null;
         }
     }
 
-    CTRLlevelIDChanged(e, inputLevelStruct: IInputLevelStruct) {
-        if (e.detail.value && e.detail.value !== inputLevelStruct.id) {
-            inputLevelStruct.id = e.detail.value;
-            // inputLevelStruct.name = e.detail.value.name;
-            inputLevelStruct.subLevelFilters = [];
-            inputLevelStruct.subLevel = null;
-            inputLevelStruct.subLevelAvailableFilters = this.levelStructService.getSubLevelAvailableFilterIDSByInputStruct(
-                inputLevelStruct,
+    CTRLlevelIDChanged(e, als: IAdminLevelStruct) {
+        if (e.detail.value && e.detail.value !== als.id) {
+            als.id = e.detail.value;
+            als.subLevelFilters = [];
+            als.subLevel = null;
+            als.subLevelAvailableFilters = this.adminLevelStructService.getSubLevelAvailableFilterIDSByAdminStruct(
+                als,
                 this.valueSelectionID,
                 this.valueSelectionFilters,
                 exclusion);
@@ -162,9 +161,9 @@ export class ModalDynamicComponent implements OnInit {
         this.resetAll();
     }
 
-    CTRLgetLevelStructGenerator(): IInputLevelStruct[] {
-        let ilsArr: IInputLevelStruct[] = []
-        let parentLevel: IInputLevelStruct = this.inputLevelStruct;
+    CTRLgetLevelStructGenerator(): IAdminLevelStruct[] {
+        let ilsArr: IAdminLevelStruct[] = []
+        let parentLevel: IAdminLevelStruct = this.adminLevelStruct;
         while (parentLevel) {
             ilsArr.push(parentLevel);
             parentLevel = (parentLevel && 'subLevel' in parentLevel) ? parentLevel.subLevel : null;
@@ -172,17 +171,17 @@ export class ModalDynamicComponent implements OnInit {
         return ilsArr;
     }
 
-    CTRLaddLevel(inputLevelStruct: IInputLevelStruct) {
-        inputLevelStruct.subLevel = { level: inputLevelStruct.level + 1, parent: inputLevelStruct };
-        inputLevelStruct.subLevel.availableLevelIDs = this.levelStructService.getAllPossibleLevelIDS(
-            inputLevelStruct.subLevel,
+    CTRLaddLevel(als: IAdminLevelStruct) {
+        als.subLevel = { level: als.level + 1, parent: als };
+        als.subLevel.availableLevelIDs = this.adminLevelStructService.getAllPossibleLevelIDS(
+            als.subLevel,
             this.valueSelectionID,
             this.valueSelectionFilters,
             exclusion);
 
     }
 
-    CTRLdeleteLevel(levelStruct: IInputLevelStruct) {
+    CTRLdeleteLevel(levelStruct: IAdminLevelStruct) {
         if (levelStruct.parent) {
             delete levelStruct.parent.subLevel;
         } else {
@@ -190,11 +189,10 @@ export class ModalDynamicComponent implements OnInit {
         }
     }
 
-    CTRLgenerateInputLevelStructSting() {
-        this.tmpInputLevelStruct = this.levelStructService.CTRLgetInputLevelObjectFromInputLevelStruct(this.inputLevelStruct)
-        this.tmpInputLevelString = JSON.stringify(this.tmpInputLevelStruct, null, 2);
-        // console.log(this.tmpInputLevelStruct);
-        console.log(this.tmpInputLevelString);
+    CTRLgenerateAdminLevelStructSting() {
+        this.tmpAdminLevelStruct = this.adminLevelStructService.CTRLgetLevelObjectFromAdminLevelStruct(this.adminLevelStruct)
+        this.tmpAdminLevelString = JSON.stringify(this.tmpAdminLevelStruct, null, 2);
+        console.log(this.tmpAdminLevelString);
         console.log(JSON.stringify(this.valueSelectionID));
         console.log(JSON.stringify(this.valueSelectionFilters));
     }

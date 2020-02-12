@@ -1,13 +1,7 @@
 import { Injector, Injectable } from "@angular/core";
 import { IoBObjectQuery } from 'src/app/store/object/io-bobject.query';
 import { IoBEnumQuery } from 'src/app/store/enum/io-benum.query';
-import { IoBObject } from 'src/app/store/object/io-bobject.model';
-import { IoBEnum } from 'src/app/store/enum/io-benum.model';
-import { Observable, Subject } from 'rxjs';
-import { EntityActions } from '@datorama/akita';
 import { isArray } from 'util';
-import { filter } from 'rxjs/operators';
-import { identifierModuleUrl } from '@angular/compiler';
 
 
 export interface ElementStates {
@@ -51,146 +45,35 @@ export interface ILevelStruct {
     elementStates?: ElementStates,
 }
 
-export interface IInputLevelStruct {
+export interface IAdminLevelStruct {
     id?: string,
     // name?: string | object,
     level: number,
-    subLevel?: IInputLevelStruct,
+    subLevel?: IAdminLevelStruct,
     availableLevelIDs?: string[],
     subLevelFilters?: string[],
     subLevelAvailableFilters?: string[],
-    parent: IInputLevelStruct
+    parent: IAdminLevelStruct
 }
 
 export interface IInputLevelObject {
     id?: string,
     // name?: string | object,
-    subLevel?: IInputLevelStruct,
+    subLevel?: IInputLevelObject,
     subLevelFilters?: string[],
 }
 
-export class ServiceLocator {
-    static injector: Injector;
-}
 
-// /**
-//  * 
-//  * 
-//  * HowTo use it:
-//  * 
-//  * try {
-//  *  let ls = new LevelStruct(levelStruct);
-//  *  ls.selectLevelStruct().subscribe((e: ILevelStruct) => {
-//  *      console.log(e)
-//  *  })
-//  * } catch(e){
-//  *  console.log(e)
-//  * }
-//  * 
-//  * 
-//  */
-// export class LevelStruct {
-
-//     private enumQuery: IoBEnumQuery;
-//     private objectQuery: IoBObjectQuery;
-//     private observable: Subject<ILevelStruct>;
-
-
-//     constructor(
-//         private levelStruct: ILevelStruct,
-//     ) {
-//         this.enumQuery = ServiceLocator.injector.get(IoBEnumQuery);
-//         this.objectQuery = ServiceLocator.injector.get(IoBObjectQuery);
-//         this.observable = new Subject<ILevelStruct>();
-//         try {
-//             this.checkLevelStruct(this.levelStruct);
-//             this.observable.next(this.levelStruct);
-//         } catch (e) {
-//             throw 'The following error occured while checking the levelStruct: ' + e;
-//         }
-//         try {
-//             this.generateElementStates(this.levelStruct);
-//         } catch (e) {
-//             throw 'The following error occured while checking the LevelStruct: ' + e;
-//         }
-//     }
-
-//     /**
-//      * Select the LevelStruct Observable
-//      */
-//     public selectLevelStruct(): Observable<ILevelStruct> {
-//         return this.observable;
-//     }
-
-//     /** 
-//      * checks if the LevelStruct follows the rules (descrbed above), if not it throws an error. 
-//      * 
-//      */
-//     private checkLevelStruct(levelStruct: ILevelStruct) {
-//         if ('subLevels' in levelStruct) {
-//             levelStruct.subLevels.forEach((subLevel: ILevelStruct) => {
-//                 if (!this.checkIfSubLevelIsInLevel(levelStruct.id, subLevel.id)) {
-//                     throw `${subLevel.id} is not included in any enumSubDomain or Members from ${levelStruct.id}`
-//                 }
-//                 this.checkLevelStruct(subLevel);
-//             });
-//         }
-//     }
-
-//     /** checks if an subLevel is in the Level (enumSubDomain/members) */
-//     private checkIfSubLevelIsInLevel(levelID: string, subLevelID: string): boolean {
-//         if (subLevelID === 'all') {
-//             return true;
-//         }
-//         let levelEntity: IoBEnum | IoBObject;
-//         let subDomains: IoBEnum[] | IoBObject[];
-//         if (this.enumQuery.hasEntity(levelID)) {
-//             levelEntity = this.enumQuery.getEntity(levelID);
-//             subDomains = this.enumQuery.getAll(({ filterBy: entity => entity.id.startsWith(levelID + '.') }))
-//         } else if (this.objectQuery.hasEntity(levelID)) {
-//             levelEntity = this.objectQuery.getEntity(levelID);
-//             subDomains = this.objectQuery.getAll(({ filterBy: entity => entity.id.startsWith(levelID + '.') }))
-//         } else {
-//             return false;
-//         }
-
-//         if (levelEntity && 'common' in levelEntity && 'members' in levelEntity.common) {
-//             // check if subLevelID is in a member
-//             if (levelEntity.common.members.includes(subLevelID)) {
-//                 return true;
-//             }
-//             // check if subLevelID is in a members enumSubDomain/members
-//             if (levelEntity.common.members.some(e => this.checkIfSubLevelIsInLevel(e, subLevelID))) {
-//                 return true;
-//             }
-//         }
-//         if (subDomains && subDomains.length > 0) {
-//             // check if subLevelID is a enumSubDomain
-//             if (subDomains.some((e: IoBEnum | IoBObject) => e.id === subLevelID || e._id === subLevelID)) {
-//                 return true;
-//             }
-//             // check if subLevelID is in a members enumSubDomain/members
-//             if (subDomains.some((e: IoBEnum | IoBObject) => this.checkIfSubLevelIsInLevel(e.id, subLevelID))) {
-//                 return true
-//             }
-//         }
-//         return false;
-//     }
-
-//     private generateElementStates(levelStruct: ILevelStruct) {
-//         // ==> ToDo
-//     }
-// }
 
 /**
- * Creates an empty/base IInputLevelStruct to be used for example in a Form to select the Levels
- * Creates an IInputLevelStruct from HTML Input values
- * Creates an ILevelStruct from a IInputLevelStruct
+ * Creates an empty/base IAdminLevelStruct to be used for example in a Form to select the Levels
+ * Creates an IAdminLevelStruct from HTML Input values
+ * Creates an ILevelStruct from a IAdminLevelStruct
  */
 @Injectable({
     providedIn: 'root'
 })
-export class LevelStructService {
+export class AdminLevelStructService {
     constructor(
         private enumQuery: IoBEnumQuery,
         private objectQuery: IoBObjectQuery,
@@ -247,25 +130,25 @@ export class LevelStructService {
     }
 
     /** get level id + all level ids from parents */
-    private getLevelIDS(inputLevelStruct: IInputLevelStruct): string[] {
+    private getLevelIDS(als: IAdminLevelStruct): string[] {
         let returnArray: string[] = []
-        if (inputLevelStruct.id) {
-            returnArray.push(inputLevelStruct.id);
+        if (als.id) {
+            returnArray.push(als.id);
         }
-        if (inputLevelStruct.parent && inputLevelStruct.parent !== null) {
-            returnArray.push(...this.getLevelIDS(inputLevelStruct.parent));
+        if (als.parent && als.parent !== null) {
+            returnArray.push(...this.getLevelIDS(als.parent));
         }
         return returnArray;
     }
 
     /** get level id + all level ids from parents */
-    private getLevelFiltersArray(inputLevelStruct: IInputLevelStruct): string[][] {
+    private getLevelFiltersArray(als: IAdminLevelStruct): string[][] {
         let returnArray: string[][] = []
-        if (inputLevelStruct.subLevelFilters && isArray(inputLevelStruct.subLevelFilters) && inputLevelStruct.subLevelFilters.length > 0) {
-            returnArray.push(inputLevelStruct.subLevelFilters);
+        if (als.subLevelFilters && isArray(als.subLevelFilters) && als.subLevelFilters.length > 0) {
+            returnArray.push(als.subLevelFilters);
         }
-        if (inputLevelStruct.parent && inputLevelStruct.parent !== null) {
-            returnArray.push(...this.getLevelFiltersArray(inputLevelStruct.parent));
+        if (als.parent && als.parent !== null) {
+            returnArray.push(...this.getLevelFiltersArray(als.parent));
         }
         return returnArray;
     }
@@ -319,9 +202,9 @@ export class LevelStructService {
         return this.getAllStatesFiltersGeneral(slaf, [], [], valueSelectionID, [], exclusion);
     }
 
-    /** get all direct subLevel Filters Enum IDS by InputStruct */
-    public getSubLevelAvailableFilterIDSByInputStruct(
-        ls: IInputLevelStruct, valueSelectionID: string, valueSelectionFilters: string[], exclusion?: string[]
+    /** get all direct subLevel Filters Enum IDS by AdminStruct */
+    public getSubLevelAvailableFilterIDSByAdminStruct(
+        ls: IAdminLevelStruct, valueSelectionID: string, valueSelectionFilters: string[], exclusion?: string[]
     ): string[] {
         // get all subLevelAvailableFilters
         let slaf: string[] = []
@@ -338,7 +221,7 @@ export class LevelStructService {
 
     /** get all possible/mathing level IDS that matches the filters */
     public getAllPossibleLevelIDS(
-        ls: IInputLevelStruct, valueSelectionID: string, valueSelectionFilters: string[], exclusion?: string[]
+        ls: IAdminLevelStruct, valueSelectionID: string, valueSelectionFilters: string[], exclusion?: string[]
     ): string[] {
         // get all available RootIDS
         let allLevelIDS = this.getLevelIDS(ls)
@@ -361,8 +244,8 @@ export class LevelStructService {
         return returnA;
     }
 
-    /** generates the inputLevelObject from the inputLevelStruct */
-    public CTRLgetInputLevelObjectFromInputLevelStruct(inputLevelStruct: IInputLevelStruct): IInputLevelObject {
+    /** generates the inputLevelObject from the adminLevelStruct */
+    public CTRLgetLevelObjectFromAdminLevelStruct(als: IAdminLevelStruct): IInputLevelObject {
         const getCircularReplacer = () => {
             const seen = new WeakSet;
             return (key, value) => {
@@ -388,15 +271,15 @@ export class LevelStructService {
             }
         }
 
-        let outObject = JSON.parse(JSON.stringify(inputLevelStruct, getCircularReplacer()));
+        let outObject = JSON.parse(JSON.stringify(als, getCircularReplacer()));
         delKeys(outObject);
         return outObject
     }
 
-    /** generates the IInputLevelStruct from the inputLevelObject */
-    public getInputLevelStructFromInputLevelObject(
+    /** generates the IAdminLevelStruct from the inputLevelObject */
+    public getLevelStructFromAdminLevelObject(
         inputLevelObject: IInputLevelObject, valueSelectionID?: string, valueSelectionFilter?: string[], exclusion?: string[]
-    ): IInputLevelStruct {
+    ): IAdminLevelStruct {
         const addKeys = (app, level, parent) => {
             if ('id' in app) {
                 app.level = level;
@@ -409,7 +292,7 @@ export class LevelStructService {
                     subLevelFilters = app.subLevelFilters;
                     delete app.subLevelFilters;
                 }
-                app.subLevelAvailableFilters = this.getSubLevelAvailableFilterIDSByInputStruct(app, valueSelectionID, valueSelectionFilter, exclusion);
+                app.subLevelAvailableFilters = this.getSubLevelAvailableFilterIDSByAdminStruct(app, valueSelectionID, valueSelectionFilter, exclusion);
                 if(subLevelFilters){
                     app.subLevelFilters = subLevelFilters
                 }

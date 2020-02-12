@@ -506,7 +506,8 @@ export class FunctionsPage implements OnInit {
     });
     modal.onDidDismiss().then((detail) => {
       this.ngZone.run(() => {
-        this.objectViewInputDev = detail.data;
+        console.log(detail)
+        this.objectViewInputDev = detail.data.inputLevelObject;
         this.loadObjectStruct();
       })
     });

@@ -17,11 +17,11 @@
         </ion-buttons>
         <ion-buttons slot="end">
             <ion-button slot="start" *ngIf="templateToShow !== 1" size="small" fill="outline"
-                (click)="templateToShow = 1; CTRLgenerateInputLevelStructSting()">
-                <ion-label>Show InputLevelStruct</ion-label>
+                (click)="templateToShow = 1; CTRLgenerateAdminLevelStructSting()">
+                <ion-label>Show AdminLevelStruct</ion-label>
             </ion-button>
             <ion-button slot="end" *ngIf="templateToShow !== 2" size="small" fill="outline"
-                (click)="templateToShow = 2; CTRLgenerateInputLevelStructSting()">
+                (click)="templateToShow = 2; CTRLgenerateAdminLevelStructSting()">
                 <ion-label>Show String</ion-label>
             </ion-button>
             <ion-button slot="end" color="danger" *ngIf="templateToShow === 0 " size="small" fill="outline"
@@ -48,7 +48,7 @@
                         <ion-select-option *ngFor="let valueSelectionAvailableId of valueSelectionAvailableIds"
                             [value]="valueSelectionAvailableId"
                             [selected]="valueSelectionAvailableId === valueSelectionID">
-                            {{helperService.getByLanguage(levelStructService.CTRLgetNameFromID(valueSelectionAvailableId))}}
+                            {{helperService.getByLanguage(adminLevelStructService.CTRLgetNameFromID(valueSelectionAvailableId))}}
                         </ion-select-option>
                     </ion-select>
                 </ion-item>
@@ -59,7 +59,7 @@
                         <ion-select-option *ngFor="let valueSelectionAvailableFilter of valueSelectionAvailableFilters"
                             [value]="valueSelectionAvailableFilter"
                             [selected]="CRTLisSelected1(valueSelectionAvailableFilter, valueSelectionFilters)">
-                            {{helperService.getByLanguage(levelStructService.CTRLgetNameFromID(valueSelectionAvailableFilter))}}
+                            {{helperService.getByLanguage(adminLevelStructService.CTRLgetNameFromID(valueSelectionAvailableFilter))}}
                         </ion-select-option>
                     </ion-select>
                 </ion-item>
@@ -80,7 +80,7 @@
                             (ionChange)="CTRLlevelIDChanged($event, iLevelStruct)">
                             <ion-select-option *ngFor="let availableLevelID of iLevelStruct.availableLevelIDs"
                                 [value]="availableLevelID" [selected]="availableLevelID === iLevelStruct.id">
-                                {{CTRLgetObjectType(availableLevelID)}} - {{helperService.getByLanguage(levelStructService.CTRLgetNameFromID(availableLevelID))}}
+                                {{CTRLgetObjectType(availableLevelID)}} - {{helperService.getByLanguage(adminLevelStructService.CTRLgetNameFromID(availableLevelID))}}
                             </ion-select-option>
                         </ion-select>
                     </ion-item>
@@ -93,7 +93,7 @@
                                 *ngFor="let subLevelAvailableFilter of iLevelStruct.subLevelAvailableFilters"
                                 [value]="subLevelAvailableFilter"
                                 [selected]="CRTLisSelected1(subLevelAvailableFilter, iLevelStruct.subLevelFilters)">
-                                {{helperService.getByLanguage(levelStructService.CTRLgetNameFromID(subLevelAvailableFilter))}}
+                                {{helperService.getByLanguage(adminLevelStructService.CTRLgetNameFromID(subLevelAvailableFilter))}}
                             </ion-select-option>
                         </ion-select>
                     </ion-item>
@@ -103,14 +103,14 @@
         <!-- ========================================================================================================================== -->
         <ng-template [ngSwitchCase]="'2'">
             <code>
-                <pre>{{tmpInputLevelString}}</pre>
+                <pre>{{tmpAdminLevelString}}</pre>
             </code>
         </ng-template>
         <!-- ========================================================================================================================== -->
         <ng-template [ngSwitchCase]="'1'">
             <div style="margin:2em;">
-                <!-- <app-tree [treeData]="inputLevelStruct" [showAgenda]="false" (moreInfoFor)="getMoreInfo($event)"> -->
-                <app-tree [treeData]="tmpInputLevelStruct" [showAgenda]="false" (moreInfoFor)="getMoreInfo($event)">
+                <!-- <app-tree [treeData]="adminLevelStruct" [showAgenda]="false" (moreInfoFor)="getMoreInfo($event)"> -->
+                <app-tree [treeData]="tmpAdminLevelStruct" [showAgenda]="false" (moreInfoFor)="getMoreInfo($event)">
                 </app-tree>
             </div>
         </ng-template>
