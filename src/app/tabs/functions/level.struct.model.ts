@@ -1,5 +1,3 @@
-import { Subscription } from 'rxjs';
-
 /**
  * Naming convention:
  *  -    LevelObject    => The Level Description (only) Input from the application ==> will be transformed into an LevelStruct
