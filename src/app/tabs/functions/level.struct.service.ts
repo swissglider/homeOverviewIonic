@@ -4,10 +4,7 @@ import { IoBEnumQuery } from 'src/app/store/enum/io-benum.query';
 import { IoBObject } from 'src/app/store/object/io-bobject.model';
 import { IoBEnum } from 'src/app/store/enum/io-benum.model';
 import { Observable, Subject, Subscription, BehaviorSubject } from 'rxjs';
-import { EntityActions } from '@datorama/akita';
 import { isArray } from 'util';
-import { filter, map, single } from 'rxjs/operators';
-import { identifierModuleUrl } from '@angular/compiler';
 import { IInputLevelObject, ILevelStruct, levelIDCases, ElementStates } from './level.struct.model';
 
 
@@ -101,7 +98,11 @@ class LevelStruct implements ILevelStruct {
             let totalStatesID = this.levelStructService.getAllRecursiveStates(this.id);
 
             // intersection of the two states
-            this.allFittingStates = [...new Set(allFittingValueSelectedStates.filter(x => totalStatesID.includes(x)))];
+            if(allFittingValueSelectedStates.length === 0){
+                this.allFittingStates = totalStatesID
+            } else {
+                this.allFittingStates = [...new Set(allFittingValueSelectedStates.filter(x => totalStatesID.includes(x)))];
+            }
 
         } else {
             let totalStatesParentMemberID = this.levelStructService.getAllRecursiveStates(this.parentMemberID);
@@ -109,7 +110,6 @@ class LevelStruct implements ILevelStruct {
         }
 
         let withSubFilter = this.lo && 'subLevelFilters' in this.lo && isArray(this.lo.subLevelFilters) && this.lo.subLevelFilters.length > 0;
-
         switch (this.levelStructService.getLevelIDType(this.id)) {
             case levelIDType.enumType:
                 this.levelStructService.enumQuery.getAll({ filterBy: entity => entity.id.startsWith(this.id + '.') }).forEach((e: IoBEnum) => {
@@ -287,7 +287,6 @@ export class LevelStructService {
     public transformLevelObjectToLevelStruct(lo: IInputLevelObject, valueSelectionID: string, valueSelectionFilters: string[]): Observable<ILevelStruct> {
         let tmpSubscription = [];
         let tmpILevelStruct = new LevelStruct(lo, valueSelectionID, valueSelectionFilters, this, null, null);
-        console.log(tmpILevelStruct)
         let subject = new BehaviorSubject<ILevelStruct>(tmpILevelStruct)
         tmpSubscription.push(this.enumQuery.selectEntityAction().subscribe(action => {
             let t = new LevelStruct(lo, valueSelectionID, valueSelectionFilters, this, null, null);

@@ -216,6 +216,8 @@ export class ModalDynamicComponent implements OnInit {
             this.valueSelectionID,
             this.valueSelectionFilters,
         )
-        console.log(temp);
+        temp.subscribe(e => {
+            console.log(e)
+        })
     }
 }
