@@ -3,8 +3,9 @@ import { Input } from '@angular/core';
 import { HelperService } from 'src/app/service/helper.service';
 import { ModalController } from '@ionic/angular';
 import { AdminLevelStructService} from '../admin.level.struct.service';
-import { IInputLevelObject, IAdminLevelStruct, levelIDCases } from '../level.struct.model';
+import { IInputLevelObject, IAdminLevelStruct, levelIDCases, ILevelStruct } from '../level.struct.model';
 import { LevelStructService } from '../level.struct.service';
+import { Observable } from 'rxjs';
 
 export enum TemplatesToShow {
     row1,
@@ -211,12 +212,12 @@ export class ModalDynamicComponent implements OnInit {
     }
 
     CTRLpreview(){
-        let temp = this.levelStructService.transformLevelObjectToLevelStruct(
+        let temp:Observable<ILevelStruct> = this.levelStructService.transformLevelObjectToLevelStruct(
             this.adminLevelStructService.CTRLgetLevelObjectFromAdminLevelStruct(this.adminLevelStruct),
             this.valueSelectionID,
             this.valueSelectionFilters,
         )
-        temp.subscribe(e => {
+        temp.subscribe((e:ILevelStruct) => {
             console.log(e)
         })
     }

@@ -3,7 +3,7 @@ import { IoBObjectQuery } from 'src/app/store/object/io-bobject.query';
 import { IoBEnumQuery } from 'src/app/store/enum/io-benum.query';
 import { IoBObject } from 'src/app/store/object/io-bobject.model';
 import { IoBEnum } from 'src/app/store/enum/io-benum.model';
-import { Observable, Subject, Subscription, BehaviorSubject } from 'rxjs';
+import { Observable, BehaviorSubject } from 'rxjs';
 import { isArray } from 'util';
 import { IInputLevelObject, ILevelStruct, levelIDCases, ElementStates } from './level.struct.model';
 
