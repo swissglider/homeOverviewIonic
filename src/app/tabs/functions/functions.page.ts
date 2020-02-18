@@ -499,7 +499,7 @@ export class FunctionsPage implements OnInit {
       component: ModalDynamicComponent,
       componentProps: {
         // inputLevelObject: JSON.parse(this.testString),
-        inputLevelObject: JSON.parse(this.testString2),
+        inputLevelObject: JSON.parse(this.testString4),
         valueSelectionID: 'enum.functions',
         valueSelectionFilters: ["enum.functions.light","enum.functions.rain"],
       }
@@ -578,6 +578,21 @@ export class FunctionsPage implements OnInit {
     {
       "id": "enum.floor",
       "subLevelFilters": []
+    }
+  `
+
+  testString4 = `
+    {
+      "id": "enum.area",
+      "subLevelFilters": [],
+      "subLevel": {
+        "id": "enum.rooms",
+        "subLevelFilters": [],
+        "subLevel": {
+          "id": "states",
+          "subLevelFilters": []
+        }
+      }
     }
   `
 

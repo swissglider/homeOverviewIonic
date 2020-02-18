@@ -4,6 +4,7 @@ import { HelperService } from 'src/app/service/helper.service';
 import { ModalController } from '@ionic/angular';
 import { AdminLevelStructService} from '../admin.level.struct.service';
 import { IInputLevelObject, IAdminLevelStruct, levelIDCases } from '../level.struct.model';
+import { LevelStructService } from '../level.struct.service';
 
 export enum TemplatesToShow {
     row1,
@@ -49,6 +50,7 @@ export class ModalDynamicComponent implements OnInit {
         private modalController: ModalController,
         public helperService: HelperService,
         public adminLevelStructService: AdminLevelStructService,
+        public levelStructService: LevelStructService,
     ) { }
 
     ngOnInit() { }
@@ -206,5 +208,14 @@ export class ModalDynamicComponent implements OnInit {
             return ''
         }
         return 'Instance';
+    }
+
+    CTRLpreview(){
+        let temp = this.levelStructService.transformLevelObjectToLevelStruct(
+            this.adminLevelStructService.CTRLgetLevelObjectFromAdminLevelStruct(this.adminLevelStruct),
+            this.valueSelectionID,
+            this.valueSelectionFilters,
+        )
+        console.log(temp);
     }
 }

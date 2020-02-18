@@ -246,15 +246,6 @@ export class AdminLevelStructService {
         return outStruct;
     }
 
-    /** gets the name of a id */
-    public CTRLgetNameFromID(id: string): string | object {
-        return (this.enumQuery.hasEntity(id))
-            ? this.enumQuery.getEntity(id).common.name
-            : (this.objectQuery.hasEntity(id))
-                ? this.objectQuery.getEntity(id).common.name
-                : id;
-    }
-
     test(exclusion?: string[]) {
         let l: string[] = [];
         let t0 = new Date().getTime();

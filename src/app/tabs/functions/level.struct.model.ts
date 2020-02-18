@@ -1,7 +1,10 @@
+import { Subscription } from 'rxjs';
+
 /**
  * Naming convention:
  *  -    LevelObject    => The Level Description (only) Input from the application ==> will be transformed into an LevelStruct
  *  -    LevelStruct    => The Level Struct presents the object for the GUI with all the needed Information and also will update them self
+ *  -    IAppStates     => StatesStruct that will be used on the GUI in the end
  *  -    AdminLevelStruct => Only used in the admin to generate a LevelObject
  *  -    Level          => corrent level of the ILevelStruct
  *  -    RootLevel      => all EnumRootDomain or RootInstance
@@ -17,29 +20,53 @@
  * 
  * 
  */
-export interface ILevelStruct {
-    id: string,
-    name?: string | object,
-    subLevels?: ILevelStruct[],
+export interface IInputLevelObject {
+    id?: string,
+    // name?: string | object,
+    subLevel?: IAdminLevelStruct,
     subLevelFilters?: string[],
-    elementStates?: ElementStates,
 }
 
-interface ElementStates {
-    name: string | object,
+export interface ILevelStruct {
+    id: string,
+    level: number,
+    members: { [key: string]: ILevelStruct },
+    elementStates: ElementStates,
+    setNewInputLevelObject: (lo: IInputLevelObject) => void,
+    setNewValueSelection: (valueSelectionID: string, valueSelectionFilters: string[]) => void,
+}
+
+export interface IAppStates {
+    name: string | Object,
+    type?: string,
+    value: ElementStates
+}
+
+export interface ElementStates1 {
     functionStates: {
         [key: string]: {                // key = functionID
-            [key: string]: string[],    // key = enumID         value = stateIDs
+            [key: string]: {            // key = levelID         value = stateIDs
+                stateIDs: [],
+                // value: number | boolean,
+                role: string,
+                write: boolean,
+                read: boolean,
+                type: string,
+            },
         },
     },
 }
 
-export enum levelIDCases {
-    instances = 0,
-    channels = 1,
-    devices = 2,
-    states = 3,
-    enums = 4,
+export interface ElementStates {
+    [functionID: string]: {   
+        functionID: string,
+        stateIDs: string[],
+        // value: number | boolean,
+        role: string,
+        write: boolean,
+        read: boolean,
+        type: string,
+    },
 }
 
 export interface IAdminLevelStruct {
@@ -52,9 +79,10 @@ export interface IAdminLevelStruct {
     parent: IAdminLevelStruct
 }
 
-export interface IInputLevelObject {
-    id?: string,
-    // name?: string | object,
-    subLevel?: IAdminLevelStruct,
-    subLevelFilters?: string[],
+export enum levelIDCases {
+    instances = 0,
+    channels = 1,
+    devices = 2,
+    states = 3,
+    all = 4,
 }

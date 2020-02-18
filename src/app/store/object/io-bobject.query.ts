@@ -48,4 +48,14 @@ export class IoBObjectQuery extends QueryEntity<IoBObjectState> {
     return this.getAll({ filterBy: entity => entity.type === 'instance' && !exclusionFilter.includes(entity.id) }).map(e => e.id);
   }
 
+  /** get all Channel ids */
+  getAllChannelIDS(): string[]{
+    return this.getAll({ filterBy: entity => entity.type === 'channel'}).map(e => e.id);
+  }
+
+  /** get all Device ids */
+  getAllDeviceIDS(): string[]{
+    return this.getAll({ filterBy: entity => entity.type === 'device'}).map(e => e.id);
+  }
+
 }

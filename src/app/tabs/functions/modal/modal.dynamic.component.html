@@ -18,15 +18,15 @@
         <ion-buttons slot="end">
             <ion-button slot="start" *ngIf="templateToShow !== 1" size="small" fill="outline"
                 (click)="templateToShow = 1; CTRLgenerateAdminLevelStructSting()">
-                <ion-label>Show AdminLevelStruct</ion-label>
-            </ion-button>
-            <ion-button slot="end" *ngIf="templateToShow !== 2" size="small" fill="outline"
-                (click)="templateToShow = 2; CTRLgenerateAdminLevelStructSting()">
-                <ion-label>Show String</ion-label>
+                <ion-label>Show LevelStruct</ion-label>
             </ion-button>
             <ion-button slot="end" color="danger" *ngIf="templateToShow === 0 " size="small" fill="outline"
                 (click)="CTRLresetAll()">
                 <ion-label>Reset</ion-label>
+            </ion-button>
+            <ion-button slot="end" color="success" *ngIf="templateToShow === 0 " size="small" fill="outline"
+            (click)="CTRLpreview()">
+                <ion-label>Preview</ion-label>
             </ion-button>
         </ion-buttons>
     </ion-item>
@@ -48,7 +48,7 @@
                         <ion-select-option *ngFor="let valueSelectionAvailableId of valueSelectionAvailableIds"
                             [value]="valueSelectionAvailableId"
                             [selected]="valueSelectionAvailableId === valueSelectionID">
-                            {{helperService.getByLanguage(adminLevelStructService.CTRLgetNameFromID(valueSelectionAvailableId))}}
+                            {{helperService.getByLanguage(levelStructService.CTRLgetNameFromID(valueSelectionAvailableId))}}
                         </ion-select-option>
                     </ion-select>
                 </ion-item>
@@ -59,7 +59,7 @@
                         <ion-select-option *ngFor="let valueSelectionAvailableFilter of valueSelectionAvailableFilters"
                             [value]="valueSelectionAvailableFilter"
                             [selected]="CRTLisSelected1(valueSelectionAvailableFilter, valueSelectionFilters)">
-                            {{helperService.getByLanguage(adminLevelStructService.CTRLgetNameFromID(valueSelectionAvailableFilter))}}
+                            {{helperService.getByLanguage(levelStructService.CTRLgetNameFromID(valueSelectionAvailableFilter))}}
                         </ion-select-option>
                     </ion-select>
                 </ion-item>
@@ -80,7 +80,7 @@
                             (ionChange)="CTRLlevelIDChanged($event, iLevelStruct)">
                             <ion-select-option *ngFor="let availableLevelID of iLevelStruct.availableLevelIDs"
                                 [value]="availableLevelID" [selected]="availableLevelID === iLevelStruct.id">
-                                {{CTRLgetObjectType(availableLevelID)}} - {{helperService.getByLanguage(adminLevelStructService.CTRLgetNameFromID(availableLevelID))}}
+                                {{CTRLgetObjectType(availableLevelID)}} - {{helperService.getByLanguage(levelStructService.CTRLgetNameFromID(availableLevelID))}}
                             </ion-select-option>
                         </ion-select>
                     </ion-item>
@@ -93,7 +93,7 @@
                                 *ngFor="let subLevelAvailableFilter of iLevelStruct.subLevelAvailableFilters"
                                 [value]="subLevelAvailableFilter"
                                 [selected]="CRTLisSelected1(subLevelAvailableFilter, iLevelStruct.subLevelFilters)">
-                                {{helperService.getByLanguage(adminLevelStructService.CTRLgetNameFromID(subLevelAvailableFilter))}}
+                                {{helperService.getByLanguage(levelStructService.CTRLgetNameFromID(subLevelAvailableFilter))}}
                             </ion-select-option>
                         </ion-select>
                     </ion-item>
