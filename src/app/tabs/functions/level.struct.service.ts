@@ -3,9 +3,11 @@ import { IoBObjectQuery } from 'src/app/store/object/io-bobject.query';
 import { IoBEnumQuery } from 'src/app/store/enum/io-benum.query';
 import { IoBObject } from 'src/app/store/object/io-bobject.model';
 import { IoBEnum } from 'src/app/store/enum/io-benum.model';
-import { Observable, BehaviorSubject } from 'rxjs';
+import { Observable, BehaviorSubject, of } from 'rxjs';
 import { isArray } from 'util';
-import { IInputLevelObject, ILevelStruct, levelIDCases, ElementStates } from './level.struct.model';
+import { IInputLevelObject, ILevelStruct, levelIDCases, ElementStates, IElementState } from './level.struct.model';
+import { IoBStateQuery } from 'src/app/store/state/io-bstate.query';
+import { IoBState } from 'src/app/store/state/io-bstate.model';
 
 
 export class ServiceLocator {
@@ -22,7 +24,7 @@ export enum levelIDType {
 class LevelStruct implements ILevelStruct {
     id: string;
     level: number;
-    members: { [key: string]: ILevelStruct };
+    members: ILevelStruct[];
     elementStates: ElementStates;
     protected allFittingStates: string[];
     private valueSectionStates: {
@@ -68,7 +70,7 @@ class LevelStruct implements ILevelStruct {
         }
         this.id = this.lo.id;
 
-        this.members = {};
+        this.members = [];
         this.level = (this.parentLS) ? this.parentLS.level + 1 : 0;
 
         if (this.parentLS == null) {
@@ -76,7 +78,7 @@ class LevelStruct implements ILevelStruct {
             let allFittingValueSelectedStates = []
             if (this.valueSelectionFilters && isArray(this.valueSelectionFilters) && this.valueSelectionFilters.length > 0) {
                 // merge all valueSelectionFilters
-                this.valueSectionStates = {subStates:{}}
+                this.valueSectionStates = { subStates: {} }
                 this.valueSelectionFilters.forEach(fID => {
                     this.valueSectionStates.subStates[fID] = this.levelStructService.getAllRecursiveStates(fID);
                     allFittingValueSelectedStates.push(...this.valueSectionStates.subStates[fID]);
@@ -84,10 +86,10 @@ class LevelStruct implements ILevelStruct {
             } else if (this.valueSelectionID) {
                 allFittingValueSelectedStates = this.levelStructService.getAllRecursiveStates(this.valueSelectionID);
                 let vsIDSub = this.levelStructService.enumQuery.getAll({ filterBy: entity => entity.id.startsWith(this.valueSelectionID + '.') });
-                if(vsIDSub.length === 0){
-                    this.valueSectionStates = {states:allFittingValueSelectedStates}
+                if (vsIDSub.length === 0) {
+                    this.valueSectionStates = { states: allFittingValueSelectedStates }
                 } else {
-                    this.valueSectionStates = {subStates:{}}
+                    this.valueSectionStates = { subStates: {} }
                     this.levelStructService.enumQuery.getAll({ filterBy: entity => entity.id.startsWith(this.valueSelectionID + '.') }).forEach((e: IoBEnum) => {
                         this.valueSectionStates.subStates[e.id] = this.levelStructService.getAllRecursiveStates(e.id);
                     });
@@ -98,7 +100,7 @@ class LevelStruct implements ILevelStruct {
             let totalStatesID = this.levelStructService.getAllRecursiveStates(this.id);
 
             // intersection of the two states
-            if(allFittingValueSelectedStates.length === 0){
+            if (allFittingValueSelectedStates.length === 0) {
                 this.allFittingStates = totalStatesID
             } else {
                 this.allFittingStates = [...new Set(allFittingValueSelectedStates.filter(x => totalStatesID.includes(x)))];
@@ -117,9 +119,9 @@ class LevelStruct implements ILevelStruct {
                         // all states fitting e.id
                         let allMemberStates = this.levelStructService.getAllRecursiveStates(e.id)
                         if (this.allFittingStates.filter(x => allMemberStates.includes(x)).length > 0) {
-                            this.members[e.id] =
+                            this.members.push(
                                 new LevelStruct(this.lo.subLevel, this.valueSelectionID, this.valueSelectionFilters,
-                                    this.levelStructService, this, e.id, this.valueSectionStates);
+                                    this.levelStructService, this, e.id, this.valueSectionStates));
                         }
                     }
                 });
@@ -132,9 +134,9 @@ class LevelStruct implements ILevelStruct {
                         // all states fitting e.id
                         let allMemberStates = this.levelStructService.getAllRecursiveStates(e.id);
                         if (this.allFittingStates.filter(x => allMemberStates.includes(x)).length > 0) {
-                            this.members[e.id] =
+                            this.members.push(
                                 new LevelStruct(this.lo.subLevel, this.valueSelectionID, this.valueSelectionFilters,
-                                    this.levelStructService, this, e.id, this.valueSectionStates);
+                                    this.levelStructService, this, e.id, this.valueSectionStates));
                         }
                     }
                 });
@@ -145,9 +147,9 @@ class LevelStruct implements ILevelStruct {
                         this.levelStructService.objectQuery.getAllInstanceIDS().forEach(iID => {
                             let allMemberStates = this.levelStructService.getAllRecursiveStates(iID);
                             if (this.allFittingStates.filter(x => allMemberStates.includes(x)).length > 0) {
-                                this.members[iID] =
+                                this.members.push(
                                     new LevelStruct(this.lo.subLevel, this.valueSelectionID, this.valueSelectionFilters,
-                                        this.levelStructService, this, iID, this.valueSectionStates);
+                                        this.levelStructService, this, iID, this.valueSectionStates));
                             }
                         })
                         break;
@@ -155,9 +157,9 @@ class LevelStruct implements ILevelStruct {
                         this.levelStructService.objectQuery.getAllChannelIDS().forEach(cID => {
                             let allMemberStates = this.levelStructService.getAllRecursiveStates(cID);
                             if (this.allFittingStates.filter(x => allMemberStates.includes(x)).length > 0) {
-                                this.members[cID] =
+                                this.members.push(
                                     new LevelStruct(this.lo.subLevel, this.valueSelectionID, this.valueSelectionFilters,
-                                        this.levelStructService, this, cID, this.valueSectionStates);
+                                        this.levelStructService, this, cID, this.valueSectionStates));
                             }
                         })
                         break;
@@ -165,18 +167,18 @@ class LevelStruct implements ILevelStruct {
                         this.levelStructService.objectQuery.getAllDeviceIDS().forEach(dID => {
                             let allMemberStates = this.levelStructService.getAllRecursiveStates(dID);
                             if (this.allFittingStates.filter(x => allMemberStates.includes(x)).length > 0) {
-                                this.members[dID] =
+                                this.members.push(
                                     new LevelStruct(this.lo.subLevel, this.valueSelectionID, this.valueSelectionFilters,
-                                        this.levelStructService, this, dID, this.valueSectionStates);
+                                        this.levelStructService, this, dID, this.valueSectionStates));
                             }
                         })
                         break;
                     case levelIDCases.states:
                         let allMemberStates = this.levelStructService.getAllRecursiveStates(this.parentMemberID);
                         this.allFittingStates.filter(x => allMemberStates.includes(x)).forEach(sID => {
-                            this.members[sID] =
+                            this.members.push(
                                 new LevelStruct(this.lo.subLevel, this.valueSelectionID, this.valueSelectionFilters,
-                                    this.levelStructService, this, sID, this.valueSectionStates);
+                                    this.levelStructService, this, sID, this.valueSectionStates));
                         });
                         break;
                     case levelIDCases.all:
@@ -185,20 +187,18 @@ class LevelStruct implements ILevelStruct {
                         }
                         if (this.valueSectionStates && this.valueSectionStates.subStates) {
                             this.allFittingStates.forEach(sID => {
-                                for(var val in this.valueSectionStates.subStates){
-                                    if(this.valueSectionStates.subStates[val].includes(sID)){
-                                        if(!(val in this.elementStates)){
+                                for (var val in this.valueSectionStates.subStates) {
+                                    if (this.valueSectionStates.subStates[val].includes(sID)) {
+                                        if (!(val in this.elementStates)) {
                                             let tmpE = this.levelStructService.objectQuery.getEntity(sID);
-                                            this.elementStates[val] = {
-                                                functionID: val,
-                                                stateIDs: [],
-                                                role: (tmpE && 'common' in tmpE && 'role' in tmpE.common) ? tmpE.common.role : '',
-                                                write: (tmpE && 'common' in tmpE && 'write' in tmpE.common) ? tmpE.common.write : false,
-                                                read: (tmpE && 'common' in tmpE && 'read' in tmpE.common) ? tmpE.common.read : false,
-                                                type: (tmpE && 'common' in tmpE && 'type' in tmpE.common) ? tmpE.common.type : '',
-                                            }
+                                            this.elementStates[val] = new ElementState(
+                                                val,
+                                                [],
+                                                (tmpE && 'common' in tmpE) ? tmpE.common : {},
+                                                this.levelStructService
+                                            );
                                         }
-                                        this.elementStates[val].stateIDs.push(sID)
+                                        (this.elementStates[val] as ElementState).stateIDs.push(sID)
                                     }
                                 }
                             });
@@ -211,17 +211,16 @@ class LevelStruct implements ILevelStruct {
                                     let write = (tmpE && 'common' in tmpE && 'write' in tmpE.common) ? tmpE.common.write : false;
                                     let read = (tmpE && 'common' in tmpE && 'read' in tmpE.common) ? tmpE.common.read : false;
                                     let type = (tmpE && 'common' in tmpE && 'type' in tmpE.common) ? tmpE.common.type : '';
+                                    let unit = (tmpE && 'common' in tmpE && 'unit' in tmpE.common) ? tmpE.common.unit : '';
                                     if (!(role + '_' + write + '_' + read + '_' + type in this.elementStates)) {
-                                        this.elementStates[role + '_' + write + '_' + read + '_' + type] = {
-                                            functionID: role + '_' + write + '_' + read + '_' + type,
-                                            stateIDs: [],
-                                            role: role,
-                                            write: write,
-                                            read: read,
-                                            type: type,
-                                        }
+                                        this.elementStates[role + '_' + write + '_' + read + '_' + type] = new ElementState(
+                                            null,
+                                            [],
+                                            (tmpE && 'common' in tmpE) ? tmpE.common : {},
+                                            this.levelStructService
+                                        )
                                     }
-                                    this.elementStates[role + '_' + write + '_' + read + '_' + type].stateIDs.push(sID)
+                                    (this.elementStates[role + '_' + write + '_' + read + '_' + type] as ElementState).stateIDs.push(sID)
                                 }
                             });
                         } else {
@@ -232,17 +231,16 @@ class LevelStruct implements ILevelStruct {
                                 let write = (tmpE && 'common' in tmpE && 'write' in tmpE.common) ? tmpE.common.write : false;
                                 let read = (tmpE && 'common' in tmpE && 'read' in tmpE.common) ? tmpE.common.read : false;
                                 let type = (tmpE && 'common' in tmpE && 'type' in tmpE.common) ? tmpE.common.type : '';
+                                let unit = (tmpE && 'common' in tmpE && 'unit' in tmpE.common) ? tmpE.common.unit : '';
                                 if (!(role + '_' + write + '_' + read + '_' + type in this.elementStates)) {
-                                    this.elementStates[role + '_' + write + '_' + read + '_' + type] = {
-                                        functionID: role + '_' + write + '_' + read + '_' + type,
-                                        stateIDs: [],
-                                        role: role,
-                                        write: write,
-                                        read: read,
-                                        type: type,
-                                    }
+                                    this.elementStates[role + '_' + write + '_' + read + '_' + type] = new ElementState(
+                                        null,
+                                        [],
+                                        (tmpE && 'common' in tmpE) ? tmpE.common : {},
+                                        this.levelStructService
+                                    )
                                 }
-                                this.elementStates[role + '_' + write + '_' + read + '_' + type].stateIDs.push(sID)
+                                (this.elementStates[role + '_' + write + '_' + read + '_' + type] as ElementState).stateIDs.push(sID)
                             })
                         }
                         break;
@@ -254,18 +252,175 @@ class LevelStruct implements ILevelStruct {
                 break;
         }
         // add the states to the parents
-        if(this.parentLS){
-            if(!this.parentLS.elementStates){
+        if (this.parentLS) {
+            if (!this.parentLS.elementStates) {
                 this.parentLS.elementStates = {};
             }
             Object.keys(this.elementStates).forEach(fmID => {
-                if(!(fmID in this.parentLS.elementStates)){
+                if (!(fmID in this.parentLS.elementStates)) {
                     this.parentLS.elementStates[fmID] = this.elementStates[fmID];
                 } else {
-                    this.parentLS.elementStates[fmID].stateIDs.push(...this.elementStates[fmID].stateIDs);
+                    (this.parentLS.elementStates[fmID] as ElementState).stateIDs.push(...(this.elementStates[fmID] as ElementState).stateIDs);
                 }
             })
         }
+    }
+
+    public getName(): string | Object {
+        return this.levelStructService.getNameFromID(this.id);
+    }
+}
+
+export class ElementState implements IElementState {
+
+
+    constructor(
+        public selectValueSelection: string,
+        public stateIDs: string[],
+        public common: {
+            role?: string;
+            write?: boolean;
+            read?: boolean;
+            type?: string;
+            unit?: string;
+            desc?: string;
+            min?: number;
+            max?: number;
+        },
+        private levelStructService: LevelStructService,
+    ) { }
+
+    public selectValue(): Observable<number | string | boolean> {
+        let tmpVal: number | string | boolean;
+        let subject = new BehaviorSubject<number | string | boolean>(tmpVal);
+        let tmpFunction;
+        if (this.selectValueSelection in this.valueCalculators) {
+            tmpFunction = this.valueCalculators[this.selectValueSelection];
+        }
+        else if (this.common.role in this.valueCalculators) {
+            tmpFunction = this.valueCalculators[this.common.role];
+        }
+        else if (this.common.type in this.valueCalculators) {
+            tmpFunction = this.valueCalculators[this.common.type];
+        }
+        else if (typeof tmpVal[0] in this.valueCalculators) {
+            tmpFunction = this.valueCalculators[typeof tmpVal[0]];
+        }
+        else {
+            tmpFunction = () => { return undefined };
+        }
+        this.levelStructService.stateQuery.selectMany(this.stateIDs, (entity: IoBState) => entity.val).
+            subscribe((v: (string | number | boolean)[]) => {
+                subject.next(tmpFunction(v));
+            })
+        return subject.asObservable();
+    };
+
+    public getSelectValueSelection(): string {
+        return this.selectValueSelection;
+    }
+
+    public getSelectValueSelectionName(): string | Object {
+        return this.levelStructService.getNameFromID(this.selectValueSelection);
+    }
+
+    public getStateIDs(): string[] {
+        return this.stateIDs;
+    }
+
+    public getRole(): string {
+        return this.common.role;
+    }
+
+    public getWrite(): boolean {
+        return this.common.write;
+    }
+
+    public getRead(): boolean {
+        return this.common.read;
+    }
+
+    public getType(): string {
+        return this.common.type;
+    }
+
+    public getUnit(): string {
+        return this.common.unit;
+    }
+
+    public getBase64IconNeutral(size?: number): string {
+        return null;
+    }
+
+    public getBase64IconOn(size?: number): string {
+        return null;
+    }
+
+    public getBase64IconOff(size?: number): string {
+        return null;
+    }
+
+    private valueCalculators = {
+        'enum.functions.batterie': (values: number[]): boolean => {
+            return values.some(e => e < 20);
+        },
+        'enum.functions.hum': (values: number[]): number => {
+            return this.getAvarage(values);
+        },
+        'enum.functions.temp': (values: number[]): number => {
+            return this.getAvarage(values);
+        },
+        'enum.functions.pressure': (values: number[]): number => {
+            return this.getAvarage(values);
+        },
+        'enum.functions.low_batterie': (values: number[]): boolean => {
+            return values.some(e => e === 1);
+        },
+        'enum.functions.light': (values: boolean[]): boolean => {
+            return this.hasTrue(values);
+        },
+        'enum.functions.window': (values: boolean[]): boolean => {
+            return this.hasTrue(values);
+        },
+        'enum.functions.doors': (values: boolean[]): boolean => {
+            return this.hasTrue(values);
+        },
+        'enum.functions.motion': (values: boolean[]): boolean => {
+            return this.hasTrue(values);
+        },
+        'enum.functions.rain': (values: number[]): number => {
+            return this.getAvarage(values);
+        },
+        'enum.functions.wind_': (values: number[]): number => {
+            return this.getAvarage(values);
+        },
+        'switch': (values: boolean[]): boolean => {
+            return this.hasTrue(values);
+        },
+        'number': (values: number[]): number => {
+            return this.getAvarage(values);
+        },
+        'boolean': (values: boolean[]): boolean => {
+            return this.hasTrue(values);
+        },
+        'string': (): string => {
+            return this.stateIDs[0]
+        },
+    }
+
+    private getAvarage(values: number[]): number {
+
+        const round = (x, n) => {
+            var a = Math.pow(10, n);
+            return (Math.round(x * a) / a);
+        }
+
+        let sum = values.reduce((previous, current) => current += previous);
+        return round(sum / values.length, 2);
+    }
+
+    private hasTrue(values: boolean[]): boolean {
+        return values.some(e => e);
     }
 }
 
@@ -282,9 +437,22 @@ export class LevelStructService {
     constructor(
         public enumQuery: IoBEnumQuery,
         public objectQuery: IoBObjectQuery,
+        public stateQuery: IoBStateQuery,
     ) { }
 
     public transformLevelObjectToLevelStruct(lo: IInputLevelObject, valueSelectionID: string, valueSelectionFilters: string[]): Observable<ILevelStruct> {
+
+        // console.log([...new Set(this.objectQuery.getAll().map((e: IoBObject) => (e.common.role) ? e.common.role : '').filter((e: string) => (e !== '')))]);
+        // let tmpTypes = {}
+        // this.objectQuery.getAll().forEach((e: IoBObject) => {
+        //     if (e.common.type) {
+        //         if (!(e.common.type in tmpTypes)) {
+        //             tmpTypes[e.common.type] = [];
+        //         }
+        //         tmpTypes[e.common.type].push(e.id);
+        //     }
+        // })
+        // console.log(tmpTypes);
         let tmpSubscription = [];
         let tmpILevelStruct = new LevelStruct(lo, valueSelectionID, valueSelectionFilters, this, null, null);
         let subject = new BehaviorSubject<ILevelStruct>(tmpILevelStruct)
@@ -314,7 +482,7 @@ export class LevelStructService {
     }
 
     /** gets the name of a id */
-    public CTRLgetNameFromID(id: string): string | object {
+    public getNameFromID(id: string): string | object {
         return (this.enumQuery.hasEntity(id))
             ? this.enumQuery.getEntity(id).common.name
             : (this.objectQuery.hasEntity(id))

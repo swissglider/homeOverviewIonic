@@ -1,3 +1,5 @@
+import { Observable } from 'rxjs';
+
 /**
  * Naming convention:
  *  -    LevelObject    => The Level Description (only) Input from the application ==> will be transformed into an LevelStruct
@@ -28,8 +30,9 @@ export interface IInputLevelObject {
 export interface ILevelStruct {
     id: string,
     level: number,
-    members: { [key: string]: ILevelStruct },
+    members: ILevelStruct[],
     elementStates: ElementStates,
+    getName: () => string | Object;
     setNewInputLevelObject: (lo: IInputLevelObject) => void,
     setNewValueSelection: (valueSelectionID: string, valueSelectionFilters: string[]) => void,
 }
@@ -37,34 +40,26 @@ export interface ILevelStruct {
 export interface IAppStates {
     name: string | Object,
     type?: string,
-    value: ElementStates
-}
-
-export interface ElementStates1 {
-    functionStates: {
-        [key: string]: {                // key = functionID
-            [key: string]: {            // key = levelID         value = stateIDs
-                stateIDs: [],
-                // value: number | boolean,
-                role: string,
-                write: boolean,
-                read: boolean,
-                type: string,
-            },
-        },
-    },
+    value: ElementStates,
 }
 
 export interface ElementStates {
-    [functionID: string]: {   
-        functionID: string,
-        stateIDs: string[],
-        // value: number | boolean,
-        role: string,
-        write: boolean,
-        read: boolean,
-        type: string,
-    },
+    [functionID: string]: IElementState,
+}
+
+export interface IElementState {
+    getSelectValueSelection: () => string,
+    getSelectValueSelectionName: () => string | Object,
+    getStateIDs: () => string[];
+    getRole: () => string;
+    getWrite: () => boolean;
+    getRead: () => boolean;
+    getType: () => string;
+    getUnit: () => string;
+    getBase64IconNeutral: (size?: number) => string;
+    getBase64IconOn: (size?: number) => string;
+    getBase64IconOff: (size?: number) => string;
+    selectValue: () => Observable<number | string | boolean>,
 }
 
 export interface IAdminLevelStruct {

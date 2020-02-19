@@ -3,7 +3,7 @@ import { Input } from '@angular/core';
 import { HelperService } from 'src/app/service/helper.service';
 import { ModalController } from '@ionic/angular';
 import { AdminLevelStructService} from '../admin.level.struct.service';
-import { IInputLevelObject, IAdminLevelStruct, levelIDCases, ILevelStruct } from '../level.struct.model';
+import { IInputLevelObject, IAdminLevelStruct, levelIDCases, ILevelStruct, IElementState } from '../level.struct.model';
 import { LevelStructService } from '../level.struct.service';
 import { Observable } from 'rxjs';
 
@@ -218,7 +218,11 @@ export class ModalDynamicComponent implements OnInit {
             this.valueSelectionFilters,
         )
         temp.subscribe((e:ILevelStruct) => {
-            console.log(e)
+            Object.values(e.elementStates).forEach((a: IElementState) => {
+                a.selectValue().subscribe((aa: number | string | boolean) => {
+                    console.log(this.helperService.getByLanguage(a.getSelectValueSelectionName()), aa)
+                })
+            })
         })
     }
 }
