@@ -86,7 +86,7 @@ export class PageService {
   }
 
   getStandardIcon() {
-    return this.iconsService.getIcon(this.getCurrentPageIcon(), 'default', '20')
+    return this.getCurrentPageIcon();
   }
 
   getActiveMenuModel(): MenuModel {
@@ -110,7 +110,7 @@ export class PageService {
           return <MenuEntryModel>{
             id: key,
             name: this.helperService.getByLanguage(val.name),
-            icon: this.iconsService.getIcon(val.tabIcon, 'default', '20'),
+            icon: val.tabIcon,
             order: val.order,
             path: val.fullPath,
           }

@@ -2,7 +2,7 @@
     <ion-toolbar color="light" (click)="presentModal(menu)">
         <img *ngIf="!iconImg && !icon" style="padding:0.5em" slot="secondary" [src]="menu.activeIcon">
         <img *ngIf="!iconImg && icon" style="padding:0.5em" slot="secondary"
-            [src]="iconsService.getIcon(icon, 'blue-ui', '20')">
+            [src]="icon">
         <img *ngIf="iconImg" style="padding:0.5em;width: 35px;" slot="secondary" [src]="iconImg">
         <div *ngIf="menuTitle" style="margin-left:1em;">{{menuTitle}}</div>
         <div *ngIf="!menuTitle" style="margin-left:1em;">{{menu.name}}</div>

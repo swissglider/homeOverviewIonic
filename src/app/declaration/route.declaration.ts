@@ -66,7 +66,7 @@ export const routes: Routes = [
     },
     {
       path: '',
-      redirectTo: '/tabs/tab-functions?function=enum.functions.light',
+      redirectTo: '/tabs/overview_compact',
       pathMatch: 'full'
     }
   ];

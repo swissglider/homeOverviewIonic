@@ -17,9 +17,9 @@
             <ng-container *ngIf="activeID === menuEntry.id">
                 <ion-label color="tertiary">{{menuEntry.name}}</ion-label>
             </ng-container>
-                <ng-container *ngIf="activeID !== menuEntry.id">
-            <ion-label>{{menuEntry.name}}</ion-label>
-        </ng-container>
+            <ng-container *ngIf="activeID !== menuEntry.id">
+                <ion-label>{{menuEntry.name}}</ion-label>
+            </ng-container>
         </ion-item>
     </ng-container>
     <ng-container *ngIf="level === 0 || (treeData.defaultOpen && hasFolders(treeData))">
