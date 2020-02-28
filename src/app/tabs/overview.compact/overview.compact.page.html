@@ -1,0 +1,48 @@
+<ion-header>
+    <br>
+    <app-views-component *ngIf="loaded" [levelStruct]="this.levelStruct"
+        [htmlBoolPanels]="this.html_boolean_panel_functions_title"
+        [htmlNumberPanels]="this.html_number_panel_functions_title" [valueSelectionID]="this.valueSelectionID"
+        [valueSelectionFilters]="this.valueSelectionFilters" [view]="viewToShow.header"
+        [menu]="pageService.getActiveMenuModel()"></app-views-component>
+    <ion-segment *ngIf="loaded && this.levelStruct.hasMembers()" [value]="this.levelStruct.getMembers()[0]"
+        color="medium" (ionChange)="segmentChanged($event)" style="padding: 1em;">
+        <ion-segment-button *ngFor="let member of this.levelStruct.getMembers()" [value]="member">
+            <ion-label>{{this.helperService.getByLanguage(member.getName())}}</ion-label>
+        </ion-segment-button>
+    </ion-segment>
+</ion-header>
+
+<ion-content>
+    <ng-container *ngIf="!loaded">loading...</ng-container>
+
+    <ng-container *ngIf="loaded">
+        <app-views-component *ngIf="loaded" [levelStruct]="this.selectedMember"
+            [htmlBoolPanels]="this.html_boolean_panel_functions" [htmlNumberPanels]="this.html_number_panel_functions"
+            [valueSelectionID]="this.valueSelectionID" [valueSelectionFilters]="this.valueSelectionFilters"
+            [view]="viewToShow.card_overview" [level]="this.selectedMember.level-1" [withDetails]="true"
+            [withOpener]="false">
+        </app-views-component>
+
+        <div style="padding-top:1em"></div>
+        <ng-container *ngFor="let member of this.selectedMember.getMembers()">
+            <ng-container *ngTemplateOutlet="recursiveList; context:{ $implicit: member }"></ng-container>
+        </ng-container>
+    </ng-container>
+
+    <ng-template #recursiveList let-level_struct>
+        <ng-container *ngIf="level_struct">
+            <app-views-component *ngIf="loaded && level_struct.level > 1" [levelStruct]="level_struct"
+                [htmlBoolPanels]="this.html_boolean_panel_functions"
+                [htmlNumberPanels]="this.html_number_panel_functions" [valueSelectionID]="this.valueSelectionID"
+                [valueSelectionFilters]="this.valueSelectionFilters" [view]="viewToShow.ultra_compact"
+                [level]="level_struct.level-2" [withDetails]="false" [withOpener]="true">
+            </app-views-component>
+            <ng-container *ngIf="level_struct.totalOpen">
+                <ng-container *ngFor="let member of level_struct.getMembers()">
+                    <ng-container *ngTemplateOutlet="recursiveList; context:{ $implicit: member }"></ng-container>
+                </ng-container>
+            </ng-container>
+        </ng-container>
+    </ng-template>
+</ion-content>

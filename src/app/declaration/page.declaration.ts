@@ -123,6 +123,30 @@ export let PageDeclarations = {
     tabIcon: "wrong-entry",
     fullPath: "/tabs/functions",
     menuID: 'test',
+  },
+  overview: {
+    order: 9,
+    name: {
+      de: "Übersicht",
+      en: "Overview",
+    },
+    path: 'overview',
+    asTab: false,
+    tabIcon: "wrong-entry",
+    fullPath: "/tabs/overview",
+    menuID: 'test',
+  },
+  overview_compact: {
+    order: 9,
+    name: {
+      de: "Übersicht Compact",
+      en: "Overview compact",
+    },
+    path: 'overview_compact',
+    asTab: false,
+    tabIcon: "wrong-entry",
+    fullPath: "/tabs/overview_compact",
+    menuID: 'test',
   }
 };
 

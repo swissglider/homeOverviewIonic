@@ -1,0 +1,27 @@
+<ion-header>
+    <br>
+    <ion-toolbar>
+        <app-menu-bar [menu]="pageService.getActiveMenuModel()"></app-menu-bar>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content>
+    <ng-container *ngIf="!loaded">loading...</ng-container>
+
+    <ng-container *ngIf="loaded">
+        <ng-container *ngTemplateOutlet="recursiveList; context:{ $implicit: this.levelStruct }"></ng-container>
+    </ng-container>
+
+    <ng-template #recursiveList let-level_struct>
+        <app-views-component *ngIf="loaded" [levelStruct]="level_struct"
+            [htmlBoolPanels]="this.html_boolean_panel_functions" [htmlNumberPanels]="this.html_number_panel_functions"
+            [valueSelectionID]="this.valueSelectionID" [valueSelectionFilters]="this.valueSelectionFilters"
+            [view]="viewToShow">
+        </app-views-component>
+        <ng-container *ngIf="level_struct.total_open">
+            <ng-container *ngFor="let member of level_struct.getMembers()">
+                <ng-container *ngTemplateOutlet="recursiveList; context:{ $implicit: member }"></ng-container>
+            </ng-container>
+        </ng-container>
+    </ng-template>
+</ion-content>

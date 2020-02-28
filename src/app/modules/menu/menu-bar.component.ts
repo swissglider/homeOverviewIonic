@@ -13,8 +13,9 @@ import { IconsService } from 'src/app/service/icons.service';
 })
 export class MenuBarComponent {
 
-  @Input('menuTitle') menuTitle: string;
-  @Input('icon') icon: string;
+  @Input('menuTitle') menuTitle?: string;
+  @Input('icon') icon?: string;
+  @Input() iconImg?:string;
   @Input('menu') menu: MenuModel;
 
   constructor(

@@ -1,0 +1,312 @@
+<div [ngSwitch]="view">
+    <!-- ========================================================================================================================== -->
+    <ng-template [ngSwitchCase]="eViewToShow.card_overview">
+        <ion-item *ngIf="levelStruct && CTRLsetAllValue(levelStruct)" lines="none">
+            <ion-grid [style.padding-left.px]="CTRLgetLevel(levelStruct)*25">
+                <ion-row class="ion-align-items-center overview-row">
+                    <ion-col size="2">
+                        <img style="width: 10vw; min-width: 20px;" [src]="levelStruct.getBase64Icon()">
+                    </ion-col>
+                    <ion-col [size]="(withOpener)?9:10">
+                        <ion-item color="light" class="item_without_padding">
+                            <ion-chip slot="end" *ngIf="withDetails && !levelStruct.detail_open" slot="end"
+                                (click)="levelStruct.detail_open = !levelStruct.detail_open" color="tertiary">
+                                <ion-label>Details</ion-label>
+                            </ion-chip>
+                            <ion-chip slot="end" *ngIf="withDetails && levelStruct.detail_open" slot="end"
+                                (click)="levelStruct.detail_open = !levelStruct.detail_open" color="tertiary">
+                                <ion-label>Compact</ion-label>
+                            </ion-chip>
+                            <b>{{helperService.getByLanguage(levelStruct.getName())}}</b>
+                        </ion-item>
+                        <ng-container *ngIf="!withDetails || !levelStruct.detail_open">
+                            <ion-buttons>
+                                <ion-button *ngIf="CTRLhasNotUpdatedSince1Month(levelStruct)" size="small" color="light"
+                                    fill="clear">
+                                    <img
+                                        src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAABmJLR0QA/wD/AP+gvaeTAAACcUlEQVQ4ja2US0hUYRTHf9/cybkzMZYTaYvUhbXSHHclRIRQQRDUyOAEiS0Cs0XgYxjapJsWgmEhSFtXoRMuCkI3Ggm5aDXlKrQQLXzQzPhoHHTuPS2uj3mok9AfDvfwcfh953U/+M9S+QLE116O3XYWgJQ5r4afzx4ZKLe6XJxIBdFUCy6nTrHHAGAxqpFMJjGkn7jWo951JfICxR+swaWPUOt146tzcbooM2A5BsNjCSYjayQ3b6jB7sjB5fmDNdLUuSJT05Kh8c+WpevrtEhT54o0hLzpDFtGmS59hGBjIZUVmTfF1y1LV1UFdDQWoheMir/VmQPkRCpIrdedAztMVRVwqdqN83hHLtBua8FX5/p32rZ8dS6UrSUDKL72cpy6njMAAMOE2V8wt2D52Sr2gO5wSaCtFMAOgGYv3V2NbI1+gvUNy+8fgrIzln+5Bk6dtPwSj0EsXgbMWSUrUxDZvyTbXlcw0zNM2zhHgYFYyVkZpsx5lmPavsBrF62vCFyvBc2WG/Owfpy+FxOE087k/tMFWYrKkfQ7LrK6LiJyb4dj3yUa0s/wWIjm+vyTXo7By9fwbXanLXfF3/pehXuje/nHtR4mI2tMzeTlZcAATPMm2Psg61+WhpAXXf9IR2MhVQcseGwVmp9B9Xm4cM46m/wC339uwA93RofVYHeEZPIKPQOLvHqTYCmaC7Rvd2ntDyxGLUskAbVFZaUc/HwVpdpRtkfoDiclHgNHgcmD2x8o9rwl8CRglZmejepTQ92P8z+wgbZSTK0MUzuGmplQ4bAh/laP1TN1B9QWigFkM6TCvRv5eIdfdrXLLllz+AsxjCwtATRyEwAAAABJRU5ErkJggg==">
+                                </ion-button>
+                                <ion-button *ngIf="!CTRLbatteryOK(levelStruct)" size="small" color="light" fill="clear">
+                                    <img [src]="CTRLgetBatteryStateIcon(levelStruct)">
+                                </ion-button>
+                                <ng-container *ngFor="let htmlFunction of htmlBoolPanels">
+                                    <ion-button *ngIf="CTRLcheckIfIn(htmlFunction, levelStruct.elementStates)"
+                                        (click)="levelStruct.elementStates[htmlFunction].setNewState(!values[levelStruct.elementStates[htmlFunction].uniqID].value)"
+                                        size="small" color="light" fill="clear">
+                                        <img
+                                            [src]="levelStruct.elementStates[htmlFunction].getBase64Icon(values[levelStruct.elementStates[htmlFunction].uniqID].value)">
+                                    </ion-button>
+                                </ng-container>
+                            </ion-buttons>
+                            <ng-container *ngFor="let htmlFunction of htmlNumberPanels">
+                                <ion-chip *ngIf="CTRLcheckIfIn(htmlFunction, levelStruct.elementStates)" outline="true"
+                                    color="primary">
+                                    <img
+                                        [src]="levelStruct.elementStates[htmlFunction].getBase64Icon(values[levelStruct.elementStates[htmlFunction].uniqID].value, 20)">
+                                    <ion-label>
+                                        &#160;{{values[levelStruct.elementStates[htmlFunction].uniqID].value}}{{levelStruct.elementStates[htmlFunction].getUnit()}}
+                                    </ion-label>
+                                </ion-chip>
+                            </ng-container>
+                        </ng-container>
+                        <ion-item-group *ngIf="withDetails && levelStruct.detail_open">
+                            <ion-chip *ngFor="let elementState of levelStruct.elementStates  | keyvalue; let i = index"
+                                outline="true">
+                                <img [src]="elementState.value.getBase64Icon(values[elementState.value.uniqID].value)">
+                                <ion-label>
+                                    &#160;&#160;{{helperService.getByLanguage(elementState.value.getSelectValueSelectionName())}}
+                                    : {{ values[elementState.value.uniqID].value}} {{elementState.value.getUnit()}}
+                                </ion-label>
+                            </ion-chip>
+                        </ion-item-group>
+                    </ion-col>
+                    <ion-col *ngIf="withOpener" size="1">
+                        <ion-icon class="item-detail-icon" name="arrow-forward" color="medium" size="small"
+                            *ngIf="!levelStruct.totalOpen && levelStruct.hasMembers()"
+                            (click)="levelStruct.totalOpen = !levelStruct.totalOpen"></ion-icon>
+
+                        <ion-icon class="item-detail-icon" name="arrow-down" color="medium" size="small"
+                            *ngIf="levelStruct.totalOpen && levelStruct.hasMembers()"
+                            (click)="levelStruct.totalOpen = !levelStruct.totalOpen"></ion-icon>
+                    </ion-col>
+                </ion-row>
+            </ion-grid>
+        </ion-item>
+    </ng-template>
+    <!-- ========================================================================================================================== -->
+    <ng-template [ngSwitchCase]="eViewToShow.card_compact">
+        <ion-item *ngIf="levelStruct && CTRLsetAllValue(levelStruct)" lines="none">
+            <ion-grid [style.padding-left.px]="CTRLgetLevel(levelStruct)*25">
+                <ion-row class="ion-align-items-center overview-row">
+                    <ion-col size="11">
+                        <ion-label>
+                            {{helperService.getByLanguage(levelStruct.getName())}}
+                            <ion-chip *ngIf="withDetails && !levelStruct.detail_open"
+                                (click)="levelStruct.detail_open = !levelStruct.detail_open" color="tertiary">
+                                <ion-label>+</ion-label>
+                            </ion-chip>
+                            <ion-chip *ngIf="withDetails && levelStruct.detail_open"
+                                (click)="levelStruct.detail_open = !levelStruct.detail_open" color="tertiary">
+                                <ion-label>-</ion-label>
+                            </ion-chip>
+                        </ion-label>
+                        <ng-container *ngIf="!withDetails || !levelStruct.detail_open">
+                            <!-- <ion-buttons> -->
+                            <ion-button *ngIf="CTRLhasNotUpdatedSince1Month(levelStruct)" size="small" color="light"
+                                fill="clear" style="--padding-end:0px; --padding-start:0px">
+                                <img
+                                    src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAABmJLR0QA/wD/AP+gvaeTAAACcUlEQVQ4ja2US0hUYRTHf9/cybkzMZYTaYvUhbXSHHclRIRQQRDUyOAEiS0Cs0XgYxjapJsWgmEhSFtXoRMuCkI3Ggm5aDXlKrQQLXzQzPhoHHTuPS2uj3mok9AfDvfwcfh953U/+M9S+QLE116O3XYWgJQ5r4afzx4ZKLe6XJxIBdFUCy6nTrHHAGAxqpFMJjGkn7jWo951JfICxR+swaWPUOt146tzcbooM2A5BsNjCSYjayQ3b6jB7sjB5fmDNdLUuSJT05Kh8c+WpevrtEhT54o0hLzpDFtGmS59hGBjIZUVmTfF1y1LV1UFdDQWoheMir/VmQPkRCpIrdedAztMVRVwqdqN83hHLtBua8FX5/p32rZ8dS6UrSUDKL72cpy6njMAAMOE2V8wt2D52Sr2gO5wSaCtFMAOgGYv3V2NbI1+gvUNy+8fgrIzln+5Bk6dtPwSj0EsXgbMWSUrUxDZvyTbXlcw0zNM2zhHgYFYyVkZpsx5lmPavsBrF62vCFyvBc2WG/Owfpy+FxOE087k/tMFWYrKkfQ7LrK6LiJyb4dj3yUa0s/wWIjm+vyTXo7By9fwbXanLXfF3/pehXuje/nHtR4mI2tMzeTlZcAATPMm2Psg61+WhpAXXf9IR2MhVQcseGwVmp9B9Xm4cM46m/wC339uwA93RofVYHeEZPIKPQOLvHqTYCmaC7Rvd2ntDyxGLUskAbVFZaUc/HwVpdpRtkfoDiclHgNHgcmD2x8o9rwl8CRglZmejepTQ92P8z+wgbZSTK0MUzuGmplQ4bAh/laP1TN1B9QWigFkM6TCvRv5eIdfdrXLLllz+AsxjCwtATRyEwAAAABJRU5ErkJggg==">
+                            </ion-button>
+                            <ion-button *ngIf="!CTRLbatteryOK(levelStruct)" size="small" color="light" fill="clear"
+                                style="--padding-end:0px; --padding-start:0px">
+                                <img [src]="CTRLgetBatteryStateIcon(levelStruct)">
+                            </ion-button>
+                            <ng-container *ngFor="let htmlFunction of htmlBoolPanels">
+                                <ion-button *ngIf="CTRLcheckIfIn(htmlFunction, levelStruct.elementStates)"
+                                    (click)="levelStruct.elementStates[htmlFunction].setNewState(!values[levelStruct.elementStates[htmlFunction].uniqID].value)"
+                                    size="small" color="light" fill="clear"
+                                    style="--padding-end:0px; --padding-start:0px">
+                                    <img
+                                        [src]="levelStruct.elementStates[htmlFunction].getBase64Icon(values[levelStruct.elementStates[htmlFunction].uniqID].value)">
+                                </ion-button>
+                            </ng-container>
+                            <ng-container *ngFor="let htmlFunction of htmlNumberPanels">
+                                <ion-button *ngIf="CTRLcheckIfIn(htmlFunction, levelStruct.elementStates)"
+                                    color="primary" size="small" fill="clear"
+                                    style="--padding-end:0px; --padding-start:0px">
+                                    <img
+                                        [src]="levelStruct.elementStates[htmlFunction].getBase64Icon(values[levelStruct.elementStates[htmlFunction].uniqID].value, 10)">
+                                    <ion-label style="font-size: small;">
+                                        &#160;{{values[levelStruct.elementStates[htmlFunction].uniqID].value}}{{levelStruct.elementStates[htmlFunction].getUnit()}}
+                                    </ion-label>
+                                </ion-button>
+                            </ng-container>
+                            <!-- </ion-buttons> -->
+                        </ng-container>
+                        <ion-item-group *ngIf="withDetails && levelStruct.detail_open">
+                            <ion-chip *ngFor="let elementState of levelStruct.elementStates  | keyvalue; let i = index"
+                                outline="true">
+                                <ion-label>
+                                    &#160;&#160;{{helperService.getByLanguage(elementState.value.getSelectValueSelectionName())}}
+                                    : {{ values[elementState.value.uniqID].value}} {{elementState.value.getUnit()}}
+                                </ion-label>
+                            </ion-chip>
+                        </ion-item-group>
+                    </ion-col>
+                    <ion-col *ngIf="withOpener" size="1">
+                        <ion-icon class="item-detail-icon" name="arrow-forward" color="medium" size="small"
+                            *ngIf="!levelStruct.totalOpen && levelStruct.hasMembers()"
+                            (click)="levelStruct.totalOpen = !levelStruct.totalOpen"></ion-icon>
+
+                        <ion-icon class="item-detail-icon" name="arrow-down" color="medium" size="small"
+                            *ngIf="levelStruct.totalOpen && levelStruct.hasMembers()"
+                            (click)="levelStruct.totalOpen = !levelStruct.totalOpen"></ion-icon>
+                    </ion-col>
+                </ion-row>
+            </ion-grid>
+        </ion-item>
+    </ng-template>
+    <!-- ========================================================================================================================== -->
+    <ng-template [ngSwitchCase]="eViewToShow.compact">
+        <div *ngIf="levelStruct && CTRLsetAllValue(levelStruct)" [style.padding-left.px]="CTRLgetLevel(levelStruct)*10"
+            [ngStyle]="{'background-color': bgColor}">
+            <ion-toolbar [color]="bgColor">
+                <ion-grid>
+                    <ion-row class="ion-align-items-center">
+                        <ion-col size="11">
+                            <ion-label>
+                                <div (click)="levelStruct.totalOpen = !levelStruct.totalOpen">
+                                    {{helperService.getByLanguage(levelStruct.getName())}}
+                                </div>
+                                <ion-chip *ngIf="withDetails && !levelStruct.detail_open"
+                                    (click)="levelStruct.detail_open = !levelStruct.detail_open" color="tertiary">
+                                    <ion-label>+</ion-label>
+                                </ion-chip>
+                                <ion-chip *ngIf="withDetails && levelStruct.detail_open"
+                                    (click)="levelStruct.detail_open = !levelStruct.detail_open" color="tertiary">
+                                    <ion-label>-</ion-label>
+                                </ion-chip>
+                            </ion-label>
+                            <ng-container *ngIf="!withDetails || !levelStruct.detail_open">
+                                <ion-buttons>
+                                    <ion-button *ngIf="CTRLhasNotUpdatedSince1Month(levelStruct)" size="small"
+                                        color="light" fill="clear" style="--padding-end:0px; --padding-start:0px">
+                                        <img
+                                            src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAABmJLR0QA/wD/AP+gvaeTAAACcUlEQVQ4ja2US0hUYRTHf9/cybkzMZYTaYvUhbXSHHclRIRQQRDUyOAEiS0Cs0XgYxjapJsWgmEhSFtXoRMuCkI3Ggm5aDXlKrQQLXzQzPhoHHTuPS2uj3mok9AfDvfwcfh953U/+M9S+QLE116O3XYWgJQ5r4afzx4ZKLe6XJxIBdFUCy6nTrHHAGAxqpFMJjGkn7jWo951JfICxR+swaWPUOt146tzcbooM2A5BsNjCSYjayQ3b6jB7sjB5fmDNdLUuSJT05Kh8c+WpevrtEhT54o0hLzpDFtGmS59hGBjIZUVmTfF1y1LV1UFdDQWoheMir/VmQPkRCpIrdedAztMVRVwqdqN83hHLtBua8FX5/p32rZ8dS6UrSUDKL72cpy6njMAAMOE2V8wt2D52Sr2gO5wSaCtFMAOgGYv3V2NbI1+gvUNy+8fgrIzln+5Bk6dtPwSj0EsXgbMWSUrUxDZvyTbXlcw0zNM2zhHgYFYyVkZpsx5lmPavsBrF62vCFyvBc2WG/Owfpy+FxOE087k/tMFWYrKkfQ7LrK6LiJyb4dj3yUa0s/wWIjm+vyTXo7By9fwbXanLXfF3/pehXuje/nHtR4mI2tMzeTlZcAATPMm2Psg61+WhpAXXf9IR2MhVQcseGwVmp9B9Xm4cM46m/wC339uwA93RofVYHeEZPIKPQOLvHqTYCmaC7Rvd2ntDyxGLUskAbVFZaUc/HwVpdpRtkfoDiclHgNHgcmD2x8o9rwl8CRglZmejepTQ92P8z+wgbZSTK0MUzuGmplQ4bAh/laP1TN1B9QWigFkM6TCvRv5eIdfdrXLLllz+AsxjCwtATRyEwAAAABJRU5ErkJggg==">
+                                    </ion-button>
+                                    <ion-button *ngIf="!CTRLbatteryOK(levelStruct)" size="small" color="light"
+                                        fill="clear" style="--padding-end:0px; --padding-start:0px">
+                                        <img [src]="CTRLgetBatteryStateIcon(levelStruct)">
+                                    </ion-button>
+                                    <ng-container *ngFor="let htmlFunction of htmlBoolPanels">
+                                        <ion-button *ngIf="CTRLcheckIfIn(htmlFunction, levelStruct.elementStates)"
+                                            (click)="levelStruct.elementStates[htmlFunction].setNewState(!values[levelStruct.elementStates[htmlFunction].uniqID].value)"
+                                            size="small" color="light" fill="clear"
+                                            style="--padding-end:0px; --padding-start:0px">
+                                            <img
+                                                [src]="levelStruct.elementStates[htmlFunction].getBase64Icon(values[levelStruct.elementStates[htmlFunction].uniqID].value)">
+                                        </ion-button>
+                                    </ng-container>
+                                    <ng-container *ngFor="let htmlFunction of htmlNumberPanels">
+                                        <ion-button *ngIf="CTRLcheckIfIn(htmlFunction, levelStruct.elementStates)"
+                                            color="primary" size="small" fill="clear"
+                                            style="--padding-end:0px; --padding-start:0px">
+                                            <img
+                                                [src]="levelStruct.elementStates[htmlFunction].getBase64Icon(values[levelStruct.elementStates[htmlFunction].uniqID].value, 10)">
+                                            <ion-label style="font-size: small;">
+                                                &#160;{{values[levelStruct.elementStates[htmlFunction].uniqID].value}}{{levelStruct.elementStates[htmlFunction].getUnit()}}
+                                            </ion-label>
+                                        </ion-button>
+                                    </ng-container>
+                                </ion-buttons>
+                            </ng-container>
+                            <ion-item-group *ngIf="withDetails && levelStruct.detail_open">
+                                <ion-chip
+                                    *ngFor="let elementState of levelStruct.elementStates  | keyvalue; let i = index"
+                                    outline="true">
+                                    <ion-label>
+                                        &#160;&#160;{{helperService.getByLanguage(elementState.value.getSelectValueSelectionName())}}
+                                        : {{ values[elementState.value.uniqID].value}} {{elementState.value.getUnit()}}
+                                    </ion-label>
+                                </ion-chip>
+                            </ion-item-group>
+                        </ion-col>
+                        <ion-col *ngIf="withOpener" size="1">
+                            <ion-icon class="item-detail-icon" name="arrow-forward" color="medium" size="small"
+                                *ngIf="!levelStruct.totalOpen && levelStruct.hasMembers()"
+                                (click)="levelStruct.totalOpen = !levelStruct.totalOpen"></ion-icon>
+
+                            <ion-icon class="item-detail-icon" name="arrow-down" color="medium" size="small"
+                                *ngIf="levelStruct.totalOpen && levelStruct.hasMembers()"
+                                (click)="levelStruct.totalOpen = !levelStruct.totalOpen"></ion-icon>
+                        </ion-col>
+                    </ion-row>
+                </ion-grid>
+            </ion-toolbar>
+        </div>
+    </ng-template>
+    <!-- ========================================================================================================================== -->
+    <ng-template [ngSwitchCase]="eViewToShow.ultra_compact">
+        <div *ngIf="levelStruct && CTRLsetAllValue(levelStruct)" [style.padding-left.px]="CTRLgetLevel(levelStruct)*10"
+            [ngStyle]="{'background-color': bgColor}">
+            <ion-toolbar [color]="bgColor">
+                <!-- <img style="padding:0.5em;width: 35px;" slot="start" [src]="levelStruct.getBase64Icon()"> -->
+                <ion-icon slot="start" class="item-detail-icon" name="arrow-forward" color="medium" size="small"
+                    *ngIf="withOpener && !levelStruct.totalOpen && levelStruct.hasMembers()"
+                    (click)="levelStruct.totalOpen = !levelStruct.totalOpen"></ion-icon>
+
+                <ion-icon slot="start" class="item-detail-icon" name="arrow-down" color="medium" size="small"
+                    *ngIf="withOpener && levelStruct.totalOpen && levelStruct.hasMembers()"
+                    (click)="levelStruct.totalOpen = !levelStruct.totalOpen"></ion-icon>
+                <div style="margin-left:1em;" (click)="levelStruct.totalOpen = !levelStruct.totalOpen">
+                    {{helperService.getByLanguage(levelStruct.getName())}}
+                </div>
+                <ion-buttons slot="end">
+                    <ion-button *ngIf="CTRLhasNotUpdatedSince1Month(levelStruct)" size="small" color="light"
+                        fill="clear" style="--padding-end:0px; --padding-start:0px">
+                        <img
+                            src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAABmJLR0QA/wD/AP+gvaeTAAACcUlEQVQ4ja2US0hUYRTHf9/cybkzMZYTaYvUhbXSHHclRIRQQRDUyOAEiS0Cs0XgYxjapJsWgmEhSFtXoRMuCkI3Ggm5aDXlKrQQLXzQzPhoHHTuPS2uj3mok9AfDvfwcfh953U/+M9S+QLE116O3XYWgJQ5r4afzx4ZKLe6XJxIBdFUCy6nTrHHAGAxqpFMJjGkn7jWo951JfICxR+swaWPUOt146tzcbooM2A5BsNjCSYjayQ3b6jB7sjB5fmDNdLUuSJT05Kh8c+WpevrtEhT54o0hLzpDFtGmS59hGBjIZUVmTfF1y1LV1UFdDQWoheMir/VmQPkRCpIrdedAztMVRVwqdqN83hHLtBua8FX5/p32rZ8dS6UrSUDKL72cpy6njMAAMOE2V8wt2D52Sr2gO5wSaCtFMAOgGYv3V2NbI1+gvUNy+8fgrIzln+5Bk6dtPwSj0EsXgbMWSUrUxDZvyTbXlcw0zNM2zhHgYFYyVkZpsx5lmPavsBrF62vCFyvBc2WG/Owfpy+FxOE087k/tMFWYrKkfQ7LrK6LiJyb4dj3yUa0s/wWIjm+vyTXo7By9fwbXanLXfF3/pehXuje/nHtR4mI2tMzeTlZcAATPMm2Psg61+WhpAXXf9IR2MhVQcseGwVmp9B9Xm4cM46m/wC339uwA93RofVYHeEZPIKPQOLvHqTYCmaC7Rvd2ntDyxGLUskAbVFZaUc/HwVpdpRtkfoDiclHgNHgcmD2x8o9rwl8CRglZmejepTQ92P8z+wgbZSTK0MUzuGmplQ4bAh/laP1TN1B9QWigFkM6TCvRv5eIdfdrXLLllz+AsxjCwtATRyEwAAAABJRU5ErkJggg==">
+                    </ion-button>
+                    <ion-button *ngIf="!CTRLbatteryOK(levelStruct)" size="small" color="light" fill="clear"
+                        style="--padding-end:0px; --padding-start:0px">
+                        <img [src]="CTRLgetBatteryStateIcon(levelStruct)">
+                    </ion-button>
+                    <ng-container *ngFor="let htmlFunction of htmlBoolPanels">
+                        <ion-button *ngIf="CTRLcheckIfIn(htmlFunction, levelStruct.elementStates)"
+                            (click)="levelStruct.elementStates[htmlFunction].setNewState(!values[levelStruct.elementStates[htmlFunction].uniqID].value)"
+                            size="small" color="light" fill="clear" style="--padding-end:0px; --padding-start:0px">
+                            <img
+                                [src]="levelStruct.elementStates[htmlFunction].getBase64Icon(values[levelStruct.elementStates[htmlFunction].uniqID].value)">
+                        </ion-button>
+                    </ng-container>
+                    <ng-container *ngFor="let htmlFunction of htmlNumberPanels">
+                        <ion-button *ngIf="CTRLcheckIfIn(htmlFunction, levelStruct.elementStates)" color="primary"
+                            size="small" fill="clear" style="--padding-end:0px; --padding-start:0px">
+                            <!-- <img
+                            [src]="levelStruct.elementStates[htmlFunction].getBase64Icon(values[levelStruct.elementStates[htmlFunction].uniqID].value, 10)"> -->
+                            <ion-label style="font-size: small;">
+                                &#160;{{values[levelStruct.elementStates[htmlFunction].uniqID].value}}{{levelStruct.elementStates[htmlFunction].getUnit()}}
+                            </ion-label>
+                        </ion-button>
+                    </ng-container>
+                </ion-buttons>
+            </ion-toolbar>
+        </div>
+    </ng-template>
+    <!-- ========================================================================================================================== -->
+    <ng-template [ngSwitchCase]="eViewToShow.header">
+        <ion-toolbar *ngIf="levelStruct && CTRLsetAllValue(levelStruct)">
+            <app-menu-bar [menu]="menu" [menuTitle]="CTRLgetName(levelStruct)" [iconImg]="levelStruct.getBase64Icon()">
+            </app-menu-bar>
+            <ion-buttons slot="end">
+                <ion-button *ngIf="CTRLhasNotUpdatedSince1Month(levelStruct)" size="small" color="light" fill="clear"
+                    style="--padding-end:0px; --padding-start:0px">
+                    <img
+                        src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAABmJLR0QA/wD/AP+gvaeTAAACcUlEQVQ4ja2US0hUYRTHf9/cybkzMZYTaYvUhbXSHHclRIRQQRDUyOAEiS0Cs0XgYxjapJsWgmEhSFtXoRMuCkI3Ggm5aDXlKrQQLXzQzPhoHHTuPS2uj3mok9AfDvfwcfh953U/+M9S+QLE116O3XYWgJQ5r4afzx4ZKLe6XJxIBdFUCy6nTrHHAGAxqpFMJjGkn7jWo951JfICxR+swaWPUOt146tzcbooM2A5BsNjCSYjayQ3b6jB7sjB5fmDNdLUuSJT05Kh8c+WpevrtEhT54o0hLzpDFtGmS59hGBjIZUVmTfF1y1LV1UFdDQWoheMir/VmQPkRCpIrdedAztMVRVwqdqN83hHLtBua8FX5/p32rZ8dS6UrSUDKL72cpy6njMAAMOE2V8wt2D52Sr2gO5wSaCtFMAOgGYv3V2NbI1+gvUNy+8fgrIzln+5Bk6dtPwSj0EsXgbMWSUrUxDZvyTbXlcw0zNM2zhHgYFYyVkZpsx5lmPavsBrF62vCFyvBc2WG/Owfpy+FxOE087k/tMFWYrKkfQ7LrK6LiJyb4dj3yUa0s/wWIjm+vyTXo7By9fwbXanLXfF3/pehXuje/nHtR4mI2tMzeTlZcAATPMm2Psg61+WhpAXXf9IR2MhVQcseGwVmp9B9Xm4cM46m/wC339uwA93RofVYHeEZPIKPQOLvHqTYCmaC7Rvd2ntDyxGLUskAbVFZaUc/HwVpdpRtkfoDiclHgNHgcmD2x8o9rwl8CRglZmejepTQ92P8z+wgbZSTK0MUzuGmplQ4bAh/laP1TN1B9QWigFkM6TCvRv5eIdfdrXLLllz+AsxjCwtATRyEwAAAABJRU5ErkJggg==">
+                </ion-button>
+                <ion-button *ngIf="!CTRLbatteryOK(levelStruct)" size="small" color="light" fill="clear"
+                    style="--padding-end:0px; --padding-start:0px">
+                    <img [src]="CTRLgetBatteryStateIcon(levelStruct)">
+                </ion-button>
+                <ng-container *ngFor="let htmlFunction of htmlBoolPanels">
+                    <ion-button *ngIf="CTRLcheckIfIn(htmlFunction, levelStruct.elementStates)"
+                        (click)="levelStruct.elementStates[htmlFunction].setNewState(!values[levelStruct.elementStates[htmlFunction].uniqID].value)"
+                        size="small" color="light" fill="clear" style="--padding-end:0px; --padding-start:0px">
+                        <img
+                            [src]="levelStruct.elementStates[htmlFunction].getBase64Icon(values[levelStruct.elementStates[htmlFunction].uniqID].value)">
+                    </ion-button>
+                </ng-container>
+                <ng-container *ngFor="let htmlFunction of htmlNumberPanels">
+                    <ion-button *ngIf="CTRLcheckIfIn(htmlFunction, levelStruct.elementStates)" color="primary"
+                        size="small" fill="clear" style="--padding-end:0px; --padding-start:0px">
+                        <!-- <img
+                            [src]="levelStruct.elementStates[htmlFunction].getBase64Icon(values[levelStruct.elementStates[htmlFunction].uniqID].value, 10)"> -->
+                        <ion-label style="font-size: small;">
+                            &#160;{{values[levelStruct.elementStates[htmlFunction].uniqID].value}}{{levelStruct.elementStates[htmlFunction].getUnit()}}
+                        </ion-label>
+                    </ion-button>
+                </ng-container>
+            </ion-buttons>
+        </ion-toolbar>
+    </ng-template>
+</div>

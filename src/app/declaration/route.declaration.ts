@@ -35,6 +35,14 @@ export const routes: Routes = [
           children: [{ path: '', loadChildren: () => import('../tabs/functions/functions.module').then(m => m.FunctionsModule) }]
         },
         {
+          path: 'overview',
+          children: [{ path: '', loadChildren: () => import('../tabs/overview/overview.module').then(m => m.OverviewModule) }]
+        },
+        {
+          path: 'overview_compact',
+          children: [{ path: '', loadChildren: () => import('../tabs/overview.compact/overview.compact.module').then(m => m.OverviewCompactModule) }]
+        },
+        {
           path: 'tab-lights',
           redirectTo: '/tabs/tab-functions?function=enum.functions.light',
           pathMatch: 'full'

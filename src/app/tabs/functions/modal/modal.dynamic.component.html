@@ -25,7 +25,7 @@
                 <ion-label>Reset</ion-label>
             </ion-button>
             <ion-button slot="end" color="success" *ngIf="templateToShow === 0 " size="small" fill="outline"
-            (click)="CTRLpreview()">
+                (click)="CTRLpreview()">
                 <ion-label>Preview</ion-label>
             </ion-button>
         </ion-buttons>
@@ -42,9 +42,10 @@
                 </ion-item-divider>
                 <ion-item *ngIf="valueSelectionAvailableIds && valueSelectionAvailableIds.length > 0">
                     <ion-label>Select:</ion-label>
-                    <ion-select #HTMLvalueSelctionID ok-text="Ok"
-                        cancel-text="Cancel" (ionChange)="CTRLvalueSelectionChanged($event)">
-                        <ion-select-option [selected]="valueSelectionID === null || valueSelectionID === ''">-</ion-select-option>
+                    <ion-select #HTMLvalueSelctionID ok-text="Ok" cancel-text="Cancel"
+                        (ionChange)="CTRLvalueSelectionChanged($event)">
+                        <ion-select-option [selected]="valueSelectionID === null || valueSelectionID === ''">-
+                        </ion-select-option>
                         <ion-select-option *ngFor="let valueSelectionAvailableId of valueSelectionAvailableIds"
                             [value]="valueSelectionAvailableId"
                             [selected]="valueSelectionAvailableId === valueSelectionID">
@@ -71,16 +72,17 @@
                         <ion-label>Select Level: {{iLevelStruct.level}}</ion-label>
                         <ion-button fill="outline" *ngIf="iLevelStruct.id && !iLevelStruct.subLevel" slot="end"
                             (click)="CTRLaddLevel(iLevelStruct)">+ Level</ion-button>
-                        <ion-button fill="outline" color="danger" slot="end"
-                            (click)="CTRLdeleteLevel(iLevelStruct)">- Level</ion-button>
+                        <ion-button fill="outline" color="danger" slot="end" (click)="CTRLdeleteLevel(iLevelStruct)">-
+                            Level</ion-button>
                     </ion-item-divider>
                     <ion-item>
                         <ion-label>*Select:</ion-label>
-                        <ion-select *ngIf="iLevelStruct.availableLevelIDs && iLevelStruct.availableLevelIDs.length > 0" ok-text="Ok" cancel-text="Cancel"
-                            (ionChange)="CTRLlevelIDChanged($event, iLevelStruct)">
+                        <ion-select *ngIf="iLevelStruct.availableLevelIDs && iLevelStruct.availableLevelIDs.length > 0"
+                            ok-text="Ok" cancel-text="Cancel" (ionChange)="CTRLlevelIDChanged($event, iLevelStruct)">
                             <ion-select-option *ngFor="let availableLevelID of iLevelStruct.availableLevelIDs"
                                 [value]="availableLevelID" [selected]="availableLevelID === iLevelStruct.id">
-                                {{CTRLgetObjectType(availableLevelID)}} - {{helperService.getByLanguage(levelStructService.getNameFromID(availableLevelID))}}
+                                {{CTRLgetObjectType(availableLevelID)}} -
+                                {{helperService.getByLanguage(levelStructService.getNameFromID(availableLevelID))}}
                             </ion-select-option>
                         </ion-select>
                     </ion-item>
@@ -101,18 +103,149 @@
             </ng-container>
         </ng-template>
         <!-- ========================================================================================================================== -->
-        <ng-template [ngSwitchCase]="'2'">
-            <code>
-                <pre>{{tmpAdminLevelString}}</pre>
-            </code>
-        </ng-template>
-        <!-- ========================================================================================================================== -->
         <ng-template [ngSwitchCase]="'1'">
             <div style="margin:2em;">
                 <!-- <app-tree [treeData]="adminLevelStruct" [showAgenda]="false" (moreInfoFor)="getMoreInfo($event)"> -->
                 <app-tree [treeData]="tmpAdminLevelStruct" [showAgenda]="false" (moreInfoFor)="getMoreInfo($event)">
                 </app-tree>
             </div>
+        </ng-template>
+        <!-- ========================================================================================================================== -->
+        <ng-template [ngSwitchCase]="'2'">
+            <ng-container *ngTemplateOutlet="recursiveList; context:{ $implicit: this.levelStruct }"></ng-container>
+        </ng-template>
+
+        <ng-template #recursiveList let-level_struct>
+            <ng-container *ngIf="CTRLlog('recursiveList')"></ng-container>
+            <ion-item *ngIf="CTRLsetAllValue(level_struct)" lines="none">
+                <ion-grid [style.padding-left.px]="level_struct.level*25">
+                    <ion-row class="ion-align-items-center" style="background:var(--ion-color-light)">
+                        <ion-col size="2">
+                            <img style="width: 10vw; min-width: 20px;" [src]="level_struct.getBase64Icon()">
+                        </ion-col>
+                        <ion-col size="9">
+                            <ion-item color="light">
+                                <ion-chip slot="end" *ngIf="!level_struct.detail_open" slot="end"
+                                    (click)="level_struct.detail_open = !level_struct.detail_open" color="tertiary">
+                                    <ion-label>+ Details</ion-label>
+                                </ion-chip>
+                                <ion-chip slot="end" *ngIf="level_struct.detail_open" slot="end"
+                                    (click)="level_struct.detail_open = !level_struct.detail_open" color="tertiary">
+                                    <ion-label>- Details</ion-label>
+                                </ion-chip>
+                                <b>{{helperService.getByLanguage(level_struct.getName())}}</b>
+                            </ion-item>
+                            <ion-buttons>
+                                <ng-container *ngFor="let htmlFunction of html_panel_functions">
+                                    <ion-button *ngIf="CTRLcheckIfIn(htmlFunction, level_struct.elementStates)"
+                                        (click)="level_struct.elementStates[htmlFunction].setNewState(!values[level_struct.elementStates[htmlFunction].uniqID].value)"
+                                        size="small" color="light" fill="clear">
+                                        <img
+                                            [src]="level_struct.elementStates[htmlFunction].getBase64Icon(values[level_struct.elementStates[htmlFunction].uniqID].value)">
+                                    </ion-button>
+                                </ng-container>
+                            </ion-buttons>
+                            <ion-buttons>
+                                <ion-chip *ngIf="CTRLcheckIfIn('enum.functions.temp', level_struct.elementStates)">
+                                    <img
+                                        [src]="level_struct.elementStates['enum.functions.temp'].getBase64Icon(values[level_struct.elementStates['enum.functions.temp'].uniqID].value)">
+                                    <ion-label color="primary">
+                                        {{values[level_struct.elementStates['enum.functions.temp'].uniqID].value}}{{level_struct.elementStates['enum.functions.temp'].getUnit()}}
+                                    </ion-label>
+                                </ion-chip>
+                                <ion-chip *ngIf="CTRLcheckIfIn('enum.functions.hum', level_struct.elementStates)">
+                                    <img
+                                        [src]="level_struct.elementStates['enum.functions.hum'].getBase64Icon(values[level_struct.elementStates['enum.functions.hum'].uniqID].value, 20)">
+                                    <ion-label color="primary">
+                                        {{values[level_struct.elementStates['enum.functions.hum'].uniqID].value}}{{level_struct.elementStates['enum.functions.hum'].getUnit()}}
+                                    </ion-label>
+                                </ion-chip>
+                            </ion-buttons>
+                        </ion-col>
+                        <ion-col size="1">
+                            <ion-icon class="item-detail-icon" name="arrow-forward" color="medium" size="small"
+                                *ngIf="!level_struct.total_open && level_struct.members && level_struct.members.length != 0"
+                                (click)="level_struct.total_open = !level_struct.total_open"></ion-icon>
+
+                            <ion-icon class="item-detail-icon" name="arrow-down" color="medium" size="small"
+                                *ngIf="level_struct.total_open && level_struct.members && level_struct.members.length != 0"
+                                (click)="level_struct.total_open = !level_struct.total_open"></ion-icon>
+                        </ion-col>
+                    </ion-row>
+                </ion-grid>
+            </ion-item>
+            <!-- <ion-item-divider lines="none" *ngIf="CTRLsetAllValue(level_struct)">
+                <ion-label>{{helperService.getByLanguage(level_struct.getName())}}</ion-label>
+                <ion-label slot="start">
+                    {{'&#160;&#160;&#160;&#160;&#160;'.repeat(level_struct.level)}}
+                </ion-label>
+                <ion-chip *ngIf="!level_struct.total_open && level_struct.members && level_struct.members.length != 0"
+                    slot="start" (click)="level_struct.total_open = !level_struct.total_open" color="secondary">
+                    <ion-label>+</ion-label>
+                </ion-chip>
+                <ion-chip *ngIf="level_struct.total_open && level_struct.members && level_struct.members.length != 0"
+                    slot="start" (click)="level_struct.total_open = !level_struct.total_open" color="secondary">
+                    <ion-label>-</ion-label>
+                </ion-chip>
+                <ion-chip *ngIf="!level_struct.detail_open" slot="end"
+                    (click)="level_struct.detail_open = !level_struct.detail_open" color="tertiary">
+                    <ion-label>+</ion-label>
+                </ion-chip>
+                <ion-chip *ngIf="level_struct.detail_open" slot="end"
+                    (click)="level_struct.detail_open = !level_struct.detail_open" color="tertiary">
+                    <ion-label>-</ion-label>
+                </ion-chip>
+            </ion-item-divider>
+            <ion-item-divider lines="none">
+                <ion-buttons slot="end">
+                    <ng-container *ngFor="let htmlFunction of html_panel_functions">
+                        <ion-button *ngIf="CTRLcheckIfIn(htmlFunction, level_struct.elementStates)"
+                            (click)="level_struct.elementStates[htmlFunction].setNewState(!values[level_struct.elementStates[htmlFunction].uniqID].value)"
+                            size="small" color="light" fill="clear">
+                            <img
+                                [src]="level_struct.elementStates[htmlFunction].getBase64Icon(values[level_struct.elementStates[htmlFunction].uniqID].value)">
+                        </ion-button>
+                    </ng-container>
+                </ion-buttons>
+            </ion-item-divider>
+            <ion-item-divider lines="none">
+                <ion-buttons slot="end">
+                    <ion-chip *ngIf="CTRLcheckIfIn('enum.functions.temp', level_struct.elementStates)">
+                        <img
+                            [src]="level_struct.elementStates['enum.functions.temp'].getBase64Icon(values[level_struct.elementStates['enum.functions.temp'].uniqID].value)">
+                        <ion-label color="primary">
+                            {{values[level_struct.elementStates['enum.functions.temp'].uniqID].value}}{{level_struct.elementStates['enum.functions.temp'].getUnit()}}
+                        </ion-label>
+                    </ion-chip>
+                    <ion-chip *ngIf="CTRLcheckIfIn('enum.functions.hum', level_struct.elementStates)">
+                        <img
+                            [src]="level_struct.elementStates['enum.functions.hum'].getBase64Icon(values[level_struct.elementStates['enum.functions.hum'].uniqID].value, 20)">
+                        <ion-label color="primary">
+                            {{values[level_struct.elementStates['enum.functions.hum'].uniqID].value}}{{level_struct.elementStates['enum.functions.hum'].getUnit()}}
+                        </ion-label>
+                    </ion-chip>
+                </ion-buttons>
+            </ion-item-divider> -->
+            <ion-item-group *ngIf="level_struct.detail_open">
+                <ion-item *ngFor="let elementState of level_struct.elementStates  | keyvalue; let i = index"
+                    lines="none" color="dark">
+                    <ion-buttons slot="start">
+                        <ion-button (click)="elementState.value.setNewState(!values[elementState.value.uniqID].value)"
+                            size="small" color="light" fill="clear">
+                            <img [src]="elementState.value.getBase64Icon(values[elementState.value.uniqID].value)">
+                        </ion-button>
+                    </ion-buttons>
+                    <ion-label>
+                        {{'&#160;&#160;&#160;&#160;&#160;'.repeat(level_struct.level+1)}}{{helperService.getByLanguage(elementState.value.getSelectValueSelectionName())}}
+                        : {{ values[elementState.value.uniqID].value}}
+                    </ion-label>
+                </ion-item>
+            </ion-item-group>
+            <ng-container *ngIf="level_struct.total_open">
+                <ng-container *ngFor="let member of level_struct.members">
+                    <ng-container *ngTemplateOutlet="recursiveList; context:{ $implicit: member }"></ng-container>
+                </ng-container>
+            </ng-container>
         </ng-template>
         <!-- ========================================================================================================================== -->
     </div>

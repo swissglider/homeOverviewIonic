@@ -15,7 +15,7 @@ import { ModalDynamicComponent } from './modal/modal.dynamic.component';
 import { IObjectViewStruct, IOjectViewInputStructDev, IObjectViewInputDev, GenerateFunctionAppState } from './function.model'
 import { map, filter, concatAll, expand, combineAll, concatMap } from 'rxjs/operators';
 import { IoBObjectQuery } from 'src/app/store/object/io-bobject.query';
-import { LevelStructService } from './level.struct.service';
+import { LevelStructService } from '../../service/level.service/level.struct.service';
 
 
 type enumPair = { id: string; name: string | object; members: string[] };
@@ -447,7 +447,7 @@ export class FunctionsPage implements OnInit {
       }
     })
     let deviceIDs = this.enumQuery.getEntity(parentID).common.members.filter(e => !e.startsWith('enum.'))
-      .filter(id => this.allIDsInTheFilteredFunctions.some(e => e.startsWith(id)));
+      .filter(id => Object.keys(this.allIDsInTheFilteredFunctions).some(e => e.startsWith(id)));
     if (deviceIDs.length > 0) {
       allMembers.allMembersToAdd = allMembers.allMembersToAdd.concat(deviceIDs);
       hasIn.push(true);
@@ -501,7 +501,8 @@ export class FunctionsPage implements OnInit {
         // inputLevelObject: JSON.parse(this.testString),
         inputLevelObject: JSON.parse(this.testString4),
         valueSelectionID: 'enum.functions',
-        valueSelectionFilters: ["enum.functions.light","enum.functions.rain"],
+        // valueSelectionFilters: ["enum.functions.light","enum.functions.rain"],
+        // valueSelectionFilters: ["enum.functions.light"],
       }
     });
     modal.onDidDismiss().then((detail) => {
@@ -586,10 +587,10 @@ export class FunctionsPage implements OnInit {
       "id": "enum.area",
       "subLevelFilters": [],
       "subLevel": {
-        "id": "enum.rooms",
+        "id": "enum.floor",
         "subLevelFilters": [],
         "subLevel": {
-          "id": "states",
+          "id": "enum.rooms",
           "subLevelFilters": []
         }
       }

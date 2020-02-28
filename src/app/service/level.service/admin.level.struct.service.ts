@@ -240,7 +240,6 @@ export class AdminLevelStructService {
                 addKeys(app.subLevel, level + 1, app);
             }
         }
-
         let outStruct = JSON.parse(JSON.stringify(inputLevelObject));
         addKeys(outStruct, 0, null);
         return outStruct;

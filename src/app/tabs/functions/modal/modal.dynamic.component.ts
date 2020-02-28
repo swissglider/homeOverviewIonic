@@ -1,11 +1,11 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, NgZone } from '@angular/core';
 import { Input } from '@angular/core';
 import { HelperService } from 'src/app/service/helper.service';
 import { ModalController } from '@ionic/angular';
-import { AdminLevelStructService} from '../admin.level.struct.service';
-import { IInputLevelObject, IAdminLevelStruct, levelIDCases, ILevelStruct, IElementState } from '../level.struct.model';
-import { LevelStructService } from '../level.struct.service';
-import { Observable } from 'rxjs';
+import { AdminLevelStructService } from '../../../service/level.service/admin.level.struct.service';
+import { IInputLevelObject, IAdminLevelStruct, levelIDCases, ILevelStruct, IElementState } from '../../../service/level.service/level.struct.model';
+import { LevelStructService, levelIDType } from '../../../service/level.service/level.struct.service';
+import { Observable, Subscription } from 'rxjs';
 
 export enum TemplatesToShow {
     row1,
@@ -47,11 +47,25 @@ export class ModalDynamicComponent implements OnInit {
 
     title = 'Filter'
 
+    levelStruct: ILevelStruct;
+    public values: { id?: string, value?: number | string | boolean, subscription: Subscription }[] = [];
+
+
+    public html_panel_functions: string[] = [
+        'enum.functions.batterie',
+        'enum.functions.low_batterie',
+        'enum.functions.light',
+        'enum.functions.doors',
+        'enum.functions.window',
+        'enum.functions.motion',
+    ]
+
     constructor(
         private modalController: ModalController,
         public helperService: HelperService,
         public adminLevelStructService: AdminLevelStructService,
         public levelStructService: LevelStructService,
+        private ngZone: NgZone,
     ) { }
 
     ngOnInit() { }
@@ -70,7 +84,6 @@ export class ModalDynamicComponent implements OnInit {
             this.valueSelectionAvailableFilters = [];
         }
         if (this.valueSelectionFilters) {
-
         } else {
             this.valueSelectionFilters = [];
         }
@@ -211,18 +224,59 @@ export class ModalDynamicComponent implements OnInit {
         return 'Instance';
     }
 
-    CTRLpreview(){
-        let temp:Observable<ILevelStruct> = this.levelStructService.transformLevelObjectToLevelStruct(
+    CTRLpreview() {
+        let temp: Observable<ILevelStruct> = this.levelStructService.transformLevelObjectToLevelStruct(
             this.adminLevelStructService.CTRLgetLevelObjectFromAdminLevelStruct(this.adminLevelStruct),
             this.valueSelectionID,
             this.valueSelectionFilters,
         )
-        temp.subscribe((e:ILevelStruct) => {
-            Object.values(e.elementStates).forEach((a: IElementState) => {
-                a.selectValue().subscribe((aa: number | string | boolean) => {
-                    console.log(this.helperService.getByLanguage(a.getSelectValueSelectionName()), aa)
-                })
-            })
+        temp.subscribe((e: ILevelStruct) => {
+            this.levelStruct = e;
+            this.templateToShow = 2;
+            console.log(e)
         })
+    }
+
+    CTRLlog(s) {
+        // console.log(s)
+        return true;
+    }
+
+    CTRLsetValue(a: IElementState, levelStruct: ILevelStruct): boolean {
+        if (!(a.uniqID in this.values)) {
+            this.values[a.uniqID] = {};
+            this.values[a.uniqID].subscription = a.value$.subscribe(e => {
+                this.ngZone.run(() => {
+                    this.values[a.uniqID].value = e;
+                    // console.log(e, a.uniqID, this.helperService.getByLanguage(levelStruct.getName()))
+                });
+            });
+        }
+        return true;
+    }
+
+    CTRLsetAllValue(levelStruct: ILevelStruct): boolean {
+        try {
+            Object.values(levelStruct.elementStates).forEach((e: IElementState) => {
+                if (!(e.uniqID in this.values)) {
+                    this.values[e.uniqID] = {};
+                    this.values[e.uniqID].subscription = e.value$.subscribe(val => {
+                        this.ngZone.run(() => {
+                            this.values[e.uniqID].value = val;
+                        });
+                    });
+                }
+            })
+        } finally {
+            return true;
+        }
+    }
+
+    CTRLcheckIfIn(toCheck: string, arr: []): boolean {
+        try {
+            return (toCheck in arr) ? true : false;
+        } catch (e) {
+            return false;
+        }
     }
 }

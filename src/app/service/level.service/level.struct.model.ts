@@ -30,11 +30,16 @@ export interface IInputLevelObject {
 export interface ILevelStruct {
     id: string,
     level: number,
-    members: ILevelStruct[],
+    // members: ILevelStruct[],
     elementStates: ElementStates,
-    getName: () => string | Object;
+    totalOpen: boolean,
+    getName: () => string | Object,
     setNewInputLevelObject: (lo: IInputLevelObject) => void,
     setNewValueSelection: (valueSelectionID: string, valueSelectionFilters: string[]) => void,
+    getBase64Icon: () => string,
+    getParentMemberID: () => string;
+    getMembers: () => ILevelStruct[];
+    hasMembers: () => boolean;
 }
 
 export interface IAppStates {
@@ -48,6 +53,9 @@ export interface ElementStates {
 }
 
 export interface IElementState {
+    value$: Observable<number | string | boolean>,
+    uniqID: string,
+    init: () => void;
     getSelectValueSelection: () => string,
     getSelectValueSelectionName: () => string | Object,
     getStateIDs: () => string[];
@@ -59,7 +67,9 @@ export interface IElementState {
     getBase64IconNeutral: (size?: number) => string;
     getBase64IconOn: (size?: number) => string;
     getBase64IconOff: (size?: number) => string;
-    selectValue: () => Observable<number | string | boolean>,
+    getBase64Icon: (fall: boolean | string, size?: number) => string; // fall can be true/false/'neutral'
+    setNewState: (value: number | string | boolean) => void;
+    // selectValue: () => Observable<number | string | boolean>,
 }
 
 export interface IAdminLevelStruct {
