@@ -16,9 +16,9 @@
         <app-views-component *ngIf="loaded" [levelStruct]="level_struct"
             [htmlBoolPanels]="this.html_boolean_panel_functions" [htmlNumberPanels]="this.html_number_panel_functions"
             [valueSelectionID]="this.valueSelectionID" [valueSelectionFilters]="this.valueSelectionFilters"
-            [view]="viewToShow">
+            [view]="viewToShow" [withDetails]="true" [withOpener]="true">
         </app-views-component>
-        <ng-container *ngIf="level_struct.total_open">
+        <ng-container *ngIf="level_struct.totalOpen">
             <ng-container *ngFor="let member of level_struct.getMembers()">
                 <ng-container *ngTemplateOutlet="recursiveList; context:{ $implicit: member }"></ng-container>
             </ng-container>

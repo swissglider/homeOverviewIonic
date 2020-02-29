@@ -25,12 +25,15 @@ export class AppViewsComponent implements OnInit {
   @Input() withDetails?: boolean = true;
   @Input() withOpener?: boolean = true;
   @Input() headerTitle: string | object;
+  @Input() color?: string = 'light';
+  @Input() emptyColor?: string = '';
   @Output() doMenuToggle = new EventEmitter();
 
   public eViewToShow = ViewToShow;
 
   public values: { id?: string, value?: number | string | boolean, subscription: Subscription }[] = [];
-  public bgColor = 'light';
+  public bgColor:string;
+  public var_bgColor:string;
 
   constructor(
     public levelStructService: LevelStructService,
@@ -39,7 +42,9 @@ export class AppViewsComponent implements OnInit {
     private ngZone: NgZone,
   ) { }
 
-  ngOnInit(): void { }
+  ngOnInit(): void {
+    // console.log('ngOnInit')
+  }
 
   CTRLgetBatteryStateIcon(level_struct: ILevelStruct): string {
     if ('enum.functions.batterie' in level_struct.elementStates && 'enum.functions.low_batterie' in level_struct.elementStates) {
@@ -92,7 +97,8 @@ export class AppViewsComponent implements OnInit {
 
   CTRLsetAllValue(level_struct: ILevelStruct): boolean {
     try {
-      this.bgColor = (level_struct.hasMembers()) ? 'light' : '';
+      this.bgColor = (level_struct.hasMembers()) ? this.color : this.emptyColor;
+      this.var_bgColor = (level_struct.hasMembers()) ? 'var(--ion-color-'   + this.color + ')' : 'var(--ion-color-'   + this.emptyColor + ')';
       Object.values(level_struct.elementStates).forEach((e: IElementState) => {
         if (!(e.uniqID in this.values)) {
           this.values[e.uniqID] = {};

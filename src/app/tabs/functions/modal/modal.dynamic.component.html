@@ -43,23 +43,21 @@
                 <ion-item *ngIf="valueSelectionAvailableIds && valueSelectionAvailableIds.length > 0">
                     <ion-label>Select:</ion-label>
                     <ion-select #HTMLvalueSelctionID ok-text="Ok" cancel-text="Cancel"
-                        (ionChange)="CTRLvalueSelectionChanged($event)">
-                        <ion-select-option [selected]="valueSelectionID === null || valueSelectionID === ''">-
+                        (ionChange)="CTRLvalueSelectionChanged($event)" [value]="(valueSelectionID === null || valueSelectionID === '')?'':valueSelectionID">
+                        <ion-select-option [value]="''">-
                         </ion-select-option>
                         <ion-select-option *ngFor="let valueSelectionAvailableId of valueSelectionAvailableIds"
-                            [value]="valueSelectionAvailableId"
-                            [selected]="valueSelectionAvailableId === valueSelectionID">
+                            [value]="valueSelectionAvailableId">
                             {{helperService.getByLanguage(levelStructService.getNameFromID(valueSelectionAvailableId))}}
                         </ion-select-option>
                     </ion-select>
                 </ion-item>
                 <ion-item *ngIf="valueSelectionAvailableFilters && valueSelectionAvailableFilters.length > 0">
                     <ion-label>Select Filter</ion-label>
-                    <ion-select #HTMLvalueSelction multiple ok-text="Ok" cancel-text="Cancel"
+                    <ion-select #HTMLvalueSelction multiple="true" [value]="valueSelectionFilters" ok-text="Ok" cancel-text="Cancel"
                         (ionChange)="CTRLvalueSelectionFilterChanged($event)">
                         <ion-select-option *ngFor="let valueSelectionAvailableFilter of valueSelectionAvailableFilters"
-                            [value]="valueSelectionAvailableFilter"
-                            [selected]="CRTLisSelected1(valueSelectionAvailableFilter, valueSelectionFilters)">
+                            [value]="valueSelectionAvailableFilter">
                             {{helperService.getByLanguage(levelStructService.getNameFromID(valueSelectionAvailableFilter))}}
                         </ion-select-option>
                     </ion-select>
@@ -78,9 +76,9 @@
                     <ion-item>
                         <ion-label>*Select:</ion-label>
                         <ion-select *ngIf="iLevelStruct.availableLevelIDs && iLevelStruct.availableLevelIDs.length > 0"
-                            ok-text="Ok" cancel-text="Cancel" (ionChange)="CTRLlevelIDChanged($event, iLevelStruct)">
+                            ok-text="Ok" cancel-text="Cancel" (ionChange)="CTRLlevelIDChanged($event, iLevelStruct)" [value]="iLevelStruct.id">
                             <ion-select-option *ngFor="let availableLevelID of iLevelStruct.availableLevelIDs"
-                                [value]="availableLevelID" [selected]="availableLevelID === iLevelStruct.id">
+                                [value]="availableLevelID">
                                 {{CTRLgetObjectType(availableLevelID)}} -
                                 {{helperService.getByLanguage(levelStructService.getNameFromID(availableLevelID))}}
                             </ion-select-option>
@@ -89,12 +87,11 @@
                     <ion-item
                         *ngIf="iLevelStruct.subLevelAvailableFilters && iLevelStruct.subLevelAvailableFilters.length > 0">
                         <ion-label>Select SubLevelFilter</ion-label>
-                        <ion-select multiple ok-text="Ok" cancel-text="Cancel"
-                            (ionChange)="CTRLsubLevelFilterChanged($event, iLevelStruct)">
+                        <ion-select multiple="true" ok-text="Ok" cancel-text="Cancel"
+                            (ionChange)="CTRLsubLevelFilterChanged($event, iLevelStruct)" [value]="iLevelStruct.subLevelFilters">
                             <ion-select-option
                                 *ngFor="let subLevelAvailableFilter of iLevelStruct.subLevelAvailableFilters"
-                                [value]="subLevelAvailableFilter"
-                                [selected]="CRTLisSelected1(subLevelAvailableFilter, iLevelStruct.subLevelFilters)">
+                                [value]="subLevelAvailableFilter">
                                 {{helperService.getByLanguage(levelStructService.getNameFromID(subLevelAvailableFilter))}}
                             </ion-select-option>
                         </ion-select>

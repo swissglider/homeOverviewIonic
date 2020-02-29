@@ -9,11 +9,11 @@ import { ModalController } from '@ionic/angular';
 import { ModalComponent } from './modal/modal.component';
 
 @Component({
-  selector: 'app-tab3',
-  templateUrl: 'tab3.page.html',
-  styleUrls: ['tab3.page.scss']
+  selector: 'app-folder_test',
+  templateUrl: 'folder_test.page.html',
+  styleUrls: ['folder_test.page.scss']
 })
-export class Tab3Page {
+export class folder_testPage {
 
   returnStruct: {};
   loaded: boolean = true;

@@ -3,7 +3,7 @@ import { RouterModule } from '@angular/router';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Tab3Page } from './tab3.page';
+import { folder_testPage } from './folder_test.page';
 import { ModalComponent } from './modal/modal.component';
 import { MenuModule } from '../../modules/menu/menu.module';
 import { TreeModule } from '../../modules/tree/tree.comonent.model';
@@ -15,14 +15,14 @@ import { TreeModule } from '../../modules/tree/tree.comonent.model';
     FormsModule,
     MenuModule,
     TreeModule,
-    RouterModule.forChild([{ path: '', component: Tab3Page }])
+    RouterModule.forChild([{ path: '', component: folder_testPage }])
   ],
   declarations: [
-    Tab3Page,
+    folder_testPage,
     ModalComponent
   ],
   entryComponents: [
     ModalComponent,
   ],
 })
-export class Tab3PageModule {}
+export class Folder_TestPageModule {}

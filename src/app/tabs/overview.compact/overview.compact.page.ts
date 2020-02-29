@@ -107,5 +107,5 @@ export class OverviewCompactPage implements OnInit {
 
     segmentChanged(ev: any) {
         this.selectedMember = ev.detail.value;
-      }
+    }
 }

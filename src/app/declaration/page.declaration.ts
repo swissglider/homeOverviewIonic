@@ -40,41 +40,16 @@ export let PageDeclarations = {
     redirect: '/tabs/tab-functions?function=enum.functions.window',
     menuID: 'function',
   },
-  tab1: {
-    order: 4,
-    name: {
-      en: "Tab 1",
-      de: "Tab 1",
-    },
-    path: 'tab1',
-    asTab: false,
-    tabIcon: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAABmJLR0QA/wD/AP+gvaeTAAACCElEQVQ4jWNkwAPcui9yKwkzdTMyMbKiyz1792PSxiKTy+jiLPgMlOD/Fx9jr5wuLczFhCy+6MC9mw8efCnGpocJmyAMCHJzhKAb9vLjz7+P335btb3B4hNJBrr3HRNSFuVWQRfffOrRtadfn7Ti0ofTQClu7kxLTVEZZLH7r77+evr2x9zteV4/STZQhJ/dXYSXnRFZbMe5p5cVXuhNxqWHgQFHpLh2HpFSkeRB8e7Vxx++vvz8rXdhA+M/fAZidaGiEH+BhaqoJIz/n4GBYe/FlxcXphotx2cYThcK8bHZ8nEhkt7Hr78YhPlY5Vs23r0PE3v9+SfH0zdf96wpMI3Fa6BvzzENTTk+FO8KcLMxRNspScP4P3//ZZi89eZRxg9cyQRdyMnCInb46qu9h6++got9+fHHsj5MT46DjZnh/38Ghvn771y98eyr/94G81+4vI4XVK++ffr+h3//73/4979r2/2H4VPOGOFSizenMDAwMPj3ndHVlOVTZmBgYDh689Wbq88/VK3MMTlHtoESAmw5RkpCgg9ff/t28PLL2QuTDZcS0oMXVK++ffr8sx//shZcXk+Merwu9O87o6sqyauyYN+9E/c/PY6g2EAJfrbcq08+vH/89FMYvvyLDPCWh+++/HL5/v1P9LpyiyfEGIYXuHec0vbuPRVDsUEw4NC/X4AcfQBgjcHxZBEuAgAAAABJRU5ErkJggg==",
-    fullPath: "/tabs/tab1",
-    menuID: 'test',
-  },
-  tab2: {
-    order: 5,
-    name: {
-      en: "Tab 2",
-      de: "Tab 2",
-    },
-    path: 'tab2',
-    asTab: false,
-    tabIcon: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAABmJLR0QA/wD/AP+gvaeTAAACCElEQVQ4jWNkwAPcui9yKwkzdTMyMbKiyz1792PSxiKTy+jiLPgMlOD/Fx9jr5wuLczFhCy+6MC9mw8efCnGpocJmyAMCHJzhKAb9vLjz7+P335btb3B4hNJBrr3HRNSFuVWQRfffOrRtadfn7Ti0ofTQClu7kxLTVEZZLH7r77+evr2x9zteV4/STZQhJ/dXYSXnRFZbMe5p5cVXuhNxqWHgQFHpLh2HpFSkeRB8e7Vxx++vvz8rXdhA+M/fAZidaGiEH+BhaqoJIz/n4GBYe/FlxcXphotx2cYThcK8bHZ8nEhkt7Hr78YhPlY5Vs23r0PE3v9+SfH0zdf96wpMI3Fa6BvzzENTTk+FO8KcLMxRNspScP4P3//ZZi89eZRxg9cyQRdyMnCInb46qu9h6++got9+fHHsj5MT46DjZnh/38Ghvn771y98eyr/94G81+4vI4XVK++ffr+h3//73/4979r2/2H4VPOGOFSizenMDAwMPj3ndHVlOVTZmBgYDh689Wbq88/VK3MMTlHtoESAmw5RkpCgg9ff/t28PLL2QuTDZcS0oMXVK++ffr8sx//shZcXk+Merwu9O87o6sqyauyYN+9E/c/PY6g2EAJfrbcq08+vH/89FMYvvyLDPCWh+++/HL5/v1P9LpyiyfEGIYXuHec0vbuPRVDsUEw4NC/X4AcfQBgjcHxZBEuAgAAAABJRU5ErkJggg==",
-    fullPath: "/tabs/tab2",
-    menuID: 'test',
-
-  },
   tab3: {
     order: 6,
     name: {
-      en: "Tab 3",
-      de: "Tab 3",
+      en: "Folder Test",
+      de: "Ortner Test",
     },
-    path: 'tab3',
+    path: 'folder-test',
     asTab: false,
     tabIcon: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAABmJLR0QA/wD/AP+gvaeTAAACCElEQVQ4jWNkwAPcui9yKwkzdTMyMbKiyz1792PSxiKTy+jiLPgMlOD/Fx9jr5wuLczFhCy+6MC9mw8efCnGpocJmyAMCHJzhKAb9vLjz7+P335btb3B4hNJBrr3HRNSFuVWQRfffOrRtadfn7Ti0ofTQClu7kxLTVEZZLH7r77+evr2x9zteV4/STZQhJ/dXYSXnRFZbMe5p5cVXuhNxqWHgQFHpLh2HpFSkeRB8e7Vxx++vvz8rXdhA+M/fAZidaGiEH+BhaqoJIz/n4GBYe/FlxcXphotx2cYThcK8bHZ8nEhkt7Hr78YhPlY5Vs23r0PE3v9+SfH0zdf96wpMI3Fa6BvzzENTTk+FO8KcLMxRNspScP4P3//ZZi89eZRxg9cyQRdyMnCInb46qu9h6++got9+fHHsj5MT46DjZnh/38Ghvn771y98eyr/94G81+4vI4XVK++ffr+h3//73/4979r2/2H4VPOGOFSizenMDAwMPj3ndHVlOVTZmBgYDh689Wbq88/VK3MMTlHtoESAmw5RkpCgg9ff/t28PLL2QuTDZcS0oMXVK++ffr8sx//shZcXk+Merwu9O87o6sqyauyYN+9E/c/PY6g2EAJfrbcq08+vH/89FMYvvyLDPCWh+++/HL5/v1P9LpyiyfEGIYXuHec0vbuPRVDsUEw4NC/X4AcfQBgjcHxZBEuAgAAAABJRU5ErkJggg==",
-    fullPath: "/tabs/tab3",
+    fullPath: "/tabs/folder-test",
     menuID: 'test',
   },
   menu: {
