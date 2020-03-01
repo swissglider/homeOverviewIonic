@@ -23,8 +23,8 @@ export const routes: Routes = [
           children: [{ path: '', loadChildren: () => import('../tabs/tab-functions/tab-functions.module').then(m => m.TabFunctionsPageModule) }]
         },
         {
-          path: 'functions',
-          children: [{ path: '', loadChildren: () => import('../tabs/functions/functions.module').then(m => m.FunctionsModule) }]
+          path: 'admin_level_struct_generator',
+          children: [{ path: '', loadChildren: () => import('../tabs/admin.level-struct.generator/admin.level-struct.generator.module').then(m => m.AdminLevelStructGeneratorModule) }]
         },
         {
           path: 'overview',

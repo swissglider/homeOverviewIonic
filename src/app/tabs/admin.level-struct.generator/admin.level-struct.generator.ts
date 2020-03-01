@@ -2,9 +2,9 @@ import { Component, OnInit, ViewChild, NgZone } from '@angular/core';
 import { Input } from '@angular/core';
 import { HelperService } from 'src/app/service/helper.service';
 import { ModalController } from '@ionic/angular';
-import { AdminLevelStructService } from '../../../service/level.service/admin.level.struct.service';
-import { IInputLevelObject, IAdminLevelStruct, levelIDCases, ILevelStruct, IElementState } from '../../../service/level.service/level.struct.model';
-import { LevelStructService, levelIDType } from '../../../service/level.service/level.struct.service';
+import { AdminLevelStructService } from '../../service/level.service/admin.level.struct.service';
+import { IInputLevelObject, IAdminLevelStruct, levelIDCases, ILevelStruct, IElementState } from '../../service/level.service/level.struct.model';
+import { LevelStructService, levelIDType } from '../../service/level.service/level.struct.service';
 import { Observable, Subscription } from 'rxjs';
 
 export enum TemplatesToShow {
@@ -22,18 +22,35 @@ const exclusion: string[] = [
 ];
 
 @Component({
-    selector: 'app-modal-dynamic',
-    templateUrl: './modal.dynamic.component.html',
-    styleUrls: ['./modal.dynamic.component.scss']
+    selector: 'admin-level-struct-generator',
+    templateUrl: './admin.level-struct.generator.html',
+    styleUrls: ['./admin.level-struct.generator.scss']
 })
-export class ModalDynamicComponent implements OnInit {
+export class AdminLevelStructGenerator implements OnInit {
 
-    // Data passed in by componentProps
-    @Input() inputLevelObject: IInputLevelObject;
-    @Input() valueSelectionID: string;
-    @Input() valueSelectionFilters: string[];
     @ViewChild('HTMLvalueSelction', { static: false }) HTMLvalueSelction: Selection;
     @ViewChild('HTMLvalueSelctionID', { static: false }) HTMLvalueSelctionID: Selection;
+
+    inputLevelObject: IInputLevelObject = JSON.parse(
+        `
+            {
+                "id": "enum.area",
+                "subLevelFilters": [],
+                "subLevel": {
+                    "id": "enum.floor",
+                    "subLevelFilters": [],
+                    "subLevel": {
+                    "id": "enum.rooms",
+                    "subLevelFilters": []
+                    }
+                }
+            }
+        `
+    );
+    valueSelectionID:string = 'enum.functions';
+    valueSelectionFilters: string[] = [];
+    // valueSelectionFilters: ["enum.functions.light","enum.functions.rain"],
+    // valueSelectionFilters: ["enum.functions.light"],
 
     adminLevelStruct: IAdminLevelStruct;
     tmpAdminLevelStruct: {} = {};
@@ -116,15 +133,6 @@ export class ModalDynamicComponent implements OnInit {
             this.HTMLvalueSelctionID['value'] = '-'
         }
         this.initValueSelection();
-    }
-
-    async CTRLclose() {
-        let returnArray = {
-            inputLevelObject: this.adminLevelStructService.CTRLgetLevelObjectFromAdminLevelStruct(this.adminLevelStruct),
-            valueSelectionID: this.valueSelectionID,
-            valueSelectionFilters: this.valueSelectionFilters,
-        }
-        await this.modalController.dismiss(returnArray);
     }
 
     CTRLsubLevelFilterChanged(e, als: IAdminLevelStruct) {

@@ -4,13 +4,15 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AppViewsComponent } from './app.views/app.views.component';
 import { MenuModule } from '../../modules/menu/menu.module';
+import { ChartsModule } from 'ng2-charts';
 
 @NgModule({
   imports: [
     IonicModule,
     CommonModule,
     FormsModule,
-    MenuModule
+    MenuModule,
+    ChartsModule,
   ],
   declarations: [AppViewsComponent],
   exports: [AppViewsComponent]

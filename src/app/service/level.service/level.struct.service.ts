@@ -27,6 +27,7 @@ class LevelStruct implements ILevelStruct {
     id: string;
     level: number;
     totalOpen = false;
+    detailOpen = false;
     private members: ILevelStruct[];
     elementStates: ElementStates;
     protected allFittingStates: string[];

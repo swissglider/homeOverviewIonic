@@ -25,7 +25,8 @@ export class OverviewCompactPage implements OnInit {
         'enum.functions.motion',
     ]
 
-    public html_number_panel_functions_title: string[] = []
+    public html_number_panel_functions_title: string[] = [
+        'enum.functions.pressure',]
 
     public html_boolean_panel_functions: string[] = [
         'enum.functions.light',
@@ -34,11 +35,14 @@ export class OverviewCompactPage implements OnInit {
         'enum.functions.motion',
     ]
 
-    public html_number_panel_functions: string[] = [
+    public subFunctionNumbers: string[] = [
         'enum.functions.temp',
         'enum.functions.hum',
-        'enum.functions.pressure',
-        'enum.functions.wind_',
+    ]
+
+    public simpleValues: string[] = [
+        'enum.functions.temp',
+        'enum.functions.hum',
     ]
 
     private inputLevelObject = JSON.parse(
@@ -57,9 +61,9 @@ export class OverviewCompactPage implements OnInit {
             }
         `
     );
-    private valueSelectionID = 'enum.functions';
-    // private valueSelectionFilters = ["enum.functions.batterie", "enum.functions.button", "enum.functions.hum", "enum.functions.temp", "enum.functions.pressure", "enum.functions.low_batterie", "enum.functions.light", "enum.functions.window", "enum.functions.rain", "enum.functions.wind_", "enum.functions.doors", "enum.functions.motion"];
-    private valueSelectionFilters = ["enum.functions.batterie", "enum.functions.hum", "enum.functions.temp", "enum.functions.pressure", "enum.functions.low_batterie", "enum.functions.light", "enum.functions.window", "enum.functions.wind_", "enum.functions.doors", "enum.functions.motion"];
+    public valueSelectionID = 'enum.functions';
+    // public valueSelectionFilters = ["enum.functions.batterie", "enum.functions.button", "enum.functions.hum", "enum.functions.temp", "enum.functions.pressure", "enum.functions.low_batterie", "enum.functions.light", "enum.functions.window", "enum.functions.rain", "enum.functions.wind_", "enum.functions.doors", "enum.functions.motion"];
+    public valueSelectionFilters = ["enum.functions.batterie", "enum.functions.hum", "enum.functions.temp", "enum.functions.pressure", "enum.functions.low_batterie", "enum.functions.light", "enum.functions.window", "enum.functions.wind_", "enum.functions.doors", "enum.functions.motion"];
     public levelStruct: ILevelStruct;
     public values: { id?: string, value?: number | string | boolean, subscription: Subscription }[] = [];
     loaded = false;

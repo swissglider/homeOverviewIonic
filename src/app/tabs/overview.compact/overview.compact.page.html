@@ -5,11 +5,19 @@
         [htmlNumberPanels]="this.html_number_panel_functions_title" [valueSelectionID]="this.valueSelectionID"
         [valueSelectionFilters]="this.valueSelectionFilters" [view]="viewToShow.header"
         [menu]="pageService.getActiveMenuModel()"></app-views-component>
+    <div style="padding-left: 0.5em!important; padding-right: 0.5em!important; height: 70px;">
+        <app-views-component *ngIf="loaded" [levelStruct]="this.levelStruct" [htmlNumberPanels]="simpleValues"
+            [valueSelectionID]="this.valueSelectionID" [valueSelectionFilters]="this.valueSelectionFilters"
+            [view]="viewToShow.small_chart_row" [color]=''></app-views-component>
+    </div>
     <div style="padding: 0.5em;">
         <ion-segment *ngIf="loaded && this.levelStruct.hasMembers()" [value]="this.levelStruct.getMembers()[0]"
             (ionChange)="segmentChanged($event)">
             <ion-segment-button *ngFor="let member of this.levelStruct.getMembers()" [value]="member">
-                <ion-label>{{this.helperService.getByLanguage(member.getName())}}</ion-label>
+                <ion-label><b>{{this.helperService.getByLanguage(member.getName())}}</b></ion-label>
+                <app-views-component *ngIf="loaded" [levelStruct]="member" [htmlNumberPanels]="simpleValues"
+                    [valueSelectionID]="this.valueSelectionID" [valueSelectionFilters]="this.valueSelectionFilters"
+                    [view]="viewToShow.simple_value"></app-views-component>
             </ion-segment-button>
         </ion-segment>
     </div>
@@ -21,10 +29,10 @@
     <ng-container *ngIf="loaded">
         <div style="padding-left: 0.5em; padding-right: 0.2em;">
             <app-views-component *ngIf="loaded" [levelStruct]="this.selectedMember"
-                [htmlBoolPanels]="this.html_boolean_panel_functions"
-                [htmlNumberPanels]="this.html_number_panel_functions" [valueSelectionID]="this.valueSelectionID"
+                [htmlBoolPanels]="this.html_boolean_panel_functions" [valueSelectionID]="this.valueSelectionID"
                 [valueSelectionFilters]="this.valueSelectionFilters" [view]="viewToShow.card_overview"
-                [level]="this.selectedMember.level-1" [withDetails]="true" [withOpener]="false" [color]="'light'" [emptyColor]="''">
+                [level]="this.selectedMember.level-1" [withDetails]="true" [withOpener]="false" [color]="'light'"
+                [emptyColor]="''">
             </app-views-component>
         </div>
         <div style="padding-top:1em"></div>
@@ -38,10 +46,10 @@
     <ng-template #recursiveList let-level_struct>
         <ng-container *ngIf="level_struct">
             <app-views-component *ngIf="loaded && level_struct.level > 1" [levelStruct]="level_struct"
-                [htmlBoolPanels]="this.html_boolean_panel_functions"
-                [htmlNumberPanels]="this.html_number_panel_functions" [valueSelectionID]="this.valueSelectionID"
-                [valueSelectionFilters]="this.valueSelectionFilters" [view]="viewToShow.ultra_compact"
-                [level]="level_struct.level-2" [withDetails]="false" [withOpener]="true" [color]="'light'" [emptyColor]="''">
+                [htmlBoolPanels]="this.html_boolean_panel_functions" [htmlNumberPanels]="this.subFunctionNumbers"
+                [valueSelectionID]="this.valueSelectionID" [valueSelectionFilters]="this.valueSelectionFilters"
+                [view]="viewToShow.ultra_compact" [level]="level_struct.level-2" [withDetails]="false"
+                [withOpener]="true" [color]="'light'" [emptyColor]="''">
             </app-views-component>
             <ng-container *ngIf="level_struct.totalOpen">
                 <ng-container *ngFor="let member of level_struct.getMembers()">

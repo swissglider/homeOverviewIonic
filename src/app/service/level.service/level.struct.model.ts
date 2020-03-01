@@ -33,6 +33,7 @@ export interface ILevelStruct {
     // members: ILevelStruct[],
     elementStates: ElementStates,
     totalOpen: boolean,
+    detailOpen:boolean,
     getName: () => string | Object,
     setNewInputLevelObject: (lo: IInputLevelObject) => void,
     setNewValueSelection: (valueSelectionID: string, valueSelectionFilters: string[]) => void,

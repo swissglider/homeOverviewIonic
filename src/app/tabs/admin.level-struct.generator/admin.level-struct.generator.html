@@ -3,7 +3,7 @@
     <ion-toolbar>
         <ion-title>{{title}} - Dynamic</ion-title>
         <ion-buttons slot="end">
-            <ion-button (click)="CTRLclose()">Close</ion-button>
+            <!-- <ion-button (click)="CTRLclose()">Close</ion-button> -->
         </ion-buttons>
     </ion-toolbar>
 </ion-header>
@@ -103,7 +103,7 @@
         <ng-template [ngSwitchCase]="'1'">
             <div style="margin:2em;">
                 <!-- <app-tree [treeData]="adminLevelStruct" [showAgenda]="false" (moreInfoFor)="getMoreInfo($event)"> -->
-                <app-tree [treeData]="tmpAdminLevelStruct" [showAgenda]="false" (moreInfoFor)="getMoreInfo($event)">
+                <app-tree [treeData]="tmpAdminLevelStruct" [showAgenda]="false">
                 </app-tree>
             </div>
         </ng-template>
@@ -122,12 +122,12 @@
                         </ion-col>
                         <ion-col size="9">
                             <ion-item color="light">
-                                <ion-chip slot="end" *ngIf="!level_struct.detail_open" slot="end"
-                                    (click)="level_struct.detail_open = !level_struct.detail_open" color="tertiary">
+                                <ion-chip slot="end" *ngIf="!level_struct.detailOpen" slot="end"
+                                    (click)="level_struct.detailOpen = !level_struct.detailOpen" color="tertiary">
                                     <ion-label>+ Details</ion-label>
                                 </ion-chip>
-                                <ion-chip slot="end" *ngIf="level_struct.detail_open" slot="end"
-                                    (click)="level_struct.detail_open = !level_struct.detail_open" color="tertiary">
+                                <ion-chip slot="end" *ngIf="level_struct.detailOpen" slot="end"
+                                    (click)="level_struct.detailOpen = !level_struct.detailOpen" color="tertiary">
                                     <ion-label>- Details</ion-label>
                                 </ion-chip>
                                 <b>{{helperService.getByLanguage(level_struct.getName())}}</b>
@@ -184,12 +184,12 @@
                     slot="start" (click)="level_struct.total_open = !level_struct.total_open" color="secondary">
                     <ion-label>-</ion-label>
                 </ion-chip>
-                <ion-chip *ngIf="!level_struct.detail_open" slot="end"
-                    (click)="level_struct.detail_open = !level_struct.detail_open" color="tertiary">
+                <ion-chip *ngIf="!level_struct.detailOpen" slot="end"
+                    (click)="level_struct.detailOpen = !level_struct.detailOpen" color="tertiary">
                     <ion-label>+</ion-label>
                 </ion-chip>
-                <ion-chip *ngIf="level_struct.detail_open" slot="end"
-                    (click)="level_struct.detail_open = !level_struct.detail_open" color="tertiary">
+                <ion-chip *ngIf="level_struct.detailOpen" slot="end"
+                    (click)="level_struct.detailOpen = !level_struct.detailOpen" color="tertiary">
                     <ion-label>-</ion-label>
                 </ion-chip>
             </ion-item-divider>
@@ -223,7 +223,7 @@
                     </ion-chip>
                 </ion-buttons>
             </ion-item-divider> -->
-            <ion-item-group *ngIf="level_struct.detail_open">
+            <ion-item-group *ngIf="level_struct.detailOpen">
                 <ion-item *ngFor="let elementState of level_struct.elementStates  | keyvalue; let i = index"
                     lines="none" color="dark">
                     <ion-buttons slot="start">

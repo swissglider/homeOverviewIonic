@@ -90,13 +90,13 @@ export let PageDeclarations = {
   functions: {
     order: 9,
     name: {
-      en: "Functions",
-      de: "Functions",
+      en: "Admin LevelStruct Generator",
+      de: "Admin LevelStruct Generator",
     },
-    path: 'functions',
+    path: 'admin_level_struct_generator',
     asTab: false,
     tabIcon: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAABmJLR0QA/wD/AP+gvaeTAAAC6ElEQVQ4jeWTy08TURSHTzudaS9YBoEi0EGqKS0QKpFASo1siICCGhKficGlC9hpYmKiKxdG3Vdjojs3RqOoEGx0g6kQFUUe2hb70EKBoTyGttNp5/aOKxLQNv4BnN19/L6c794cgB1XqlwHjsNdxyvKTH2imCjxeqbbEWIoc3W9i6Z1ywuRwD23e/BltpwmF9C0t+Z217ELdbIsw8j7V2M6HaJa7O3VFKWBwaHHHOQAqrNtcpwDMYxOLQhreGL667SCSsSkKj8Wiix8VhTADE0rHOdA/1U+1NrdXWk032RoLb3PbCv1LwoJLKfL1BRNAABIRlbr8gvma40l+pmZsRU5LeHw/M9r7pHXQ1k7NJab+o53Xzxot3fU+BeFRHyD50O/JhvSafG3QnAo9GuyYS06F50KhkV7c7ulu6v3QEWZqT+nMsYZo6IQ8AVmPRmMi5Px6BlkNIVVAHoFVHpkNIWlOH82kyHFvqDPQ0gGJCnJ5QR6fswcc38Y/i1IUjqVFr+4BpxhFBPvFhZznJ417EXx5B3XgDOcSiW+CEkpPTr6JhwMhDq2Mrb9MiF8XJZlCbQACiG4s+fyDbaYO7f51GyR8XxHzxUeyOZ9IBjH8FYGtXVhbznpPtp53ra+Fl1RNHr7bkNlW1JcX1tfnXsWjy1PqCiqak+5uYeimapCHbVqb261RFciRzye8QdZO0R5iKdpBiz7LDWjM99DMX65gM0van366GoIAKCt81KjgrFLh/KFmjpbrVpNgUbDLOVUDs/7ncOuJ/uRFmmqq6zsbAQ2gNFOnOq9NYlxisrTF9lUKmXZWmnQf/z0zitJCbwQCd7fysg6elarVd/iOP2xuanN7Av6PEJSSgMAsEjHWPdbar9Njfreup47AoFx4e9s1knxer0xKZWQWLZQ09TQVM/SmVKkJAyNtsb6goJCSozHcDbYP8rb9Odmr78YeNhPFCj3z46fIGSXPDcfHCSE8FF+yZkrtwPrD9wMWYx6nDfuAAAAAElFTkSuQmCC",
-    fullPath: "/tabs/functions",
+    fullPath: "/tabs/admin_level_struct_generator",
     menuID: 'test',
   },
   overview: {

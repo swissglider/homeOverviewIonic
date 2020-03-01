@@ -46,8 +46,8 @@ export class OverviewPage implements OnInit {
             }
         `
     );
-    private valueSelectionID = 'enum.functions';
-    private valueSelectionFilters = [];
+    public valueSelectionID = 'enum.functions';
+    public valueSelectionFilters = [];
     public levelStruct: ILevelStruct;
     public values: { id?: string, value?: number | string | boolean, subscription: Subscription }[] = [];
     loaded = false;

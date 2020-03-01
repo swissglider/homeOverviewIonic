@@ -3,10 +3,8 @@ import { RouterModule } from '@angular/router';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { FunctionsPage } from './functions.page';
+import { AdminLevelStructGenerator } from './admin.level-struct.generator';
 import { MenuModule } from '../../modules/menu/menu.module';
-import { ModalComponent } from './modal/modal.component';
-import { ModalDynamicComponent } from './modal/modal.dynamic.component';
 import { AppStatesViewModule } from '../../modules/states_view/app.states.view.module';
 import { TreeModule } from '../../modules/tree/tree.comonent.model';
 
@@ -18,16 +16,11 @@ import { TreeModule } from '../../modules/tree/tree.comonent.model';
     MenuModule,
     AppStatesViewModule,
     TreeModule,
-    RouterModule.forChild([{ path: '', component: FunctionsPage }])
+    RouterModule.forChild([{ path: '', component: AdminLevelStructGenerator }])
   ],
   declarations: [
-    FunctionsPage,
-    ModalComponent,
-    ModalDynamicComponent,
+    AdminLevelStructGenerator,
   ],
-  entryComponents: [
-    ModalComponent,
-    ModalDynamicComponent,
-  ],
+  entryComponents: [],
 })
-export class FunctionsModule {}
+export class AdminLevelStructGeneratorModule {}
