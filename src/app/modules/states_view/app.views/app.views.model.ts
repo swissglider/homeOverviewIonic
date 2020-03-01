@@ -6,4 +6,5 @@ export enum ViewToShow {
     simple_value,
     header,
     small_chart_row,
+    divider_on_off
 }

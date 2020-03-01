@@ -2,39 +2,39 @@
 
 export let PageDeclarations = {
   tabLightsPage: {
-    order: 1,
+    order: 10,
     name: {
       en: "All Lights",
       de: "Alle Lichter",
     },
     path: 'tab-lights',
-    asTab: true,
+    asTab: false,
     tabIcon: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABkAAAAZCAYAAADE6YVjAAAABmJLR0QA/wD/AP+gvaeTAAADX0lEQVRIia3WTWzTZhgH8L9jJ67tYNKQpGUdY7LoukyCAxpbE5VqVUdFEWl7AsaNjwO7gYQGqBqypnWHfZzX26RJy2HbZUwRiwhbF0FV0U7aDhudVqBFK5A1Tdqmjh37tc2FIiVxUnfiuVj28/79e19/yRRc1pHPb+82DSpK2UabTXlzJmX9lbnc89BNlmrWlGXbc8d7832aaOdYbSnkq+SCjKn5CN2iV9i2ZYOL5E0PO36A9I/LMmVtGekfm2rjrJVUoPh7lFce8LBthzQFRZCUtdZ9d8ue1qM3R7tzrpHBT7Jh2ijdastlXqOJ0myxAABCC1jaeehv8JGeHy++ma/te+oStk3RpnIt4hIAAMZUEH6S6bLU/A9O/TrkyNjPJ7atzr7BuASeQ2Qd4urdvYMfZ45vitCmdt6/NituSXhW/rXZbYxZudAUeUf+xU+TUjuF6pscCAQwMjICSZIAAJIkYXh4GIFAoGocBRsMWWsf+OwPoSHCtgi7fZUCXzuToaEhTE9PIxaLIZFIIBaLYWZmBolEom41Xn2Ft6zyKw0RG2Q7bWlsbXB+fh6SJCGZTGJ5eRnJZBKSJGFhYaEOoU2txWPbrQ0RWCiYDKfVBrPZLHieR29vLyYnJxGPxyGKIrLZbB1CaE5lLLrqMa5CdL0yp7ORUl0SQDqdRmdnJwAgGo0ilUo5DYPOhkvCnoV7DZEJuY8QRrhv0XVXDABgGEbVtrYsugWmT5j77tgxsyECAIZPHF0J7v/P8Syb1Epwf86mhdHa43VI+lL8jsZ1pDWuo7IVQOU6NJV76afUlYO/bYoAwDrxni6Eum+XuZdVVwC/Sy2Eum8pxHvWqe+ITMh9hOtaHSiG3v46Hz74mNCC0zAQRkA+0vuoEHzrK75r9fCE3EecxjGNZvfs5p079OnUFxU29BFf/rcfQHijXwweWCoLuzKEEa+mr8Tnmiy0MbJRNz7o/gfAe8NXv61683TfdjX14eGTm+VdIRvF7ni1/fqiQLR9p4zri6KX3eFtd5t1jewM+pfODLzeUVzXGWLZ+ObXB4svHPEylAkArX5f1f4LRRSNUABQXNdBLBuKajb9CflfSEkl42Pf/3kBsEKAJ6/q5Eu3WdezAYBBeUq0OftdH8wb1y71OH5IneopkiFJ+1xUk6sAAAAASUVORK5CYII=",
     fullPath: "/tabs/tab-lights",
     redirect: ['/tabs/tab-functions?function=enum.functions.light', '/'],
     menuID: 'function',
   },
   doors: {
-    order: 2,
+    order: 11,
     name: {
       en: "All Doors",
       de: "Alle Türen",
     },
     path: 'tab-doors',
-    asTab: true,
+    asTab: false,
     tabIcon: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAABmJLR0QA/wD/AP+gvaeTAAAAcElEQVQ4je2UMQ5AQBRE34qGUqOh03ABtxDXcwsHUXMGF6DVbphkv0QlO+XLzKt+vuOZDsgEVzmB1QdOlHZgNgpHoAyVFqNMdpMXY1Oi8EfCHii+FA5AYy3Hw47CQFLBamAy7qs7UB+7BXKj8AA2H1xQxQrhNTZ0HQAAAABJRU5ErkJggg==",
     fullPath: "/tabs/tab-doors",
     redirect: '/tabs/tab-functions?function=enum.functions.doors',
     menuID: 'function',
   },
   windows: {
-    order: 3,
+    order: 12,
     name: {
       en: "All Windows",
       de: "Alle Fenster",
     },
     path: 'tab-windows',
-    asTab: true,
+    asTab: false,
     tabIcon: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAABmJLR0QA/wD/AP+gvaeTAAAApElEQVQ4je2ToQ6DMBRFzwifMI+uHh+Bnp5mll9BMgkevY+YHnp/MkOT7vIIpExsCde0OaWnL+0DvpxDMK+AS6SnA2qANIAOuEYKSz9JjcU70Atz4zgIPwNFCCzhi2mlvoKb8JNuTgzhpvy+0LpDBzyEHcexNL5dFA5ALmzuUfTgP7jDXbg9VttkQCPM95v+u9kaYWGwuWhffgifRmVr00buW84b5UcROtNP6xwAAAAASUVORK5CYII=",
     fullPath: "/tabs/tab-windows",
     redirect: '/tabs/tab-functions?function=enum.functions.window',
@@ -120,7 +120,43 @@ export let PageDeclarations = {
     path: 'overview_compact',
     asTab: true,
     tabIcon: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAABmJLR0QA/wD/AP+gvaeTAAAAuElEQVQ4jWNgoDJgROakzroww1CR34NUQ87f/7hjdppBBgMDAwMLsgQ7KxNHpouCPKkG5i64zAFjM5GqmRCguoEsuCT2XXvD0LX5Dk6N5b4qDI5aIsQb6KQlwuCERQMhQD8v33/9jeH03Q8oYlzszAw+huIMW86/ZNCW4WVQFOUi3kBFUS6sGhgYGBh8DMUpd6GpsgDcgsHpQgaG0TDEAYZY4fDz978f0/c8eEiqIT9///tBPSehAQAF8kVeuyKKDgAAAABJRU5ErkJggg==",
-    fullPath: "/tabs/overview_compact",
+    fullPath: "/tabs/overview_lights",
+    menuID: 'general',
+  },
+  overview_lights: {
+    order: 1,
+    name: {
+      de: "Lichter",
+      en: "lights",
+    },
+    path: 'overview_lights',
+    asTab: true,
+    tabIcon: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABkAAAAZCAYAAADE6YVjAAAABmJLR0QA/wD/AP+gvaeTAAADX0lEQVRIia3WTWzTZhgH8L9jJ67tYNKQpGUdY7LoukyCAxpbE5VqVUdFEWl7AsaNjwO7gYQGqBqypnWHfZzX26RJy2HbZUwRiwhbF0FV0U7aDhudVqBFK5A1Tdqmjh37tc2FIiVxUnfiuVj28/79e19/yRRc1pHPb+82DSpK2UabTXlzJmX9lbnc89BNlmrWlGXbc8d7832aaOdYbSnkq+SCjKn5CN2iV9i2ZYOL5E0PO36A9I/LMmVtGekfm2rjrJVUoPh7lFce8LBthzQFRZCUtdZ9d8ue1qM3R7tzrpHBT7Jh2ijdastlXqOJ0myxAABCC1jaeehv8JGeHy++ma/te+oStk3RpnIt4hIAAMZUEH6S6bLU/A9O/TrkyNjPJ7atzr7BuASeQ2Qd4urdvYMfZ45vitCmdt6/NituSXhW/rXZbYxZudAUeUf+xU+TUjuF6pscCAQwMjICSZIAAJIkYXh4GIFAoGocBRsMWWsf+OwPoSHCtgi7fZUCXzuToaEhTE9PIxaLIZFIIBaLYWZmBolEom41Xn2Ft6zyKw0RG2Q7bWlsbXB+fh6SJCGZTGJ5eRnJZBKSJGFhYaEOoU2txWPbrQ0RWCiYDKfVBrPZLHieR29vLyYnJxGPxyGKIrLZbB1CaE5lLLrqMa5CdL0yp7ORUl0SQDqdRmdnJwAgGo0ilUo5DYPOhkvCnoV7DZEJuY8QRrhv0XVXDABgGEbVtrYsugWmT5j77tgxsyECAIZPHF0J7v/P8Syb1Epwf86mhdHa43VI+lL8jsZ1pDWuo7IVQOU6NJV76afUlYO/bYoAwDrxni6Eum+XuZdVVwC/Sy2Eum8pxHvWqe+ITMh9hOtaHSiG3v46Hz74mNCC0zAQRkA+0vuoEHzrK75r9fCE3EecxjGNZvfs5p079OnUFxU29BFf/rcfQHijXwweWCoLuzKEEa+mr8Tnmiy0MbJRNz7o/gfAe8NXv61683TfdjX14eGTm+VdIRvF7ni1/fqiQLR9p4zri6KX3eFtd5t1jewM+pfODLzeUVzXGWLZ+ObXB4svHPEylAkArX5f1f4LRRSNUABQXNdBLBuKajb9CflfSEkl42Pf/3kBsEKAJ6/q5Eu3WdezAYBBeUq0OftdH8wb1y71OH5IneopkiFJ+1xUk6sAAAAASUVORK5CYII=",
+    fullPath: "/tabs/overview_lights",
+    menuID: 'general',
+  },
+  overview_doors: {
+    order: 2,
+    name: {
+      de: "Türen",
+      en: "doors",
+    },
+    path: 'overview_doors',
+    asTab: true,
+    tabIcon: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAABmJLR0QA/wD/AP+gvaeTAAAAcElEQVQ4je2UMQ5AQBRE34qGUqOh03ABtxDXcwsHUXMGF6DVbphkv0QlO+XLzKt+vuOZDsgEVzmB1QdOlHZgNgpHoAyVFqNMdpMXY1Oi8EfCHii+FA5AYy3Hw47CQFLBamAy7qs7UB+7BXKj8AA2H1xQxQrhNTZ0HQAAAABJRU5ErkJggg==",
+    fullPath: "/tabs/overview_doors",
+    menuID: 'general',
+  },
+  overview_windows: {
+    order: 3,
+    name: {
+      de: "Fenster",
+      en: "windows",
+    },
+    path: 'overview_windows',
+    asTab: true,
+    tabIcon: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAABmJLR0QA/wD/AP+gvaeTAAAApElEQVQ4je2ToQ6DMBRFzwifMI+uHh+Bnp5mll9BMgkevY+YHnp/MkOT7vIIpExsCde0OaWnL+0DvpxDMK+AS6SnA2qANIAOuEYKSz9JjcU70Atz4zgIPwNFCCzhi2mlvoKb8JNuTgzhpvy+0LpDBzyEHcexNL5dFA5ALmzuUfTgP7jDXbg9VttkQCPM95v+u9kaYWGwuWhffgifRmVr00buW84b5UcROtNP6xwAAAAASUVORK5CYII=",
+    fullPath: "/tabs/overview_windows",
     menuID: 'general',
   }
 };

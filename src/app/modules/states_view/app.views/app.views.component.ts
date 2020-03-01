@@ -29,7 +29,7 @@ export class AppViewsComponent implements OnInit {
   @Input() level?: number;
   @Input() withDetails?: boolean = true;
   @Input() withOpener?: boolean = true;
-  @Input() headerTitle: string | object;
+  @Input() headerTitle: string | object;  // => used in eViewToShow.header
   @Input() color?: string = 'light';
   @Input() emptyColor?: string = '';
   @Input() separator?: string = ' | ';
@@ -40,6 +40,7 @@ export class AppViewsComponent implements OnInit {
   public values: { id?: string, value?: number | string | boolean, subscription: Subscription }[] = [];
   public bgColor: string;
   public var_bgColor: string;
+  public name: string;
 
   constructor(
     public levelStructService: LevelStructService,
@@ -54,8 +55,19 @@ export class AppViewsComponent implements OnInit {
     // console.log('ngOnInit')
   }
 
-  ngOnChanges() {
+  ngOnChanges(changes) {
+    let firstChange = true;
+    Object.values(changes).forEach((e) => {
+      if(!e['firstChange']){
+        firstChange = false;
+      }
+    })
+    if(!firstChange){
+      console.log('ngOnChanges', changes, this.view);
+    }
+    if(Object.keys(changes).length === 1 && Object.keys(changes).includes('menu')){return;}
     if (this.view === this.eViewToShow.small_chart_row) {
+      this.name = this.getName();
       this.initChart();
     }
     this.setAllValue();
@@ -97,7 +109,7 @@ export class AppViewsComponent implements OnInit {
     Object.values(level_struct.elementStates).forEach((e: IElementState) => {
       e.getStateIDs().forEach(id => {
         let tsE = this.stateQuery.getEntity(id);
-        if (tsE.ts < Date.now() - (1000 * 60 * 60 * 24 * 30)) {
+        if (tsE.ts < Date.now() - (1000 * 60 * 60 * 24 * 15)) {
           not_updated_states.push(id);
           hasNotUpdatedTS = true;
         }
@@ -129,8 +141,8 @@ export class AppViewsComponent implements OnInit {
     }
   }
 
-  CTRLgetName(level_struct: ILevelStruct): string {
-    return (this.headerTitle) ? this.helperService.getByLanguage(this.headerTitle) : this.helperService.getByLanguage(level_struct.getName());
+  private getName(): string {
+    return (this.headerTitle) ? this.helperService.getByLanguage(this.headerTitle) : this.helperService.getByLanguage(this.levelStruct.getName());
   }
 
   CTRLcheckIfIn(toCheck: string, arr: ElementStates): boolean {
@@ -160,7 +172,6 @@ export class AppViewsComponent implements OnInit {
 
   private initChart() {
     let chartIDs = ['jeelink.1.LaCrosseWS_balkon.rain', 'jeelink.1.LaCrosseWS_balkon.wspeed2', 'mihome.0.devices.weather_v1_158d000321709f.pressure'];
-    console.log('Hallo-test', this.levelStruct)
     let onWeekAgo = new Date().getTime() - (1000 * 60 * 60 * 24 * 7);
     let now = new Date().getTime();
     chartIDs.forEach(id => {
@@ -198,7 +209,6 @@ export class AppViewsComponent implements OnInit {
           aggregate: 'average',
         }
       }).subscribe((result) => {
-        console.log(result);
         this.ngZone.run(() => {
           for (let i = 0; i < result['result'].length; i++) {
 

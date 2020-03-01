@@ -66,7 +66,8 @@ export class OverviewCompactPage implements OnInit {
     public valueSelectionFilters = ["enum.functions.batterie", "enum.functions.hum", "enum.functions.temp", "enum.functions.pressure", "enum.functions.low_batterie", "enum.functions.light", "enum.functions.window", "enum.functions.wind_", "enum.functions.doors", "enum.functions.motion"];
     public levelStruct: ILevelStruct;
     public values: { id?: string, value?: number | string | boolean, subscription: Subscription }[] = [];
-    loaded = false;
+    public loaded = false;
+    public menu = this.pageService.getActiveMenuModel();
 
     constructor(
         public pageService: PageService,
@@ -79,13 +80,13 @@ export class OverviewCompactPage implements OnInit {
 
     /** @ignore */
     ngOnInit(): void {
+        this.init();
     }
 
     ionViewDidEnter() {
     }
 
     ionViewWillEnter() {
-        this.init();
     }
 
     private init() {

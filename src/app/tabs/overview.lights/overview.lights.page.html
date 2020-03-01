@@ -1,0 +1,40 @@
+<ion-header>
+    <br>
+    <app-views-component *ngIf="loaded" [levelStruct]="this.levelStruct" [htmlBoolPanels]="this.valueSelectionFilters"
+        [valueSelectionID]="this.valueSelectionID" [valueSelectionFilters]="this.valueSelectionFilters"
+        [view]="viewToShow.header" [menu]="menu" [headerTitle]="title">
+    </app-views-component>
+</ion-header>
+
+<ion-content>
+    <ng-container *ngIf="!loaded">loading...</ng-container>
+
+    <ng-container *ngIf="loaded">
+        <div>
+            <ng-container *ngFor="let member of this.levelStruct.getMembers()">
+                <ng-container *ngTemplateOutlet="recursiveList; context:{ $implicit: member }"></ng-container>
+            </ng-container>
+        </div>
+    </ng-container>
+
+    <ng-template #recursiveList let-level_struct>
+        <ng-container *ngIf="level_struct">
+            <app-views-component *ngIf="loaded && level_struct.level === 1" [levelStruct]="level_struct"
+                [htmlBoolPanels]="this.valueSelectionFilters" [valueSelectionID]="this.valueSelectionID"
+                [valueSelectionFilters]="this.valueSelectionFilters" [view]="viewToShow.divider_on_off"
+                [level]="level_struct.level-2" [withOpener]="false">
+            </app-views-component>
+            <app-views-component *ngIf="loaded && level_struct.level > 1" [levelStruct]="level_struct"
+                [htmlBoolPanels]="this.valueSelectionFilters" [valueSelectionID]="this.valueSelectionID"
+                [valueSelectionFilters]="this.valueSelectionFilters" [view]="viewToShow.ultra_compact"
+                [level]="level_struct.level-2" [withDetails]="false" [withOpener]="false" [color]="'light'"
+                [emptyColor]="''">
+            </app-views-component>
+            <ng-container>
+                <ng-container *ngFor="let member of level_struct.getMembers()">
+                    <ng-container *ngTemplateOutlet="recursiveList; context:{ $implicit: member }"></ng-container>
+                </ng-container>
+            </ng-container>
+        </ng-container>
+    </ng-template>
+</ion-content>

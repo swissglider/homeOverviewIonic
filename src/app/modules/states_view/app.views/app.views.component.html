@@ -269,9 +269,49 @@
         </div>
     </ng-template>
     <!-- ========================================================================================================================== -->
+    <ng-template [ngSwitchCase]="eViewToShow.divider_on_off">
+        <div *ngIf="levelStruct" [style.padding-left.px]="CTRLgetLevel(levelStruct)*10">
+            <ion-toolbar [color]="bgColor">
+                <!-- <img style="padding:0.5em;width: 35px;" slot="start" [src]="levelStruct.getBase64Icon()"> -->
+                <label slot="end" style="margin-right:1em;" (click)="levelStruct.totalOpen = !levelStruct.totalOpen">
+                    <b>{{helperService.getByLanguage(levelStruct.getName())}}</b>
+                </label>
+                <label slot="end" style="margin-right:1em;" (click)="levelStruct.totalOpen = !levelStruct.totalOpen">
+                    <img style="width: 4vw; min-width: 10px;" [src]="levelStruct.getBase64Icon()">
+                </label>
+                <ion-icon slot="end" class="item-detail-icon" name="arrow-forward" color="medium" size="small"
+                    *ngIf="withOpener && !levelStruct.totalOpen && levelStruct.hasMembers()"
+                    (click)="levelStruct.totalOpen = !levelStruct.totalOpen"></ion-icon>
+                <ion-icon slot="end" class="item-detail-icon" name="arrow-down" color="medium" size="small"
+                    *ngIf="withOpener && levelStruct.totalOpen && levelStruct.hasMembers()"
+                    (click)="levelStruct.totalOpen = !levelStruct.totalOpen"></ion-icon>
+                <ion-buttons slot="start">
+                    <ng-container *ngFor="let htmlFunction of htmlBoolPanels">
+                        <ion-button *ngIf="CTRLcheckIfIn(htmlFunction, levelStruct.elementStates) && levelStruct.elementStates[htmlFunction].getWrite()"
+                            (click)="levelStruct.elementStates[htmlFunction].setNewState(!values[levelStruct.elementStates[htmlFunction].uniqID].value)"
+                            color="medium" fill="outline">
+                            <ion-label>ON</ion-label>
+                        </ion-button>
+                        <ion-button *ngIf="CTRLcheckIfIn(htmlFunction, levelStruct.elementStates)"
+                            (click)="levelStruct.elementStates[htmlFunction].setNewState(!values[levelStruct.elementStates[htmlFunction].uniqID].value)"
+                            size="small" color="light" fill="clear" style="--padding-end:0px; --padding-start:0px">
+                            <img
+                                [src]="levelStruct.elementStates[htmlFunction].getBase64Icon(values[levelStruct.elementStates[htmlFunction].uniqID].value)">
+                        </ion-button>
+                        <ion-button *ngIf="CTRLcheckIfIn(htmlFunction, levelStruct.elementStates) && levelStruct.elementStates[htmlFunction].getWrite()"
+                            (click)="levelStruct.elementStates[htmlFunction].setNewState(!values[levelStruct.elementStates[htmlFunction].uniqID].value)"
+                            color="medium" fill="outline">
+                            <ion-label>OFF</ion-label>
+                        </ion-button>
+                    </ng-container>
+                </ion-buttons>
+            </ion-toolbar>
+        </div>
+    </ng-template>
+    <!-- ========================================================================================================================== -->
     <ng-template [ngSwitchCase]="eViewToShow.header">
         <ion-toolbar *ngIf="levelStruct">
-            <app-menu-bar [menu]="menu" [menuTitle]="CTRLgetName(levelStruct)" [iconImg]="levelStruct.getBase64Icon()">
+            <app-menu-bar [menu]="menu" [menuTitle]="name" [iconImg]="levelStruct.getBase64Icon()">
             </app-menu-bar>
             <ion-buttons slot="end">
                 <ion-button *ngIf="CTRLhasNotUpdatedSince1Month(levelStruct)" size="small" color="light" fill="clear"
@@ -294,8 +334,6 @@
                 <ng-container *ngFor="let htmlFunction of htmlNumberPanels">
                     <ion-button *ngIf="CTRLcheckIfIn(htmlFunction, levelStruct.elementStates)" color="primary"
                         size="small" fill="clear" style="--padding-end:0px; --padding-start:0px">
-                        <!-- <img
-                            [src]="levelStruct.elementStates[htmlFunction].getBase64Icon(values[levelStruct.elementStates[htmlFunction].uniqID].value, 10)"> -->
                         <ion-label style="font-size: small;">
                             &#160;{{values[levelStruct.elementStates[htmlFunction].uniqID].value}}{{levelStruct.elementStates[htmlFunction].getUnit()}}
                         </ion-label>

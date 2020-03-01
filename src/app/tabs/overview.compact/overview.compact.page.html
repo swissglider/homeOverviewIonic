@@ -4,7 +4,7 @@
         [htmlBoolPanels]="this.html_boolean_panel_functions_title"
         [htmlNumberPanels]="this.html_number_panel_functions_title" [valueSelectionID]="this.valueSelectionID"
         [valueSelectionFilters]="this.valueSelectionFilters" [view]="viewToShow.header"
-        [menu]="pageService.getActiveMenuModel()"></app-views-component>
+        [menu]="menu"></app-views-component>
     <div style="padding-left: 0.5em!important; padding-right: 0.5em!important; height: 70px;">
         <app-views-component *ngIf="loaded" [levelStruct]="this.levelStruct" [htmlNumberPanels]="simpleValues"
             [valueSelectionID]="this.valueSelectionID" [valueSelectionFilters]="this.valueSelectionFilters"
