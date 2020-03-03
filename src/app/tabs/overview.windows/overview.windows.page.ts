@@ -1,17 +1,16 @@
-import { Component, NgZone, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { PageService } from 'src/app/service/page.service';
 import { ILevelStruct } from '../../service/level.service/level.struct.model';
 import { LevelStructService } from '../../service/level.service/level.struct.service';
-import { Observable, Subscription } from 'rxjs';
-import { IOBrokerService } from 'src/app/service/io-broker.service';
-import { HelperService } from 'src/app/service/helper.service';
+import { Observable } from 'rxjs';
 import { ViewToShow } from 'src/app/modules/states_view/app.views/app.views.model';
-import { IoBEnumQuery } from 'src/app/store/enum/io-benum.query';
+import { MenuModel } from 'src/app/modules/menu/menu.model';
 
 @Component({
     selector: 'app-overview-windows',
     templateUrl: 'overview.windows.page.html',
-    styleUrls: ['overview.windows.page.scss']
+    styleUrls: ['overview.windows.page.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class OverviewWindowsPage implements OnInit{
 
@@ -30,47 +29,23 @@ export class OverviewWindowsPage implements OnInit{
     public valueSelectionID = 'enum.functions';
     public valueSelectionFilters = ["enum.functions.window"];
 
-    public title: string | object = '';
+    public title: string | object = {en:"Windows", de:"Fenster"};
     public viewToShow = ViewToShow;
-    public levelStruct: ILevelStruct;
-    public values: { id?: string, value?: number | string | boolean, subscription: Subscription }[] = [];
-    public loaded = false;
-    public menu = this.pageService.getActiveMenuModel();
-    
+    public menu: MenuModel;
+
+    public levelStruct$: Observable<ILevelStruct>;
+
     ngOnInit(): void {
-        this.init();
+        this.menu = this.pageService.getActiveMenuModel();
+        this.levelStruct$ = this.levelStructService.transformLevelObjectToLevelStruct(
+            this.inputLevelObject,
+            this.valueSelectionID,
+            this.valueSelectionFilters,
+        );
     }
 
     constructor(
         public pageService: PageService,
         public levelStructService: LevelStructService,
-        private ioBrokerService: IOBrokerService,
-        public helperService: HelperService,
-        private enumQuery: IoBEnumQuery,
-        private ngZone: NgZone,
     ) { }
-
-    ionViewWillEnter() {}
-
-    private init() {
-        this.ioBrokerService.selectLoaded().subscribe(e => {
-            if (e === false) { }
-            if (e === true) {
-                this.ngZone.run(()=>{
-                    this.title = this.enumQuery.getEntity(this.valueSelectionFilters[0]).common.name;
-                });
-                let temp: Observable<ILevelStruct> = this.levelStructService.transformLevelObjectToLevelStruct(
-                    this.inputLevelObject,
-                    this.valueSelectionID,
-                    this.valueSelectionFilters,
-                )
-                temp.subscribe((e: ILevelStruct) => {
-                    this.ngZone.run(() => {
-                        this.levelStruct = e;
-                        this.loaded = true;
-                    });
-                });
-            }
-        });
-    }
 }

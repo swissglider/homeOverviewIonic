@@ -34,6 +34,8 @@ export interface ILevelStruct {
     elementStates: ElementStates,
     totalOpen: boolean,
     detailOpen:boolean,
+    batteryOk$: Observable<{value: boolean}>,
+    batteryNotOkIDs$: Observable<{value: string[]}>,
     getName: () => string | Object,
     setNewInputLevelObject: (lo: IInputLevelObject) => void,
     setNewValueSelection: (valueSelectionID: string, valueSelectionFilters: string[]) => void,
@@ -41,6 +43,9 @@ export interface ILevelStruct {
     getParentMemberID: () => string;
     getMembers: () => ILevelStruct[];
     hasMembers: () => boolean;
+    hasNotUpdatedSince1Month: () => boolean;
+    getNotUpdatedSince1MonthIDs: () => string[];
+    getBatteryIcon: () => string;
 }
 
 export interface IAppStates {
@@ -55,6 +60,7 @@ export interface ElementStates {
 
 export interface IElementState {
     value$: Observable<number | string | boolean>,
+    valueS$: Observable<{value: number | string | boolean}>,
     uniqID: string,
     init: () => void;
     getSelectValueSelection: () => string,
@@ -70,6 +76,7 @@ export interface IElementState {
     getBase64IconOff: (size?: number) => string;
     getBase64Icon: (fall: boolean | string, size?: number) => string; // fall can be true/false/'neutral'
     setNewState: (value: number | string | boolean) => void;
+    toggleState: () => void;
     // selectValue: () => Observable<number | string | boolean>,
 }
 

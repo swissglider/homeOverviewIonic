@@ -57,9 +57,9 @@ export class IOBrokerService {
     enums: false
   };
   private _isLoaded = false;
-  private _loaded$ = new BehaviorSubject(false);
+  public _loaded$ = new BehaviorSubject(false);
   
-  loaded$: Observable<boolean> = this._loaded$.asObservable();
+  // public loaded$: Observable<boolean> = this._loaded$.asObservable();
 
   /** if all are loaded it returns true (ioBroker Objects, Enums and States) */
   public get loaded(): boolean {

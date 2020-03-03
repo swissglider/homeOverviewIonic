@@ -1,17 +1,22 @@
 <ion-header>
     <br>
-    <app-views-component *ngIf="loaded" [levelStruct]="this.levelStruct" [htmlBoolPanels]="this.valueSelectionFilters"
-        [valueSelectionID]="this.valueSelectionID" [valueSelectionFilters]="this.valueSelectionFilters"
-        [view]="viewToShow.header" [menu]="menu" [headerTitle]="title">
-    </app-views-component>
+    <ng-container *ngIf="(levelStruct$ | async) as level_struct else loading">
+        <app-views-component [levelStruct]="level_struct" [htmlBoolPanels]="this.valueSelectionFilters"
+            [valueSelectionID]="this.valueSelectionID" [valueSelectionFilters]="this.valueSelectionFilters"
+            [view]="viewToShow.header" [menu]="menu" [headerTitle]="title">
+        </app-views-component>
+    </ng-container>
 </ion-header>
 
-<ion-content>
-    <ng-container *ngIf="!loaded">loading...</ng-container>
+<ng-template #loading>
+    <div>Loading ...</div>
+</ng-template>
 
-    <ng-container *ngIf="loaded">
+<ion-content>
+
+    <ng-container *ngIf="(levelStruct$ | async) as level_struct">
         <div>
-            <ng-container *ngFor="let member of this.levelStruct.getMembers()">
+            <ng-container *ngFor="let member of level_struct.getMembers()">
                 <ng-container *ngTemplateOutlet="recursiveList; context:{ $implicit: member }"></ng-container>
             </ng-container>
         </div>
@@ -19,12 +24,12 @@
 
     <ng-template #recursiveList let-level_struct>
         <ng-container *ngIf="level_struct">
-            <app-views-component *ngIf="loaded && level_struct.level === 1" [levelStruct]="level_struct"
-                [htmlBoolPanels]="this.valueSelectionFilters" [valueSelectionID]="this.valueSelectionID"
-                [valueSelectionFilters]="this.valueSelectionFilters" [view]="viewToShow.divider_on_off"
+            <app-views-component *ngIf="level_struct.level === 1" [levelStruct]="level_struct"
+                [htmlBoolPanels]="this.valueSelectionFilters" [valueSelectionID]="this.valueSelectionID" [htmlNumberPanels]="this.valueSelectionFilters"
+                [valueSelectionFilters]="this.valueSelectionFilters" [view]="viewToShow.divider"
                 [level]="level_struct.level-2" [withOpener]="false">
             </app-views-component>
-            <app-views-component *ngIf="loaded && level_struct.level > 1" [levelStruct]="level_struct"
+            <app-views-component *ngIf="level_struct.level > 1" [levelStruct]="level_struct"
                 [htmlBoolPanels]="this.valueSelectionFilters" [valueSelectionID]="this.valueSelectionID"
                 [valueSelectionFilters]="this.valueSelectionFilters" [view]="viewToShow.ultra_compact"
                 [level]="level_struct.level-2" [withDetails]="false" [withOpener]="false" [color]="'light'"
