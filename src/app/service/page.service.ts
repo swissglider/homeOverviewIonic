@@ -90,6 +90,14 @@ export class PageService {
   }
 
   getActiveMenuModel(): MenuModel {
+    console.log('getActiveMenuModel')
+    var tmpMenuModule: MenuModel = {
+      activeID: this.getCurrentPageID(),
+      name: this.getCurrentPageName(),
+      activeIcon: this.getStandardIcon(),
+      defaultOpen: true,
+      menuIcon: this.iconsService.getIcon('menu', 'default', '20'),
+    }
     var tmpMenuModule: MenuModel = {
       activeID: this.getCurrentPageID(),
       name: this.getCurrentPageName(),

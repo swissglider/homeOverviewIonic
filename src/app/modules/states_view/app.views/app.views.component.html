@@ -26,7 +26,7 @@
                                 <img
                                     src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAABmJLR0QA/wD/AP+gvaeTAAACcUlEQVQ4ja2US0hUYRTHf9/cybkzMZYTaYvUhbXSHHclRIRQQRDUyOAEiS0Cs0XgYxjapJsWgmEhSFtXoRMuCkI3Ggm5aDXlKrQQLXzQzPhoHHTuPS2uj3mok9AfDvfwcfh953U/+M9S+QLE116O3XYWgJQ5r4afzx4ZKLe6XJxIBdFUCy6nTrHHAGAxqpFMJjGkn7jWo951JfICxR+swaWPUOt146tzcbooM2A5BsNjCSYjayQ3b6jB7sjB5fmDNdLUuSJT05Kh8c+WpevrtEhT54o0hLzpDFtGmS59hGBjIZUVmTfF1y1LV1UFdDQWoheMir/VmQPkRCpIrdedAztMVRVwqdqN83hHLtBua8FX5/p32rZ8dS6UrSUDKL72cpy6njMAAMOE2V8wt2D52Sr2gO5wSaCtFMAOgGYv3V2NbI1+gvUNy+8fgrIzln+5Bk6dtPwSj0EsXgbMWSUrUxDZvyTbXlcw0zNM2zhHgYFYyVkZpsx5lmPavsBrF62vCFyvBc2WG/Owfpy+FxOE087k/tMFWYrKkfQ7LrK6LiJyb4dj3yUa0s/wWIjm+vyTXo7By9fwbXanLXfF3/pehXuje/nHtR4mI2tMzeTlZcAATPMm2Psg61+WhpAXXf9IR2MhVQcseGwVmp9B9Xm4cM46m/wC339uwA93RofVYHeEZPIKPQOLvHqTYCmaC7Rvd2ntDyxGLUskAbVFZaUc/HwVpdpRtkfoDiclHgNHgcmD2x8o9rwl8CRglZmejepTQ92P8z+wgbZSTK0MUzuGmplQ4bAh/laP1TN1B9QWigFkM6TCvRv5eIdfdrXLLllz+AsxjCwtATRyEwAAAABJRU5ErkJggg==">
                             </ion-button>
-                            <ng-container *ngIf="levelStruct._batteryOk$ | async as batteryState">
+                            <ng-container *ngIf="levelStruct.batteryOk$ | async as batteryState">
                                 <ion-button *ngIf="batteryState.value != true" size="small" color="light" fill="clear"
                                     style="--padding-end:0px; --padding-start:0px">
                                     <img [src]="levelStruct.getBatteryIcon()">
@@ -111,7 +111,7 @@
                         <img
                             src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAABmJLR0QA/wD/AP+gvaeTAAACcUlEQVQ4ja2US0hUYRTHf9/cybkzMZYTaYvUhbXSHHclRIRQQRDUyOAEiS0Cs0XgYxjapJsWgmEhSFtXoRMuCkI3Ggm5aDXlKrQQLXzQzPhoHHTuPS2uj3mok9AfDvfwcfh953U/+M9S+QLE116O3XYWgJQ5r4afzx4ZKLe6XJxIBdFUCy6nTrHHAGAxqpFMJjGkn7jWo951JfICxR+swaWPUOt146tzcbooM2A5BsNjCSYjayQ3b6jB7sjB5fmDNdLUuSJT05Kh8c+WpevrtEhT54o0hLzpDFtGmS59hGBjIZUVmTfF1y1LV1UFdDQWoheMir/VmQPkRCpIrdedAztMVRVwqdqN83hHLtBua8FX5/p32rZ8dS6UrSUDKL72cpy6njMAAMOE2V8wt2D52Sr2gO5wSaCtFMAOgGYv3V2NbI1+gvUNy+8fgrIzln+5Bk6dtPwSj0EsXgbMWSUrUxDZvyTbXlcw0zNM2zhHgYFYyVkZpsx5lmPavsBrF62vCFyvBc2WG/Owfpy+FxOE087k/tMFWYrKkfQ7LrK6LiJyb4dj3yUa0s/wWIjm+vyTXo7By9fwbXanLXfF3/pehXuje/nHtR4mI2tMzeTlZcAATPMm2Psg61+WhpAXXf9IR2MhVQcseGwVmp9B9Xm4cM46m/wC339uwA93RofVYHeEZPIKPQOLvHqTYCmaC7Rvd2ntDyxGLUskAbVFZaUc/HwVpdpRtkfoDiclHgNHgcmD2x8o9rwl8CRglZmejepTQ92P8z+wgbZSTK0MUzuGmplQ4bAh/laP1TN1B9QWigFkM6TCvRv5eIdfdrXLLllz+AsxjCwtATRyEwAAAABJRU5ErkJggg==">
                     </ion-button>
-                    <ng-container *ngIf="levelStruct._batteryOk$ | async as batteryState">
+                    <ng-container *ngIf="levelStruct.batteryOk$ | async as batteryState">
                         <ion-button *ngIf="batteryState.value != true" size="small" color="light" fill="clear"
                             style="--padding-end:0px; --padding-start:0px">
                             <img [src]="levelStruct.getBatteryIcon()">
@@ -244,7 +244,7 @@
                     <img
                         src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAABmJLR0QA/wD/AP+gvaeTAAACcUlEQVQ4ja2US0hUYRTHf9/cybkzMZYTaYvUhbXSHHclRIRQQRDUyOAEiS0Cs0XgYxjapJsWgmEhSFtXoRMuCkI3Ggm5aDXlKrQQLXzQzPhoHHTuPS2uj3mok9AfDvfwcfh953U/+M9S+QLE116O3XYWgJQ5r4afzx4ZKLe6XJxIBdFUCy6nTrHHAGAxqpFMJjGkn7jWo951JfICxR+swaWPUOt146tzcbooM2A5BsNjCSYjayQ3b6jB7sjB5fmDNdLUuSJT05Kh8c+WpevrtEhT54o0hLzpDFtGmS59hGBjIZUVmTfF1y1LV1UFdDQWoheMir/VmQPkRCpIrdedAztMVRVwqdqN83hHLtBua8FX5/p32rZ8dS6UrSUDKL72cpy6njMAAMOE2V8wt2D52Sr2gO5wSaCtFMAOgGYv3V2NbI1+gvUNy+8fgrIzln+5Bk6dtPwSj0EsXgbMWSUrUxDZvyTbXlcw0zNM2zhHgYFYyVkZpsx5lmPavsBrF62vCFyvBc2WG/Owfpy+FxOE087k/tMFWYrKkfQ7LrK6LiJyb4dj3yUa0s/wWIjm+vyTXo7By9fwbXanLXfF3/pehXuje/nHtR4mI2tMzeTlZcAATPMm2Psg61+WhpAXXf9IR2MhVQcseGwVmp9B9Xm4cM46m/wC339uwA93RofVYHeEZPIKPQOLvHqTYCmaC7Rvd2ntDyxGLUskAbVFZaUc/HwVpdpRtkfoDiclHgNHgcmD2x8o9rwl8CRglZmejepTQ92P8z+wgbZSTK0MUzuGmplQ4bAh/laP1TN1B9QWigFkM6TCvRv5eIdfdrXLLllz+AsxjCwtATRyEwAAAABJRU5ErkJggg==">
                 </ion-button>
-                <ng-container *ngIf="levelStruct._batteryOk$ | async as batteryState">
+                <ng-container *ngIf="levelStruct.batteryOk$ | async as batteryState">
                     <ion-button *ngIf="batteryState.value  != true" size="small" color="light" fill="clear"
                         style="--padding-end:0px; --padding-start:0px">
                         <img [src]="levelStruct.getBatteryIcon()">

@@ -1,4 +1,4 @@
-
+import { environment } from '../../environments/environment';
 
 export let PageDeclarations = {
   // tabLightsPage: {

@@ -1,11 +1,12 @@
-import { Component, OnInit, EventEmitter, Output } from '@angular/core';
+import { Component, OnInit, EventEmitter, Output, ChangeDetectionStrategy } from '@angular/core';
 import { Input } from '@angular/core';
 import { MenuModel, MenuFolderModel } from '../menu.model';
 
 @Component({
   selector: 'app-menu-tree',
   templateUrl: './menu.tree.component.html',
-  styleUrls: ['./menu.tree.component.scss']
+  styleUrls: ['./menu.tree.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MenuTreeComponent implements OnInit {
 

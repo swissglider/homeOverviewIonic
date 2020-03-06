@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { IconsService } from '../../service/icons.service';
 import { HelperService } from '../../service/helper.service';
 import { Router, RouterEvent } from '@angular/router';
@@ -8,7 +8,8 @@ import { PageDeclarations } from 'src/app/declaration/page.declaration';
 @Component({
   selector: 'app-tabs',
   templateUrl: 'tabs.page.html',
-  styleUrls: ['tabs.page.scss']
+  styleUrls: ['tabs.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TabsPage {
 

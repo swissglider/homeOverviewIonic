@@ -1,4 +1,4 @@
-import { Component, Input} from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy} from '@angular/core';
 import { Router } from '@angular/router';
 import { ModalController } from '@ionic/angular';
 import { ModalComponent } from './modal/modal.component';
@@ -9,7 +9,8 @@ import { IconsService } from 'src/app/service/icons.service';
 @Component({
   selector: 'app-menu-bar',
   templateUrl: 'menu-bar.component.html',
-  styleUrls: ['menu-bar.component.scss']
+  styleUrls: ['menu-bar.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MenuBarComponent {
 

@@ -1,0 +1,48 @@
+{
+    "apps": [
+        {
+            "path": "testtab",
+            "moduleName": "TestTabModule",
+            "data": {
+                "componentName": "TestTab",
+                "order": 3,
+                "title": "Tab 0",
+                "icon": "person-circle"
+            }
+        },
+        {
+            "path": "testtab1",
+            "moduleName": "TestTabModule1",
+            "data": {
+                "componentName": "TestTab1",
+                "order": 1,
+                "title": "Tab XX",
+                "icon": "person-circle"
+            }
+        },
+        {
+            "path": "testtab2",
+            "moduleName": "TestTabModule2",
+            "data": {
+                "componentName": "TestTab2",
+                "order": 2,
+                "title": "Tab 2",
+                "icon": "map"
+            }
+        },
+        {
+            "path": "testtab3",
+            "moduleName": "TestTabModule3",
+            "data": {
+                "componentName": "TestTab3",
+                "id": 2,
+                "title": "Tab 3",
+                "icon": "information-circle"
+            }
+        }
+    ],
+    "menu": {
+        "title": "Menu",
+        "icon": "menu-outline"
+    }
+}
