@@ -1,0 +1,31 @@
+<ion-header>
+    <div style="padding-top:1rem; padding-bottom: 1rem;padding-left: 1rem;padding-right: 1rem;">
+        <ion-toolbar color="light" (click)="myDismiss()">
+            <img *ngIf="menu['image']" style="padding-left: 1em;" [src]="menu['image']" slot="start">
+            <div style="margin-left:1rem;">{{menu['title'] | getname}}</div>
+        </ion-toolbar>
+    </div>
+</ion-header>
+<ion-content>
+    <ng-container *ngFor="let folderItem of folders | keyvalue">
+        <ng-container *ngIf="folderItem.value.values.length !== 0">
+            <ng-container *ngIf="folderItem.value.params as folderParams">
+                <ion-item-divider lines='none'>
+                    <ion-label>{{folderParams.menuName  | getname}}</ion-label>
+                </ion-item-divider>
+                <ng-container *ngFor="let linkItem of folderItem.value.values; trackBy: trackByPath">
+                    <ion-item lines='none' (click)="navigate(linkItem.fullPath)">
+                        <ng-container *ngIf="linkItem.isActive">
+                            <img [src]="linkItem.image_selected_true" slot="start">
+                            <ion-label color="primary">{{linkItem.title | getname}}</ion-label>
+                        </ng-container>
+                        <ng-container *ngIf="!linkItem.isActive">
+                            <img [src]="linkItem.image_selected_false" slot="start">
+                            <ion-label>{{linkItem.title | getname}}</ion-label>
+                        </ng-container>
+                    </ion-item>
+                </ng-container>
+            </ng-container>
+        </ng-container>
+    </ng-container>
+</ion-content>

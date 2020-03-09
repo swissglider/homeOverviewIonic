@@ -1,0 +1,6 @@
+<div style="padding-top:1rem; padding-bottom: 1rem;padding-left: 1rem;padding-right: 1rem;">
+    <ion-toolbar color="light" (click)="presentModal()">
+        <img *ngIf="route.snapshot.data.image" style="padding-left: 1em;" [src]="route.snapshot.data.image" slot="start">
+        <div style="margin-left:1rem;">{{route.snapshot.data.title | getname}}</div>
+    </ion-toolbar>
+</div>

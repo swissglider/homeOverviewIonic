@@ -1,7 +1,8 @@
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
-import { AppRouteResolver } from './app-route.resolver';
-import { RouterResolver } from './route.resolver';
+import { AppRouteResolver } from './homeoverview/app/resolver/app-route.resolver';
+import { RouterResolver } from './homeoverview/app/resolver/route.resolver';
+import { StartUpComponent } from './homeoverview/start.up/start.up.component'
 
 const routes: Routes = [
   // {
@@ -9,13 +10,23 @@ const routes: Routes = [
   //   loadChildren: () => import('./tabs/tabs/tabs.module').then(m => m.TabsPageModule)
   // },
   {
-    path: '',
+    path: 'app',
     resolve: { model: AppRouteResolver, loadRouts: RouterResolver },
-    loadChildren: () => import('./test.app/tabs/tabs/tabs.module').then(m => m.TabsPageModule)
+    loadChildren: () => import('./homeoverview/app/tabs/tabs/tabs.module').then(m => m.TabsPageModule)
+  },
+  {
+    path: 'starUp',
+    // resolve: { model: AppRouteResolver, loadRouts: RouterResolver },
+    // loadChildren: () => import('./homeoverview/start.up/start.up.module').then(m => m.StartUpModule)
+    component: StartUpComponent,
+  },
+  { path: '',
+    redirectTo: '/starUp',
+    pathMatch: 'full'
   },
   {
     path: '**',
-    redirectTo: ''
+    redirectTo: 'starUp'
   },
 ];
 @NgModule({
