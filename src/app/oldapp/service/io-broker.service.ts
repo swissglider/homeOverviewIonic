@@ -38,7 +38,7 @@ const socketConfig = {
 };
 
 /** socket */
-const socket = io.connect(url, socketConfig);
+let socket;
 
 /**
  * The IOBrokerService is responsible for creating the IoBStates and IoBObjects.
@@ -96,14 +96,16 @@ export class IOBrokerService {
     private ioBenumStore: IoBEnumStore,
     private newIOBStateQuery: NewIOBStateQuery,
     private ioBobjectQuery: IoBObjectQuery,
-    private ioBstateQuery: IoBStateQuery,
     private ioBenumQuery: IoBEnumQuery,
     private errorMsgQuery: ErrorMsgQuery,
     private errorMsgStore: ErrorMsgStore,
-  ) { }
+  ) { 
+    console.log('Hallo')
+    this.init();
+  }
 
   /** this initiate the connection to the ioBroker and has only to be called from the app.component */
-  public init() {
+  private init() {
     this.connect();
 
     /** Listen to updates on the NewIOBStateStore */
@@ -119,7 +121,6 @@ export class IOBrokerService {
           }
         });
       };
-
       switch (action.type) {
         case EntityActions.Add:
           setNewState(action);
@@ -149,6 +150,8 @@ export class IOBrokerService {
   /** @ignore */
   private connect() {
 
+    socket = io.connect(url, socketConfig);
+    
     socket.on('log', (obj) => {
       console.log('-------------- LOG --------------');
       console.log(obj);
@@ -599,7 +602,7 @@ export class IOBrokerService {
         scope: 'global'
       });
     });
-
+    
     return () => socket.disconnect();
   }
 

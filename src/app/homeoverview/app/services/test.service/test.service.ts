@@ -15,7 +15,7 @@ export class TestService {
         setTimeout(()=>{
             observer.next(true);
             observer.complete();
-        }, 5000);
+        }, 500);
     };
 
     public isFinished():Observable<boolean>{

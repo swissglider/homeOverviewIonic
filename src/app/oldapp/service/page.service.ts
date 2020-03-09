@@ -90,7 +90,6 @@ export class PageService {
   }
 
   getActiveMenuModel(): MenuModel {
-    console.log('getActiveMenuModel')
     var tmpMenuModule: MenuModel = {
       activeID: this.getCurrentPageID(),
       name: this.getCurrentPageName(),

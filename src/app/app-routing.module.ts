@@ -3,10 +3,12 @@ import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 import { AppRouteResolver } from './homeoverview/app/resolver/app-route.resolver';
 import { RouterResolver } from './homeoverview/app/resolver/route.resolver';
 import { StartUpComponent } from './homeoverview/start.up/start.up.component'
+import { OldAppRouteResolver } from './oldapp/resolver/old-app-route.resolver'
 
 const routes: Routes = [
   {
     path: 'oldapp',
+    resolve: { loaded: OldAppRouteResolver},
     loadChildren: () => import('./oldapp/tabs/tabs/tabs.module').then(m => m.TabsPageModule)
   },
   {

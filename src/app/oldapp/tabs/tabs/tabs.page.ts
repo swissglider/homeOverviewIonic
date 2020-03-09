@@ -20,7 +20,7 @@ export class TabsPage {
     public iconsService: IconsService,
     public helperService: HelperService,
     private router: Router,
-    public navCtrl: NavController
+    public navCtrl: NavController,
   ) {
     this.pages.sort((a,b) => a.order-b.order);
     this.router.events.subscribe((event: RouterEvent) => {
