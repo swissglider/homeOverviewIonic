@@ -1,6 +1,6 @@
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ModalController } from '@ionic/angular';
+import { ModalController, NavController } from '@ionic/angular';
 
 @Component({
     selector: 'app-modal',
@@ -22,6 +22,7 @@ export class MenuModalComponent implements OnInit {
         private modalController: ModalController,
         public route: ActivatedRoute,
         public router: Router,
+        private navCtrl: NavController,
     ) { }
 
     ngOnInit(): void {
@@ -56,7 +57,7 @@ export class MenuModalComponent implements OnInit {
     }
 
     navigate(path:string){
-        this.router.navigate([path]);
+        this.navCtrl.navigateForward(path, {animated: false});
         this.myDismiss();
     }
 }

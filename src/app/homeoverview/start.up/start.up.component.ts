@@ -38,11 +38,11 @@ export class StartUpComponent implements OnInit, OnDestroy {
   }
 
   ionViewWillEnter(){
-    if(this.finished){
-      this.navCtrl.navigateForward('/app', {animated: false}).then(()=>{
-        this.elementRef.nativeElement.ownerDocument.body.style.backgroundColor = this.orgBodyBgrColor;
-      });
-    }
+    // if(this.finished){
+    //   this.navCtrl.navigateForward('/app', {animated: false}).then(()=>{
+    //     this.elementRef.nativeElement.ownerDocument.body.style.backgroundColor = this.orgBodyBgrColor;
+    //   });
+    // }
   }
 
   ngOnInit(): void { }

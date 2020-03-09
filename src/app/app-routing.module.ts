@@ -5,10 +5,10 @@ import { RouterResolver } from './homeoverview/app/resolver/route.resolver';
 import { StartUpComponent } from './homeoverview/start.up/start.up.component'
 
 const routes: Routes = [
-  // {
-  //   path: '',
-  //   loadChildren: () => import('./tabs/tabs/tabs.module').then(m => m.TabsPageModule)
-  // },
+  {
+    path: 'oldapp',
+    loadChildren: () => import('./oldapp/tabs/tabs/tabs.module').then(m => m.TabsPageModule)
+  },
   {
     path: 'app',
     resolve: { model: AppRouteResolver, loadRouts: RouterResolver },
