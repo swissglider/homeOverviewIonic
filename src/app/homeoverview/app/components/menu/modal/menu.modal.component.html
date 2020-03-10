@@ -1,10 +1,12 @@
 <ion-header>
-    <div style="padding-top:1rem; padding-bottom: 1rem;padding-left: 1rem;padding-right: 1rem;">
-        <ion-toolbar color="light" (click)="myDismiss()">
-            <img *ngIf="menu['image']" style="padding-left: 1em;" [src]="menu['image']" slot="start">
-            <div style="margin-left:1rem;">{{menu['title'] | getname}}</div>
-        </ion-toolbar>
-    </div>
+    <ion-toolbar>
+        <ion-button color="light" expand="full" shape="round" style="--padding-start: 0px" (click)="myDismiss()">
+            <ion-toolbar color="translucent" style="--border-style: none;">
+                <img *ngIf="menu['image']" style="padding-left: 1em;" [src]="menu['image']" slot="start">
+                <ion-label style="margin-left:1rem;" slot="start">{{menu['title'] | getname}}</ion-label>
+            </ion-toolbar>
+        </ion-button>
+    </ion-toolbar>
 </ion-header>
 <ion-content>
     <ng-container *ngFor="let folderItem of folders | keyvalue">

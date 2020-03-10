@@ -1,7 +1,10 @@
 <ion-header>
-    <app-menu></app-menu>
+    <ion-toolbar>
+        <app-menu></app-menu>
+    </ion-toolbar>
 </ion-header>
 
 <ion-content>
-    <p style="padding-left:1rem;" *ngFor="let a of aas; trackBy: trackById">{{route.snapshot.data.title | getname}} - {{a.value}}</p>
+    <p style="padding-left:1rem;" *ngFor="let a of aas; trackBy: trackById">{{route.snapshot.data.title | getname}} -
+        {{a.value}}</p>
 </ion-content>
