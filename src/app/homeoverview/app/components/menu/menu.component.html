@@ -1,7 +1,10 @@
-<ion-button color="light" expand="full" shape="round" style="--padding-start: 0px; --padding-end: 0px; --color-activated: light" (click)="presentModal()">
-    <ion-toolbar color="translucent" style="--border-style: none;">
-        <img *ngIf="route.snapshot.data.image" style="padding-left: 1em;" [src]="route.snapshot.data.image"
-            slot="start">
-        <ion-label style="margin-left:1rem;" slot="start">{{route.snapshot.data.title | getname}}</ion-label>
-    </ion-toolbar>
-</ion-button>
+<div style="padding-top:5px; padding-bottom: 5px; padding-left: 0rem; padding-right: 0rem;">
+    <ion-button color="light" expand="full" fill="outline" shape="round"
+        style="--padding-start: 0px; --border-radius:15px; --box-shadow:2px 2px 15px -1px rgba(0, 0, 0, 0.2)" (click)="presentModal()">
+        <ion-toolbar style="--border-style: none; background: transparent;">
+            <img *ngIf="route.snapshot.data.image" style="padding-left: 1em;" [src]="route.snapshot.data.image"
+                slot="start">
+            <ion-label style="margin-left:1rem;" slot="start">{{route.snapshot.data.title | getname}}</ion-label>
+        </ion-toolbar>
+    </ion-button>
+</div>

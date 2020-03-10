@@ -1,8 +1,10 @@
-import { Component, ChangeDetectionStrategy, OnInit, OnDestroy, ViewEncapsulation, ElementRef } from '@angular/core';
-import { TestService } from '../app/services/test.service/test.service';
-import { Router } from '@angular/router';
-import { Subscription } from 'rxjs';
-import { NavController } from '@ionic/angular'
+import { Component, ChangeDetectionStrategy, OnInit, OnDestroy, ElementRef } from '@angular/core';
+import { IOBrokerService } from '../app/services/iobroker.service/iobroker.service';
+import { ActivatedRoute } from '@angular/router';
+import { Subscription, combineLatest, Observable } from 'rxjs';
+import { NavController } from '@ionic/angular';
+import { environment } from '../../../environments/environment';
+import { MessageToastService } from '../app/services/message.toast/message.toast.service';
 
 @Component({
   selector: 'app-start-up',
@@ -13,46 +15,72 @@ import { NavController } from '@ionic/angular'
 })
 export class StartUpComponent implements OnInit, OnDestroy {
 
-  subscription: Subscription;
-  finished:boolean = false;
+  subscriptions: Subscription[] = [];
   orgBodyBgrColor = '';
 
   constructor(
-    private router: Router,
-    public testService: TestService,
+    public ioBrokerService: IOBrokerService,
     private elementRef: ElementRef,
     private navCtrl: NavController,
+    private activeRoute: ActivatedRoute,
+    private messageToastService: MessageToastService,
   ) {
-    this.subscription = this.testService.isFinished().subscribe({
-      next: x => {
-        this.finished = x;
-        if(this.finished){
-          this.navCtrl.navigateForward('/app', {animated: false}).then(()=>{
+
+    let protocol: string;
+    let hostname: string;
+    let port: number;
+    let namespace: string;
+
+    if (environment.production) {
+      protocol = window.location.protocol;
+      hostname = window.location.hostname;
+      port = this.activeRoute.snapshot.data.model.startUp.defaultSocketPort;
+      namespace = this.activeRoute.snapshot.data.model.startUp.socketNamespace;
+    } else {
+      protocol = environment.socket_protocol;
+      hostname = environment.socket_hostname;
+      port = this.activeRoute.snapshot.data.model.startUp.defaultSocketPort;
+      namespace = this.activeRoute.snapshot.data.model.startUp.socketNamespace;
+    }
+
+    this.ioBrokerService.init(protocol, hostname, port, namespace);
+    let timeObs$: Observable<boolean> = new Observable(this.createRoute)
+    let tt$ = combineLatest(timeObs$, this.ioBrokerService.loaded$);
+    this.subscriptions.push(tt$.subscribe(
+      {
+        next: (p: [boolean, boolean]) => { 
+          if(p.every(e => e)){
+            this.navCtrl.navigateForward('/app', { animated: false }).then(() => {
               this.elementRef.nativeElement.ownerDocument.body.style.backgroundColor = this.orgBodyBgrColor;
             });
-        }
-      },
-      error: err => console.error('Observer got an error: ' + err),
-      complete: () => {},
-    });
+          }
+        },
+        error: err => console.error('Observer got an error: ' + err),
+        complete: () => { },
+      }
+    ));
   }
 
-  ionViewWillEnter(){
-    // if(this.finished){
-    //   this.navCtrl.navigateForward('/app', {animated: false}).then(()=>{
-    //     this.elementRef.nativeElement.ownerDocument.body.style.backgroundColor = this.orgBodyBgrColor;
-    //   });
-    // }
-  }
+  ionViewWillEnter() { }
 
   ngOnInit(): void { }
 
-  ngAfterViewInit(){
+  ngAfterViewInit() {
     this.orgBodyBgrColor = this.elementRef.nativeElement.ownerDocument.body.style.backgroundColor
     this.elementRef.nativeElement.ownerDocument.body.style.backgroundColor = 'green';
- }
+  }
 
   ngOnDestroy() {
-    this.subscription.unsubscribe();
+    this.subscriptions.forEach(subscription => {
+      subscription.unsubscribe()
+    });
   }
+
+  private createRoute = (observer) => {
+    observer.next(false);
+    setTimeout(() => {
+      observer.next(true);
+      observer.complete();
+    }, this.activeRoute.snapshot.data.model.startUp.minimalStartUpShowTimeMS);
+  };
 }

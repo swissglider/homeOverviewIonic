@@ -1,8 +1,8 @@
 import { Component, OnInit, ChangeDetectionStrategy, ViewChild, AfterViewInit } from '@angular/core';
 import { TestTab } from '../test.tab/test.tab'
 import { ActivatedRoute } from '@angular/router';
-import { IonTabs } from '@ionic/angular';
-import { TestService } from '../../services/test.service/test.service';
+import { IonTabs} from '@ionic/angular';
+import { MessageToastService } from '../../services/message.toast/message.toast.service';
 
 @Component({
     selector: 'tabs-component',
@@ -22,11 +22,12 @@ export class TabsComponent implements OnInit, AfterViewInit {
 
     constructor(
         private route: ActivatedRoute,
-    ) {}
+        private messageToastService: MessageToastService,
+    ) { }
 
     ngOnInit() {
         // console.log(this.route.snapshot.data)
-        this.tabs = this.route.snapshot.data['components'].filter(e => e.data.asTab).sort((a, b) => a.data['order'] - b.data['order']);
+        this.tabs = this.route.snapshot.data['components'].filter(e => e.data.asTab).sort((a, b) => a.data['order'] - b.data['order']);   
     }
 
     ngAfterViewInit() {

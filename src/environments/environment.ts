@@ -4,7 +4,9 @@
 
 export const environment = {
   production: false,
-  apiUrl: ''
+  apiUrl: '',
+  socket_protocol: 'http',
+  socket_hostname: '192.168.90.1',
 };
 
 /*

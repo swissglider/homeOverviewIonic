@@ -1,11 +1,15 @@
 <ion-header>
-    <ion-toolbar>
-        <ion-button color="light" expand="full" shape="round" style="--padding-start: 0px" (click)="myDismiss()">
-            <ion-toolbar color="translucent" style="--border-style: none;">
-                <img *ngIf="menu['image']" style="padding-left: 1em;" [src]="menu['image']" slot="start">
-                <ion-label style="margin-left:1rem;" slot="start">{{menu['title'] | getname}}</ion-label>
-            </ion-toolbar>
-        </ion-button>
+    <ion-toolbar style="--border-style: none; background: transparent;">
+        <div style="padding-top:5px; padding-bottom: 5px; padding-left: 0rem; padding-right: 0rem;">
+            <ion-button color="light" expand="full" fill="outline" shape="round"
+                style="--padding-start: 0px; --border-radius:15px; --box-shadow:2px 2px 15px -1px rgba(0, 0, 0, 0.2)" (click)="myDismiss()">
+                <ion-toolbar style="--border-style: none; background: transparent;">
+                    <img *ngIf="menu['image']" style="padding-left: 1em;" [src]="menu['image']"
+                        slot="start">
+                    <ion-label style="margin-left:1rem;" slot="start">{{menu['title'] | getname}}</ion-label>
+                </ion-toolbar>
+            </ion-button>
+        </div>
     </ion-toolbar>
 </ion-header>
 <ion-content>

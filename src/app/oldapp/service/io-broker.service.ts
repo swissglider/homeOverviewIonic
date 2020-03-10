@@ -99,8 +99,7 @@ export class IOBrokerService {
     private ioBenumQuery: IoBEnumQuery,
     private errorMsgQuery: ErrorMsgQuery,
     private errorMsgStore: ErrorMsgStore,
-  ) { 
-    console.log('Hallo')
+  ) {
     this.init();
   }
 
