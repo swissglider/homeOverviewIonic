@@ -5,6 +5,7 @@ import { Subscription, combineLatest, Observable } from 'rxjs';
 import { NavController } from '@ionic/angular';
 import { environment } from '../../../environments/environment';
 import { MessageToastService } from '../app/services/message.toast/message.toast.service';
+import { distinctUntilChanged } from 'rxjs/operators';
 
 @Component({
   selector: 'app-start-up',
@@ -15,7 +16,7 @@ import { MessageToastService } from '../app/services/message.toast/message.toast
 })
 export class StartUpComponent implements OnInit, OnDestroy {
 
-  subscriptions: Subscription[] = [];
+  private subscriptions: Subscription[] = [];
   orgBodyBgrColor = '';
 
   constructor(
@@ -46,7 +47,7 @@ export class StartUpComponent implements OnInit, OnDestroy {
     this.ioBrokerService.init(protocol, hostname, port, namespace);
     let timeObs$: Observable<boolean> = new Observable(this.createRoute)
     let tt$ = combineLatest(timeObs$, this.ioBrokerService.loaded$);
-    this.subscriptions.push(tt$.subscribe(
+    this.subscriptions.push(tt$.pipe(distinctUntilChanged()).subscribe(
       {
         next: (p: [boolean, boolean]) => { 
           if(p.every(e => e)){

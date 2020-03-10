@@ -1,25 +1,27 @@
-import { Injectable } from '@angular/core';
+import { Injectable, OnDestroy } from '@angular/core';
 import { ToastController } from '@ionic/angular';
 import { ErrorMsgQuery } from '../../store/error/error-msg.query';
 import { ErrorMsg } from '../../store/error/error-msg.model';
+import { distinctUntilChanged } from 'rxjs/operators';
+import { Subscription } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
-export class MessageToastService {
+export class MessageToastService implements OnDestroy {
 
-    private toasts: any[] = [];
+    private subscriptions: Subscription[] = [];
 
     constructor(
         public toastController: ToastController,
         private errorMsgQuery: ErrorMsgQuery
     ) {
-        this.errorMsgQuery.selectEntityAction().subscribe(action => {
+        this.subscriptions.push(this.errorMsgQuery.selectEntityAction().pipe(distinctUntilChanged()).subscribe(action => {
             action.ids.forEach((id) => {
                 if (this.errorMsgQuery.hasEntity(id)) {
                     const erroMsg: ErrorMsg = this.errorMsgQuery.getEntity(id);
                     this.manageToast(erroMsg)
                 }
             });
-        });
+        }));
     }
 
     private manageToast(erroMsg: ErrorMsg) {
@@ -80,5 +82,11 @@ export class MessageToastService {
                 console.error(erroMsg);
                 break;
         }
+    }
+
+    ngOnDestroy() {
+        this.subscriptions.forEach(subscription => {
+            subscription.unsubscribe()
+        });
     }
 }

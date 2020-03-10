@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Subscription } from 'rxjs';
 import io from 'socket.io-client';
 import { ErrorMsgStore } from '../../store/error/error-msg.store';
 import { IoBEnumStore } from '../../store/enum/io-benum.store';
@@ -10,6 +10,7 @@ import { IoBEnumQuery } from '../../store/enum/io-benum.query';
 import { IoBObjectQuery } from '../../store/object/io-bobject.query';
 import { EntityActions } from '@datorama/akita';
 import { NewIOBStateQuery } from '../../store/newstate/new-iobstate.query';
+import { distinctUntilChanged } from 'rxjs/operators';
 
 @Injectable({
     providedIn: 'root'
@@ -18,6 +19,7 @@ export class IOBrokerService {
 
     public loaded$ = new BehaviorSubject(false);
 
+    private subscriptions: Subscription[] = [];
     private socket;
     private socketConfig;
     private socketUrl: string;
@@ -52,7 +54,7 @@ export class IOBrokerService {
         private ioBenumQuery: IoBEnumQuery,
         private ioBobjectQuery: IoBObjectQuery,
         private newIOBStateQuery: NewIOBStateQuery,
-    ) {}
+    ) { }
 
     init(protocol: string, host: string, port: number, namespace: string, folder?: string) {
         this.socketUrl = protocol + '://' + host + ':' + port;
@@ -68,32 +70,32 @@ export class IOBrokerService {
         this.connect();
 
         /** Listen to updates on the NewIOBStateStore */
-    this.newIOBStateQuery.selectEntityAction().subscribe(action => {
-        // tslint:disable-next-line: no-shadowed-variable
-        const setNewState = (action) => {
-          action.ids.forEach((id) => {
-            if (this.newIOBStateQuery.hasEntity(id)) {
-              const entity = this.newIOBStateQuery.getEntity(id);
-              if ('val' in entity && entity.val !== null) {
-                this.setState(id, entity.val);
-              }
+        this.newIOBStateQuery.selectEntityAction().pipe(distinctUntilChanged()).subscribe(action => {
+            // tslint:disable-next-line: no-shadowed-variable
+            const setNewState = (action) => {
+                action.ids.forEach((id) => {
+                    if (this.newIOBStateQuery.hasEntity(id)) {
+                        const entity = this.newIOBStateQuery.getEntity(id);
+                        if ('val' in entity && entity.val !== null) {
+                            this.setState(id, entity.val);
+                        }
+                    }
+                });
+            };
+            switch (action.type) {
+                case EntityActions.Add:
+                    setNewState(action);
+                    break;
+                case EntityActions.Remove:
+                    break;
+                case EntityActions.Set:
+                    setNewState(action);
+                    break;
+                case EntityActions.Update:
+                    setNewState(action);
+                    break;
             }
-          });
-        };
-        switch (action.type) {
-          case EntityActions.Add:
-            setNewState(action);
-            break;
-          case EntityActions.Remove:
-            break;
-          case EntityActions.Set:
-            setNewState(action);
-            break;
-          case EntityActions.Update:
-            setNewState(action);
-            break;
-        }
-      });
+        });
     }
 
     private connect() {
@@ -597,5 +599,12 @@ export class IOBrokerService {
    */
     private RID(): string {
         return '_' + Math.random().toString(36).substr(2, 9);
+    }
+
+    ngOnDestroy() {
+        this.subscriptions.forEach(subscription => {
+            subscription.unsubscribe()
+        });
+        this.socket.close();
     }
 }
