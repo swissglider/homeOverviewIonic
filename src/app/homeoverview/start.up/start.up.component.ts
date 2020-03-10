@@ -6,6 +6,7 @@ import { NavController } from '@ionic/angular';
 import { environment } from '../../../environments/environment';
 import { MessageToastService } from '../app/services/message.toast/message.toast.service';
 import { distinctUntilChanged } from 'rxjs/operators';
+import { ErrorMsgStore } from '../app/store/error/error-msg.store';
 
 @Component({
   selector: 'app-start-up',
@@ -26,6 +27,7 @@ export class StartUpComponent implements OnInit, OnDestroy {
     private navCtrl: NavController,
     private activeRoute: ActivatedRoute,
     private messageToastService: MessageToastService,
+    private errorMsgStore: ErrorMsgStore,
   ) {
 
     let protocol: string;
@@ -34,7 +36,7 @@ export class StartUpComponent implements OnInit, OnDestroy {
     let namespace: string;
 
     if (environment.production) {
-      protocol = window.location.protocol;
+      protocol = window.location.protocol.slice(0, -1);
       hostname = window.location.hostname;
       port = this.activeRoute.snapshot.data.model.startUp.defaultSocketPort;
       namespace = this.activeRoute.snapshot.data.model.startUp.socketNamespace;
@@ -46,7 +48,7 @@ export class StartUpComponent implements OnInit, OnDestroy {
     }
 
     this.ioBrokerService.init(protocol, hostname, port, namespace);
-    
+
   }
 
   ionViewWillEnter() {
@@ -55,8 +57,8 @@ export class StartUpComponent implements OnInit, OnDestroy {
     let tt$ = combineLatest(timeObs$, this.ioBrokerService.loaded$);
     this.subscriptions.push(tt$.pipe(distinctUntilChanged()).subscribe(
       {
-        next: (p: [boolean, boolean]) => { 
-          if(p.every(e => e)){
+        next: (p: [boolean, boolean]) => {
+          if (p.every(e => e)) {
             this.navCtrl.navigateForward('/app', { animated: false }).then(() => {
               this.elementRef.nativeElement.ownerDocument.body.style.backgroundColor = this.orgBodyBgrColor;
             });

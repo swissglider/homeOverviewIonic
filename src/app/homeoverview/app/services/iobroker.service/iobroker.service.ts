@@ -116,7 +116,7 @@ export class IOBrokerService {
                         const msg: string = 'No answer from server';
                         const act: string = 'Please relaod site';
                         this.errorMsgStore.add({
-                            id: this.RID(),
+                            id: this.errorMsgStore.RID(),
                             type: 'danger',
                             text: msg,
                             action: act,
@@ -131,7 +131,7 @@ export class IOBrokerService {
                                     const msg: string = 'getStates Error: ' + err;
                                     const act: string = 'Try again the last task';
                                     this.errorMsgStore.add({
-                                        id: this.RID(),
+                                        id: this.errorMsgStore.RID(),
                                         type: 'danger',
                                         text: msg,
                                         action: act,
@@ -161,7 +161,7 @@ export class IOBrokerService {
                                     const msg: string = 'getObjects Error: ' + err;
                                     const act: string = 'Try again the last task';
                                     this.errorMsgStore.add({
-                                        id: this.RID(),
+                                        id: this.errorMsgStore.RID(),
                                         type: 'danger',
                                         text: msg,
                                         action: act,
@@ -236,7 +236,7 @@ export class IOBrokerService {
                                     const msg: string = 'getEnum Error: ' + err;
                                     const act: string = 'Try again the last task';
                                     this.errorMsgStore.add({
-                                        id: this.RID(),
+                                        id: this.errorMsgStore.RID(),
                                         type: 'danger',
                                         text: msg,
                                         action: act,
@@ -277,7 +277,7 @@ export class IOBrokerService {
                             const msg: string = 'permissionError';
                             const act: string = 'Reload Site';
                             this.errorMsgStore.add({
-                                id: this.RID(),
+                                id: this.errorMsgStore.RID(),
                                 type: 'danger',
                                 text: msg,
                                 action: act,
@@ -293,7 +293,7 @@ export class IOBrokerService {
             const msg: string = '!! connection_Error :' + error;
             const act: string = 'Reload Site';
             this.errorMsgStore.add({
-                id: this.RID(),
+                id: this.errorMsgStore.RID(),
                 type: 'danger',
                 text: msg,
                 action: act,
@@ -305,7 +305,7 @@ export class IOBrokerService {
             const msg: string = '!! connect_timeout :' + timeout;
             const act: string = 'Reload Site';
             this.errorMsgStore.add({
-                id: this.RID(),
+                id: this.errorMsgStore.RID(),
                 type: 'danger',
                 text: msg,
                 action: act,
@@ -317,7 +317,7 @@ export class IOBrokerService {
             const msg: string = '!! error :' + error;
             const act: string = 'Unexpected, do not know how to help';
             this.errorMsgStore.add({
-                id: this.RID(),
+                id: this.errorMsgStore.RID(),
                 type: 'danger',
                 text: msg,
                 action: act,
@@ -329,7 +329,7 @@ export class IOBrokerService {
             const msg: string = '!! Disconnected Reason:' + reason;
             const act: string = null;
             this.errorMsgStore.add({
-                id: this.RID(),
+                id: this.errorMsgStore.RID(),
                 type: 'info',
                 text: msg,
                 action: act,
@@ -341,7 +341,7 @@ export class IOBrokerService {
             const msg: string = '!! Reconnected attempt number:' + attemptNumber;
             const act: string = null;
             this.errorMsgStore.add({
-                id: this.RID(),
+                id: this.errorMsgStore.RID(),
                 type: 'info',
                 text: msg,
                 action: act,
@@ -353,7 +353,7 @@ export class IOBrokerService {
             const msg: string = '!! Reconnected attempt number:' + attemptNumber;
             const act: string = null;
             this.errorMsgStore.add({
-                id: this.RID(),
+                id: this.errorMsgStore.RID(),
                 type: 'info',
                 text: msg,
                 action: act,
@@ -365,7 +365,7 @@ export class IOBrokerService {
             const msg: string = '!! Reconnected attempt number:' + attemptNumber;
             const act: string = null;
             this.errorMsgStore.add({
-                id: this.RID(),
+                id: this.errorMsgStore.RID(),
                 type: 'info',
                 text: msg,
                 action: act,
@@ -377,7 +377,7 @@ export class IOBrokerService {
             const msg: string = '!! reconnect_error :' + error;
             const act: string = 'Reload Site';
             this.errorMsgStore.add({
-                id: this.RID(),
+                id: this.errorMsgStore.RID(),
                 type: 'danger',
                 text: msg,
                 action: act,
@@ -389,7 +389,7 @@ export class IOBrokerService {
             const msg: string = '!! reconnect_failed';
             const act: string = 'Reload Site';
             this.errorMsgStore.add({
-                id: this.RID(),
+                id: this.errorMsgStore.RID(),
                 type: 'danger',
                 text: msg,
                 action: act,
@@ -446,7 +446,7 @@ export class IOBrokerService {
             const msg: string = '!! permissionError :' + error;
             const act: string = 'Reload Site';
             this.errorMsgStore.add({
-                id: this.RID(),
+                id: this.errorMsgStore.RID(),
                 type: 'danger',
                 text: msg,
                 action: act,
@@ -458,7 +458,7 @@ export class IOBrokerService {
             const msg: string = '!! reauthenticate';
             const act: string = null;
             this.errorMsgStore.add({
-                id: this.RID(),
+                id: this.errorMsgStore.RID(),
                 type: 'info',
                 text: msg,
                 action: act,
@@ -470,7 +470,7 @@ export class IOBrokerService {
             const msg: string = '!! eventsThreshold: ' + hasThreshold;
             const act: string = null;
             this.errorMsgStore.add({
-                id: this.RID(),
+                id: this.errorMsgStore.RID(),
                 type: 'info',
                 text: msg,
                 action: act,
@@ -482,7 +482,7 @@ export class IOBrokerService {
             const msg: string = 'Type id: ' + id + ' - obj: ' + obj;
             const act: string = null;
             this.errorMsgStore.add({
-                id: this.RID(),
+                id: this.errorMsgStore.RID(),
                 type: 'info',
                 text: msg,
                 action: act,
@@ -494,7 +494,7 @@ export class IOBrokerService {
             const msg: string = 'CMD id: ' + id + ' - data: ' + data;
             const act: string = null;
             this.errorMsgStore.add({
-                id: this.RID(),
+                id: this.errorMsgStore.RID(),
                 type: 'info',
                 text: msg,
                 action: act,
@@ -506,7 +506,7 @@ export class IOBrokerService {
             const msg: string = 'connectWait delaySeconds: ' + delaySeconds;
             const act: string = null;
             this.errorMsgStore.add({
-                id: this.RID(),
+                id: this.errorMsgStore.RID(),
                 type: 'info',
                 text: msg,
                 action: act,
@@ -518,7 +518,7 @@ export class IOBrokerService {
             const msg: string = 'cloudDisconnect';
             const act: string = null;
             this.errorMsgStore.add({
-                id: this.RID(),
+                id: this.errorMsgStore.RID(),
                 type: 'info',
                 text: msg,
                 action: act,
@@ -530,7 +530,7 @@ export class IOBrokerService {
             const msg: string = 'cloudConnect';
             const act: string = null;
             this.errorMsgStore.add({
-                id: this.RID(),
+                id: this.errorMsgStore.RID(),
                 type: 'info',
                 text: msg,
                 action: act,
@@ -542,7 +542,7 @@ export class IOBrokerService {
             const msg: string = 'apikey';
             const act: string = null;
             this.errorMsgStore.add({
-                id: this.RID(),
+                id: this.errorMsgStore.RID(),
                 type: 'info',
                 text: msg,
                 action: act,
@@ -560,7 +560,7 @@ export class IOBrokerService {
                 const msg: string = '!! SetState Error :' + error;
                 const act: string = 'Repeat last transaction';
                 this.errorMsgStore.add({
-                    id: this.RID(),
+                    id: this.errorMsgStore.RID(),
                     type: 'danger',
                     text: msg,
                     action: act,
@@ -577,7 +577,7 @@ export class IOBrokerService {
                 const msg: string = '!! setObject Error :' + error;
                 const act: string = 'Repeat last transaction';
                 this.errorMsgStore.add({
-                    id: this.RID(),
+                    id: this.errorMsgStore.RID(),
                     type: 'danger',
                     text: msg,
                     action: act,
@@ -590,15 +590,6 @@ export class IOBrokerService {
     /** uses sentTo from ioBroker */
     public sendTo(instance, command, payload, callback) {
         this.socket.emit('sendTo', instance, command, payload, callback);
-    }
-
-    /**
-   * get Random ID for ErrorStore handling
-   *
-   * @returns {string} randomID
-   */
-    private RID(): string {
-        return '_' + Math.random().toString(36).substr(2, 9);
     }
 
     ngOnDestroy() {

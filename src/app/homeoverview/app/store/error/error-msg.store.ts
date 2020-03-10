@@ -15,5 +15,14 @@ export class ErrorMsgStore extends EntityStore<ErrorMsgState> {
     super();
   }
 
+  /**
+   * get Random ID for ErrorStore handling
+   *
+   * @returns {string} randomID
+   */
+  public RID(): string {
+    return '_' + Math.random().toString(36).substr(2, 9);
+}
+
 }
 

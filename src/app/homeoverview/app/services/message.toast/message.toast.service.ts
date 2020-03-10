@@ -28,7 +28,7 @@ export class MessageToastService implements OnDestroy {
 
         const doErrorToast = async (erroMsg: ErrorMsg, icon, color) => {
             let toast = await this.toastController.create({
-                header: erroMsg.scope + ' :' + icon + ': ' + erroMsg.text,
+                header: erroMsg.scope + ' : ' + erroMsg.text,
                 message: '\n\t' + erroMsg.action,
                 position: 'top',
                 color: color,

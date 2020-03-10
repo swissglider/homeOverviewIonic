@@ -1,4 +1,6 @@
 export const environment = {
   production: true,
-  apiUrl: '/homeoverview'
+  apiUrl: '/homeoverview',
+  socket_protocol: '',
+  socket_hostname: '',
 };
