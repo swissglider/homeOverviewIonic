@@ -18,6 +18,7 @@ export class StartUpComponent implements OnInit, OnDestroy {
 
   private subscriptions: Subscription[] = [];
   orgBodyBgrColor = '';
+  sartUpBodyBgrColor = 'green'
 
   constructor(
     public ioBrokerService: IOBrokerService,
@@ -45,6 +46,11 @@ export class StartUpComponent implements OnInit, OnDestroy {
     }
 
     this.ioBrokerService.init(protocol, hostname, port, namespace);
+    
+  }
+
+  ionViewWillEnter() {
+    this.elementRef.nativeElement.ownerDocument.body.style.backgroundColor = this.sartUpBodyBgrColor;
     let timeObs$: Observable<boolean> = new Observable(this.createRoute)
     let tt$ = combineLatest(timeObs$, this.ioBrokerService.loaded$);
     this.subscriptions.push(tt$.pipe(distinctUntilChanged()).subscribe(
@@ -62,13 +68,11 @@ export class StartUpComponent implements OnInit, OnDestroy {
     ));
   }
 
-  ionViewWillEnter() { }
-
   ngOnInit(): void { }
 
   ngAfterViewInit() {
     this.orgBodyBgrColor = this.elementRef.nativeElement.ownerDocument.body.style.backgroundColor
-    this.elementRef.nativeElement.ownerDocument.body.style.backgroundColor = 'green';
+    this.elementRef.nativeElement.ownerDocument.body.style.backgroundColor = this.sartUpBodyBgrColor;
   }
 
   ngOnDestroy() {

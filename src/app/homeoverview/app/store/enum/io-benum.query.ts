@@ -28,11 +28,6 @@ export class IoBEnumQuery extends QueryEntity<IoBEnumState> {
     });
   }
 
-  /** get all members */
-  public getMembersPerEntity(id) {
-    return this.getEntity(id).common.members;
-  }
-
   /** Returns all Device ID's as observers that fits the functional requirements */
   public selectDeviceIDByFunctionalEnum(functionalEnum: string) {
     return this.selectEntity(functionalEnum, entity => entity.common.allMembers);

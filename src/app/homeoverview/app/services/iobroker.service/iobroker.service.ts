@@ -70,7 +70,7 @@ export class IOBrokerService {
         this.connect();
 
         /** Listen to updates on the NewIOBStateStore */
-        this.newIOBStateQuery.selectEntityAction().pipe(distinctUntilChanged()).subscribe(action => {
+        this.subscriptions.push(this.newIOBStateQuery.selectEntityAction().pipe(distinctUntilChanged()).subscribe(action => {
             // tslint:disable-next-line: no-shadowed-variable
             const setNewState = (action) => {
                 action.ids.forEach((id) => {
@@ -95,7 +95,7 @@ export class IOBrokerService {
                     setNewState(action);
                     break;
             }
-        });
+        }));
     }
 
     private connect() {
@@ -403,7 +403,7 @@ export class IOBrokerService {
                     let newMembers = []
                     obj.common.members.forEach((member: string) => {
                         if (member.startsWith('enum.')) {
-                            let tempData = this.ioBenumQuery.getMembersPerEntity(member);
+                            let tempData = this.ioBenumQuery.getEntity(member).common.members;
                             if (tempData.length > 0) {
                                 newMembers = newMembers.concat(tempData);
                             }
