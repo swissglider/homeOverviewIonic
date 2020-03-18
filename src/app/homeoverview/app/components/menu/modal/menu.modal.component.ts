@@ -14,7 +14,7 @@ export class MenuModalComponent implements OnInit {
     objectItems: [];
     folderItems: [];
     additionalLinks: [];
-    folders: {[functionID: string]:{values:{title:string, order:number, fullPath:string}[], params: {}}};
+    folders: { [functionID: string]: { values: { title: string, order: number, fullPath: string }[], params: {} } };
 
     trackByPath = (index: number, item: any) => item.fullPath;
 
@@ -47,7 +47,7 @@ export class MenuModalComponent implements OnInit {
             let tempAddE = this.additionalLinks.filter(e => e['folder'] === folder['menuID']).map(e => {
                 return e;
             });
-            this.folders[folder['menuID']] = {values:[...tempCompE, ...tempAddE].sort((a,b) => a['order']-b['order']), params: folder};
+            this.folders[folder['menuID']] = { values: [...tempCompE, ...tempAddE].sort((a, b) => a['order'] - b['order']), params: folder };
         });
     }
 
@@ -56,8 +56,8 @@ export class MenuModalComponent implements OnInit {
         await this.modalController.dismiss(result);
     }
 
-    navigate(path:string){
-        this.navCtrl.navigateForward(path, {animated: false});
+    navigate(path: string) {
+        this.navCtrl.navigateForward(path, { animated: false });
         this.myDismiss();
     }
 }

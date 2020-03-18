@@ -1,0 +1,40 @@
+<ion-header>
+    <ion-toolbar style="--border-style: none; background: transparent;">
+        <app-menu [inputButtons]="buttons" (buttonReturn)="deleteErrorMessages($event)"></app-menu>
+        <!-- <ion-buttons slot="end">
+            <ion-button color="danger" (click)="deleteErrorMessages()">Delete all Msgs</ion-button>
+        </ion-buttons> -->
+    </ion-toolbar>
+    <ion-grid ion-fixed>
+        <ion-row fixed="true">
+            <ion-col size="2">
+                <ion-label>TS</ion-label>
+            </ion-col>
+            <ion-col size="2" (click)="severityPopover($event)">
+                <ion-icon name="funnel-outline"></ion-icon>
+                <ion-label>Sev</ion-label>
+            </ion-col>
+            <ion-col size="2" (click)="errorCodePopover($event)">
+                <ion-icon name="funnel-outline"></ion-icon>
+                <ion-label>Code</ion-label>
+            </ion-col>
+            <ion-col size="6">
+                <ion-label>Error Message</ion-label>
+            </ion-col>
+        </ion-row>
+    </ion-grid>
+</ion-header>
+
+<ion-content #Content>
+    <ion-grid>
+        <ng-container *ngFor="let msg of errorMsgs$ | async; trackBy: trackById">
+            <ion-row fixed="true" [ngStyle]="{'background-color': msg.color | color2varcolor}"
+                (click)="presentModal(msg)">
+                <ion-col size="2">{{msg.timestamp | ms2time}}</ion-col>
+                <ion-col size="2">{{errorMsgSeverity[msg.severity]}}</ion-col>
+                <ion-col size="2">{{msg.errorcode}}</ion-col>
+                <ion-col size="6">{{msg.text}}</ion-col>
+            </ion-row>
+        </ng-container>
+    </ion-grid>
+</ion-content>

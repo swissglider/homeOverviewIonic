@@ -3,17 +3,20 @@
   <app-start-up></app-start-up>
 </ng-template>
 <ng-template #app> -->
-  <ion-tabs #tabs_ (ionTabsDidChange)=" getSelectedTab()">
-    <ion-tab-bar slot="bottom">
-      <ng-container *ngFor="let tab of tabs; trackBy: trackByPath">
-        <ng-container *ngIf="tab.path !== ''">
-          <ion-tab-button [tab]="tab.path">
-            <img *ngIf="(activeTabName === tab.path)" [src]="tab.data.image_selected_true">
-            <img *ngIf="(activeTabName !== tab.path)" [src]="tab.data.image_selected_false">
-            <ion-label>{{tab.data.title | getname}}</ion-label>
-          </ion-tab-button>
-        </ng-container>
+<ion-tabs #tabs_ (ionTabsDidChange)=" getSelectedTab()">
+  <ion-header>
+    <status-dot-component></status-dot-component>
+  </ion-header>
+  <ion-tab-bar slot="bottom">
+    <ng-container *ngFor="let tab of tabs; trackBy: trackByPath">
+      <ng-container *ngIf="tab.path !== ''">
+        <ion-tab-button [tab]="tab.path">
+          <img *ngIf="(activeTabName === tab.path)" [src]="tab.data.image_selected_true">
+          <img *ngIf="(activeTabName !== tab.path)" [src]="tab.data.image_selected_false">
+          <ion-label>{{tab.data.title | getname}}</ion-label>
+        </ion-tab-button>
       </ng-container>
-    </ion-tab-bar>
-  </ion-tabs>
+    </ng-container>
+  </ion-tab-bar>
+</ion-tabs>
 <!-- </ng-template> -->

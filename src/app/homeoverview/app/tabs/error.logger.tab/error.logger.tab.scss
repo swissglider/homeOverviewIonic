@@ -1,0 +1,29 @@
+ion-col {
+    // background-color: #f7f7f7;
+    // background-color: red;
+    border-left: solid 1px #ddd;
+    border-bottom: solid 1px #ddd;
+    padding-top: 6px;
+    scroll-padding-bottom: 6px;
+    font-size: 10px;
+}
+ion-row {
+    // background-color: #f7f7f7;
+    // border-top: solid 1px #ddd;
+    // border-bottom: solid 1px #ddd;
+    // border-right: solid 1px #ddd;
+}
+
+ion-grid {
+    padding: 0px;
+}
+
+.no-scrolling {
+    --overflow: hidden;
+}
+
+.my-checkbox {
+    display: flex;
+    align-items: center;
+    padding-left: 12px;
+}

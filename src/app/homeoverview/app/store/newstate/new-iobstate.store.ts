@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { NewIOBState } from './new-iobstate.model';
 import { EntityState, EntityStore, StoreConfig } from '@datorama/akita';
+import { IoBObjectQuery } from '../object/io-bobject.query';
 
 /** NewIOB State */
 export interface NewIOBStateState extends EntityState<NewIOBState> {}
@@ -15,9 +16,28 @@ export interface NewIOBStateState extends EntityState<NewIOBState> {}
 export class NewIOBStateStore extends EntityStore<NewIOBStateState> {
 
   /** @ignore */
-  constructor() {
+  constructor(
+    private objectQuery: IoBObjectQuery
+  ) {
     super();
   }
+
+  public functionToggle(ids: Array<string>, state) {
+    ids.forEach((id: string) => {
+        try {
+            if(this.objectQuery.getEntity(id).common.write){
+                this.upsert(id, {
+                    val: state,
+                    id: id,
+                });
+            }
+        } catch (error) {
+            console.log(id)
+            console.log('error')
+        }
+        
+    })
+}
 
 }
 

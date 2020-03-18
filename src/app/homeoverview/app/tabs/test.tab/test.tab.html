@@ -1,6 +1,6 @@
 <ion-header>
     <ion-toolbar style="--border-style: none; background: transparent;">
-        <app-menu></app-menu>
+        <app-menu [inputButtons]="buttons" (buttonReturn)="buttonReturn($event)"></app-menu>
     </ion-toolbar>
 </ion-header>
 

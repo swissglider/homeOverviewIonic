@@ -1,5 +1,6 @@
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { InputButtons } from '../../components/menu/menu.model';
 
 @Component({
     selector: 'app-test',
@@ -12,6 +13,14 @@ import { ActivatedRoute, Router } from '@angular/router';
   
     trackById = (index: number, item: any) => item.id;
 
+    buttons: InputButtons = {
+      buttons : [{
+        buttonID: 'qq',
+        showText: 'Hallo Test',
+        value: true
+      }]
+    }
+
     constructor(
       public route: ActivatedRoute,
       public router: Router
@@ -19,5 +28,9 @@ import { ActivatedRoute, Router } from '@angular/router';
     }
   
     ngOnInit() {}
+
+    buttonReturn($event){
+      console.log($event)
+    }
   
   }

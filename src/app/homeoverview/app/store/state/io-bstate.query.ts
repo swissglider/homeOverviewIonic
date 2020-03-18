@@ -11,10 +11,4 @@ export class IoBStateQuery extends QueryEntity<IoBStateState> {
   constructor(protected store: IoBStateStore) {
     super(store);
   }
-
-  /** select the state of device per id */
-  public selectStateByID (id:string) : Observable<number | string | boolean | object>{
-    return this.selectEntity(id, entity => entity.val)
-  }
-
 }

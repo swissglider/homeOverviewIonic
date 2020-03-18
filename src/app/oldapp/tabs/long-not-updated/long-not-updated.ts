@@ -14,7 +14,7 @@ import { PageService } from '../../service/page.service';
 })
 export class LongNotUpdated {
 
-  @ViewChild('days', {static:true}) days: ElementRef;
+  @ViewChild('days', { static: true }) days: ElementRef;
 
   loaded: boolean;
   templateToShow: string;
@@ -29,7 +29,7 @@ export class LongNotUpdated {
     private objectQuery: IoBObjectQuery,
     private stateQuery: IoBStateQuery,
     public helperService: HelperService,
-    public pageService:PageService,
+    public pageService: PageService,
   ) {
 
   }
@@ -50,7 +50,8 @@ export class LongNotUpdated {
     });
   }
 
-  search(){
+  search() {
+    if (this.days === null || this.days === undefined) { return }
     let daysMs = this.days['value'] * 24 * 60 * 60 * 1000;
     let toSearchMS = Date.now() - daysMs;
     const notToUseFolders = ['system.', 'vis.', 'info.']
@@ -61,27 +62,27 @@ export class LongNotUpdated {
     this.resultStruct = {}
     oldStates.forEach((state: IoBState) => {
       var obj = this.objectQuery.getEntity(state.id);
-      if(obj == null){
+      if (obj == null) {
         return;
       }
       var array = state.id.split('.');
       var object = {};
       const base_url = this.base_url;
       const helper = this.helperService;
-      array.reduce(function(o, s, i, a) {
-        if(i === a.length-1){
+      array.reduce(function (o, s, i, a) {
+        if (i === a.length - 1) {
           return o[s] = {
             __name__: helper.getByLanguage(obj.common.name),
             __state__: state,
             __object__: obj,
-            __id__ : state.id,
+            __id__: state.id,
             __ts_object__: new Date(obj.ts).toLocaleString(),
             __ts_state__: new Date(state.ts).toLocaleString(),
             __lc_state__: new Date(state.lc).toLocaleString(),
             __url__: base_url + state.id
           };
         }
-        return o[s] = {}; 
+        return o[s] = {};
       }, object);
       this.resultStruct = this.mergeDeep(this.resultStruct, object);
     });
@@ -90,12 +91,12 @@ export class LongNotUpdated {
 
   private mergeDeep(...objects) {
     const isObject = obj => obj && typeof obj === 'object';
-    
+
     return objects.reduce((prev, obj) => {
       Object.keys(obj).forEach(key => {
         const pVal = prev[key];
         const oVal = obj[key];
-        
+
         if (Array.isArray(pVal) && Array.isArray(oVal)) {
           prev[key] = pVal.concat(...oVal);
         }
@@ -106,7 +107,7 @@ export class LongNotUpdated {
           prev[key] = oVal;
         }
       });
-      
+
       return prev;
     }, {});
   }

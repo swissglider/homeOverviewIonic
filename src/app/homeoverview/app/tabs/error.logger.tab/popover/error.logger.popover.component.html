@@ -1,0 +1,11 @@
+<ng-container *ngFor="let entity of obs$ | async">
+    <ion-item *ngIf="enumType">
+        <ion-checkbox (ionChange)="selected($event, entity)" [checked]="filterArray.indexOf(entity) > -1"></ion-checkbox>
+        <ion-label>{{enumType[entity]}}</ion-label>
+    </ion-item>
+    <ion-item *ngIf="!enumType">
+        <ion-checkbox (ionChange)="selected($event, entity)" [checked]="filterArray.indexOf(entity) > -1"></ion-checkbox>
+        <ion-label>{{entity}}</ion-label>
+    </ion-item>
+</ng-container>
+<ion-button (click)="change()" size="small" color="dark" expand="full" fill="outline" shape="round" style="--border-radius:15px">Ok</ion-button>

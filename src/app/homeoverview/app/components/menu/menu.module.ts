@@ -3,7 +3,7 @@ import { IonicModule } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
 import { MenuModalComponent } from './modal/menu.modal.component';
 import { MenuComponent } from './menu.component';
-import { PipeModule } from '../../pipes/pipes.module';
+import { PipeModule } from '../../../_global/pipes/pipes.module';
 
 @NgModule({
     imports: [

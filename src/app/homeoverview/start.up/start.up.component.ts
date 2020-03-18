@@ -1,19 +1,14 @@
-import { Component, ChangeDetectionStrategy, OnInit, OnDestroy, ElementRef } from '@angular/core';
-import { IOBrokerService } from '../app/services/iobroker.service/iobroker.service';
+import { Component, ChangeDetectionStrategy, OnInit, OnDestroy, ElementRef, Renderer2, NgZone } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Subscription, combineLatest, Observable } from 'rxjs';
+import { Subscription, Observable } from 'rxjs';
 import { NavController } from '@ionic/angular';
-import { environment } from '../../../environments/environment';
-import { MessageToastService } from '../app/services/message.toast/message.toast.service';
-import { distinctUntilChanged } from 'rxjs/operators';
-import { ErrorMsgStore } from '../app/store/error/error-msg.store';
+import { distinctUntilChanged, map, take } from 'rxjs/operators';
 
 @Component({
   selector: 'app-start-up',
   templateUrl: 'start.up.component.html',
   styleUrls: ['start.up.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  // encapsulation: ViewEncapsulation.None
 })
 export class StartUpComponent implements OnInit, OnDestroy {
 
@@ -22,49 +17,29 @@ export class StartUpComponent implements OnInit, OnDestroy {
   sartUpBodyBgrColor = 'green'
 
   constructor(
-    public ioBrokerService: IOBrokerService,
     private elementRef: ElementRef,
     private navCtrl: NavController,
     private activeRoute: ActivatedRoute,
-    private messageToastService: MessageToastService,
-    private errorMsgStore: ErrorMsgStore,
-  ) {
-
-    let protocol: string;
-    let hostname: string;
-    let port: number;
-    let namespace: string;
-
-    if (environment.production) {
-      protocol = window.location.protocol.slice(0, -1);
-      hostname = window.location.hostname;
-      port = this.activeRoute.snapshot.data.model.startUp.defaultSocketPort;
-      namespace = this.activeRoute.snapshot.data.model.startUp.socketNamespace;
-    } else {
-      protocol = environment.socket_protocol;
-      hostname = environment.socket_hostname;
-      port = this.activeRoute.snapshot.data.model.startUp.defaultSocketPort;
-      namespace = this.activeRoute.snapshot.data.model.startUp.socketNamespace;
-    }
-
-    this.ioBrokerService.init(protocol, hostname, port, namespace);
-
-  }
+    private renderer: Renderer2,
+    private ngZone: NgZone,
+  ) { }
 
   ionViewWillEnter() {
-    this.elementRef.nativeElement.ownerDocument.body.style.backgroundColor = this.sartUpBodyBgrColor;
-    let timeObs$: Observable<boolean> = new Observable(this.createRoute)
-    let tt$ = combineLatest(timeObs$, this.ioBrokerService.loaded$);
-    this.subscriptions.push(tt$.pipe(distinctUntilChanged()).subscribe(
+    if (this.elementRef === null || this.elementRef === undefined) { return }
+    this.renderer.setStyle(this.elementRef.nativeElement.ownerDocument.body, 'backgroundColor', this.sartUpBodyBgrColor);
+    let timeObs$: Observable<boolean> = new Observable(this.createRoute);
+    this.subscriptions.push(timeObs$.pipe(distinctUntilChanged()).subscribe(
       {
-        next: (p: [boolean, boolean]) => {
-          if (p.every(e => e)) {
-            this.navCtrl.navigateForward('/app', { animated: false }).then(() => {
-              this.elementRef.nativeElement.ownerDocument.body.style.backgroundColor = this.orgBodyBgrColor;
+        next: (p: boolean) => {
+          if (p) {
+            this.ngZone.run(() => {
+              this.navCtrl.navigateForward('/app', { animated: false }).then(() => {
+                this.renderer.setStyle(this.elementRef.nativeElement.ownerDocument.body, 'backgroundColor', this.orgBodyBgrColor);
+              });
             });
           }
         },
-        error: err => console.error('Observer got an error: ' + err),
+        error: err => console.error(err),
         complete: () => { },
       }
     ));
@@ -73,8 +48,9 @@ export class StartUpComponent implements OnInit, OnDestroy {
   ngOnInit(): void { }
 
   ngAfterViewInit() {
+    if (this.elementRef === null || this.elementRef === undefined) { return }
     this.orgBodyBgrColor = this.elementRef.nativeElement.ownerDocument.body.style.backgroundColor
-    this.elementRef.nativeElement.ownerDocument.body.style.backgroundColor = this.sartUpBodyBgrColor;
+    this.renderer.setStyle(this.elementRef.nativeElement.ownerDocument.body, 'backgroundColor', this.sartUpBodyBgrColor);
   }
 
   ngOnDestroy() {
@@ -88,6 +64,6 @@ export class StartUpComponent implements OnInit, OnDestroy {
     setTimeout(() => {
       observer.next(true);
       observer.complete();
-    }, this.activeRoute.snapshot.data.model.startUp.minimalStartUpShowTimeMS);
+    }, this.activeRoute.snapshot.routeConfig['content']['minimalStartUpShowTimeMS']);
   };
 }

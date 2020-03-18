@@ -1,0 +1,74 @@
+<ion-header>
+    <ion-toolbar style="--border-style: none; background: transparent;">
+        <ion-buttons slot="end">
+            <ion-button (click)="myDismiss()">Close</ion-button>
+        </ion-buttons>
+    </ion-toolbar>
+    <div style="padding-bottom: 1rem;padding-left: 5px;padding-right: 5px;">
+        <ion-segment (ionChange)="segmentChanged($event)">
+            <ion-segment-button value="main">
+                <ion-label>Overview</ion-label>
+            </ion-segment-button>
+            <ion-segment-button value="trace">
+                <ion-label>Trace</ion-label>
+            </ion-segment-button>
+        </ion-segment>
+    </div>
+</ion-header>
+
+<ion-content>
+    <ng-container [ngSwitch]="selectedView">
+        <ng-template [ngSwitchCase]="'main'">
+            <ion-item-divider [ngStyle]="{'background-color': errorMsg.color | color2varcolor}">
+                <ion-icon [name]="errorMsg.icon">
+                </ion-icon>
+                <ion-label>
+                    Error Details
+                </ion-label>
+            </ion-item-divider>
+            <ion-item>
+                <ion-label slot="start">ID:</ion-label>
+                <ion-label style="font-size: 10px">{{errorMsg.id}}</ion-label>
+            </ion-item>
+            <ion-item>
+                <ion-label slot="start">Timestamp:</ion-label>
+                <ion-label style="font-size: 10px">{{errorMsg.timestamp | ms2localstring}}</ion-label>
+            </ion-item>
+            <ion-item>
+                <ion-label slot="start">Severity:</ion-label>
+                <ion-label style="font-size: 10px">{{errorMsgSeverity[errorMsg.severity]}}</ion-label>
+            </ion-item>
+            <ion-item>
+                <ion-label slot="start">Action:</ion-label>
+                <ion-label style="font-size: 10px">{{(errorMsg.action) ? errorMsg.action : ''}}</ion-label>
+            </ion-item>
+            <ion-item>
+                <ion-label slot="start">Scope:</ion-label>
+                <ion-label style="font-size: 10px">{{errorMsgScope[errorMsg.scope]}}</ion-label>
+            </ion-item>
+            <ion-item>
+                <ion-label slot="start">Error Code:</ion-label>
+                <ion-label style="font-size: 10px">{{errorMsg.errorcode}}</ion-label>
+            </ion-item>
+            <ion-item-divider [ngStyle]="{'background-color': errorMsg.color | color2varcolor}">
+                <ion-icon [name]="errorMsg.icon">
+                </ion-icon>
+                <ion-label>
+                    Error Message
+                </ion-label>
+            </ion-item-divider>
+            <div style="padding-left: 15px; padding-right: 5px; padding-top: 0px;  font-size: 10px">
+                <div>
+                    <pre><code>{{errorMsg.text}}</code></pre>
+                </div>
+            </div>
+        </ng-template>
+        <ng-template [ngSwitchCase]="'trace'">
+            <div id="scroll-content" style="padding-left: 5px; padding-right: 5px; padding-top: 0px; font-size:10px; height: 100%;">
+                <div id="scroll-content" style=" height: 100%;">
+                    <pre><code>{{errorMsg.stack}}</code></pre>
+                </div>
+            </div>
+        </ng-template>
+    </ng-container>
+</ion-content>

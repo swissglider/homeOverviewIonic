@@ -1,10 +1,22 @@
-<div style="padding-top:5px; padding-bottom: 5px; padding-left: 0rem; padding-right: 0rem;">
+<div style="padding-bottom: 5px; padding-left: 0; padding-right: 0;">
     <ion-button color="light" expand="full" fill="outline" shape="round"
-        style="--padding-start: 0px; --border-radius:15px; --box-shadow:2px 2px 15px -1px rgba(0, 0, 0, 0.2)" (click)="presentModal()">
-        <ion-toolbar style="--border-style: none; background: transparent;">
-            <img *ngIf="route.snapshot.data.image" style="padding-left: 1em;" [src]="route.snapshot.data.image"
+        style="--padding-start: 0; --border-radius:15px; --box-shadow:2px 2px 15px -1px rgba(0, 0, 0, 0.2); --padding-end: 0; ">
+        <ion-toolbar style="--border-style: none; background: transparent;" (click)="presentModal()">
+            <img *ngIf="route.snapshot.data.image" style="padding-left: 5px;" [src]="route.snapshot.data.image"
                 slot="start">
-            <ion-label style="margin-left:1rem;" slot="start">{{route.snapshot.data.title | getname}}</ion-label>
+            <ion-label style="padding-left:5px; margin-top: 0px;" slot="start">{{route.snapshot.data.title | getname}}
+            </ion-label>
         </ion-toolbar>
+        <ng-container *ngIf="inputButtons">
+            <ng-container *ngFor="let inputButton of inputButtons.buttons; trackBy: trackByButtonID">
+                <ion-button *ngIf="inputButton.showText" class="input-button_text" fill="clear" size="small"
+                    shape="round" (click)="outputButtonReturn(inputButton.buttonID, inputButton.value)">
+                    {{inputButton.showText}}</ion-button>
+                <ion-button *ngIf="inputButton.showImage" class="input-button_image" fill="clear" size="small"
+                    shape="round" (click)="outputButtonReturn(inputButton.buttonID, inputButton.value)">
+                    <img [src]="inputButton.showImage">
+                </ion-button>
+            </ng-container>
+        </ng-container>
     </ion-button>
 </div>

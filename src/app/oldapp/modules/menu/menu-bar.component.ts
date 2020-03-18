@@ -1,4 +1,4 @@
-import { Component, Input, ChangeDetectionStrategy} from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy, NgZone} from '@angular/core';
 import { Router } from '@angular/router';
 import { ModalController } from '@ionic/angular';
 import { ModalComponent } from './modal/modal.component';
@@ -23,10 +23,13 @@ export class MenuBarComponent {
     private router: Router,
     public modalController: ModalController,
     public iconsService: IconsService,
+    private ngZone: NgZone,
   ) {}
 
   openMenu(){
-    this.router.navigate(['/tabs/menu'])
+    this.ngZone.run(() => {
+      this.router.navigate(['/tabs/menu']);
+    });
   }
   
   async presentModal(menu) {
