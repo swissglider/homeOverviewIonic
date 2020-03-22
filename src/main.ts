@@ -9,15 +9,17 @@ import { enableAkitaProdMode, persistState } from '@datorama/akita';
 if (environment.production) {
   enableProdMode();
   enableAkitaProdMode();
+} else {
+  persistState({
+    key: 'homeoverview',
+    include: ['ErrorMsgState']
+  });
 }
 
 // platformBrowserDynamic().bootstrapModule(AppModule)
 //   .catch(err => console.log(err));
 
-persistState({
-  key: 'homeoverview',
-  include: ['ErrorMsgState']
-});
+
 
 platformBrowserDynamic().bootstrapModule(AppModule)
   .then(moduleRef => {

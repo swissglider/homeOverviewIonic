@@ -3,7 +3,8 @@ import { CONNECTION_STATUS } from '../../../_global/services/iobroker.service/io
 import { Subscription } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 import { IOBrokerService } from '../../../_global/services/iobroker.service/iobroker.service';
-import { AnimationController } from '@ionic/angular';
+import { AnimationController, PopoverController } from '@ionic/angular';
+import { StatusDotPopoverComponent } from './popover/status.dot.popover.component';
 
 @Component({
     selector: 'status-dot-component',
@@ -30,8 +31,8 @@ export class StatusDotComponent implements OnInit, OnDestroy {
     constructor(
         public route: ActivatedRoute,
         public ioBroverService: IOBrokerService,
-        private animationCtrl: AnimationController
-        // public router: Router
+        private animationCtrl: AnimationController,
+        public popoverController: PopoverController,
     ) {
         this.dot1_e_name = `${this.route.snapshot.data.componentName}_dot1`;
         this.dot2_e_name = `${this.route.snapshot.data.componentName}_dot2`;
@@ -51,8 +52,6 @@ export class StatusDotComponent implements OnInit, OnDestroy {
         this.initDotAnimation();
         this.dot.play();
     }
-
-
 
     private initDotAnimation() {
         this.dot1 = this.animationCtrl.create()
@@ -100,7 +99,6 @@ export class StatusDotComponent implements OnInit, OnDestroy {
     ngOnInit(): void {
         //   console.log('Menu:ngOnInit')
           this.subscriptions.push(this.ioBroverService.connectionState$.subscribe((e: CONNECTION_STATUS) => {
-            // console.log(CONNECTION_STATUS[e])
             switch (e) {
               case CONNECTION_STATUS.disconnected:
                 this.dotPingColor = 'red';
@@ -124,7 +122,24 @@ export class StatusDotComponent implements OnInit, OnDestroy {
 
     ngOnDestroy() {
         this.subscriptions.forEach(e => {
-            e.unsubscribe
+            e.unsubscribe()
         });
+    }
+
+    async statusDotPopover(ev: any) {
+        const popover = await this.popoverController.create({
+            component: StatusDotPopoverComponent,
+            event: ev,
+            translucent: false,
+            componentProps: {
+                connectionStatus$: this.ioBroverService.connectionState$,
+                // enumType: ErrorMsgSeverity,
+                // filterArray: this.errorMsgSeverityFilter,
+            },
+            // cssClass: 'pop-over-style'
+        });
+        popover.onDidDismiss().then((detail) => {});
+        popover.style.cssText = '--min-width: 90%; --max-width: 90%;';
+        return await popover.present();
     }
 }

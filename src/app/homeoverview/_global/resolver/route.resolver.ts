@@ -54,7 +54,7 @@ export class RouterResolver implements Resolve<boolean>, OnDestroy {
                 }
                 if (!(context in config)) {
                     let conf = this.router.config.find(e => e.path === context);
-                    conf['general'] = config['general'];
+                    if(conf) { conf['general'] = config['general']; }
                     observer.next(false);
                     observer.complete();
                 } else {
@@ -119,7 +119,8 @@ export class RouterResolver implements Resolve<boolean>, OnDestroy {
                         if(org_url && org_url === `/${context}` && 'defaultPath' in contextConfig){
                             this.router.navigate([`/${context}/${contextConfig['defaultPath']}`]);
                         } else {
-                            this.router.navigate([`/${context}`])
+                            // this.router.navigate([`/${context}`])
+                            this.router.navigate([state.url])
                         }
                     });
                 }

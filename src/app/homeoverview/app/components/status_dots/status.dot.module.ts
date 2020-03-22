@@ -3,6 +3,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { StatusDotComponent } from './status.dot.component'
+import { StatusDotPopoverComponent } from './popover/status.dot.popover.component';
 
 @NgModule({
   imports: [
@@ -10,7 +11,7 @@ import { StatusDotComponent } from './status.dot.component'
     CommonModule,
     FormsModule,
   ],
-  declarations: [StatusDotComponent],
-  exports: [StatusDotComponent]
+  declarations: [StatusDotComponent, StatusDotPopoverComponent],
+  exports: [StatusDotComponent, StatusDotPopoverComponent]
 })
 export class StatusDotModule { }

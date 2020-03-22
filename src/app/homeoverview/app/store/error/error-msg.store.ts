@@ -1,7 +1,10 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Inject } from '@angular/core';
 import { ErrorMsg, ErrorMsgSeverity } from './error-msg.model';
 import { EntityState, EntityStore, StoreConfig } from '@datorama/akita';
 import { Router, ActivatedRoute } from '@angular/router';
+import { DataService } from 'src/app/homeoverview/_global/services/data.service/data-service';
+import { Observable, Subscription } from 'rxjs';
+import { environment } from 'src/environments/environment';
 
 /** Error Msg State */
 export interface ErrorMsgState extends EntityState<ErrorMsg, string> { }
@@ -11,15 +14,21 @@ export interface ErrorMsgState extends EntityState<ErrorMsg, string> { }
 @StoreConfig({ name: 'ErrorMsgState' })
 export class ErrorMsgStore extends EntityStore<ErrorMsgState> {
 
-  private logLevel = 6;
+  private logLevel: number;
+  private subscriptions: Subscription[] = []
 
   /** @ignore */
   constructor(
     private activeRoute: ActivatedRoute,
+    @Inject(DataService) protected _service: DataService,
   ) {
     super();
     this.akitaPreAddEntity = this.akitaPreAddEntity.bind(this);
     this.addNewErrorMsg = this.addNewErrorMsg.bind(this);
+    let subj$ = <Observable<any>>this._service.getData(environment.apiUrl + '/assets/app.menu.json');
+    this.subscriptions.push(subj$.subscribe(e => {
+      this.logLevel = e.general.logLevel;
+    }));
   }
 
   akitaPreAddEntity(errorMsg: ErrorMsg): ErrorMsg {
@@ -57,10 +66,6 @@ export class ErrorMsgStore extends EntityStore<ErrorMsgState> {
   }
 
   addNewErrorMsg(errorMsg: ErrorMsg) {
-    try {
-      // console.error(errorMsg, errorMsg.stack)
-      this.logLevel = this.activeRoute.firstChild.routeConfig['general']['logLevel'];
-    } catch (e) { }
     if(!errorMsg || !errorMsg.severity || errorMsg.severity < this.logLevel) { return }
     this.add(errorMsg);
   }

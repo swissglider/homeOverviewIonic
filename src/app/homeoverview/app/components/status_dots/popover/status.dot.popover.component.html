@@ -1,0 +1,13 @@
+<ion-item lines="none">
+    <ion-label>IoBroker Connection Status:</ion-label>
+    <ng-container *ngIf="connectionStatus$ | async as st">
+        <ion-chip *ngIf="st === _CONNECTION_STATUS.disconnected" slot="end" outline="true" color="danger">
+            {{_CONNECTION_STATUS[connectionStatus$ | async]}}</ion-chip>
+        <ion-chip *ngIf="st === _CONNECTION_STATUS.reconnecting" slot="end" outline="true" color="warning">
+            {{_CONNECTION_STATUS[connectionStatus$ | async]}}</ion-chip>
+        <ion-chip *ngIf="st === _CONNECTION_STATUS.connected" slot="end" outline="true" color="warning">
+            {{_CONNECTION_STATUS[connectionStatus$ | async]}}</ion-chip>
+        <ion-chip *ngIf="st === _CONNECTION_STATUS.loaded" slot="end" outline="true" color="success">
+            {{_CONNECTION_STATUS[connectionStatus$ | async]}}</ion-chip>
+    </ng-container>
+</ion-item>

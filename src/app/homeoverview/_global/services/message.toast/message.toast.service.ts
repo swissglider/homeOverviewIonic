@@ -30,8 +30,8 @@ export class MessageToastService implements OnDestroy {
 
         const doErrorToast = async (message: Message) => {
             let toast = await this.toastController.create({
-                header: MessageScope[message.scope],
-                message: '\n\t' + message.text,
+                header: 'Scope: ' + MessageScope[message.scope],
+                message: '<br>' + message.text,
                 position: 'top',
                 color: message.color,
                 buttons: [
@@ -39,12 +39,13 @@ export class MessageToastService implements OnDestroy {
                         side: 'start',
                         icon: message.icon,
                         text: '',
-                        handler: () => { }
+                        handler: () => { 
+                        }
                     }, {
                         text: 'Ok',
                         role: 'cancel',
                         handler: () => {
-                            // console.log('Cancel clicked');
+                            if('callback' in message){ message.callback('cancel'); }
                         }
                     }
                 ]

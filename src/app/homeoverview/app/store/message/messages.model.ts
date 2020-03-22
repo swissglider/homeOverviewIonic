@@ -18,6 +18,7 @@ export interface Message {
   text: string;
   color?: string;
   icon?: string; 
+  callback?: (status:string)=>void;
 }
 
 /** @ignore */

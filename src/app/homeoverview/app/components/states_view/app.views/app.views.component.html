@@ -28,6 +28,7 @@
                             </ion-button>
                             <ng-container *ngIf="levelStruct.batteryOk$ | async as batteryState">
                                 <ion-button *ngIf="batteryState.value != true" size="small" color="light" fill="clear"
+                                    (click)="presentsBadBattery(levelStruct)"
                                     style="--padding-end:0px; --padding-start:0px">
                                     <img [src]="levelStruct.getBatteryIcon()">
                                 </ion-button>
@@ -58,7 +59,7 @@
                                         <img
                                             [src]="levelStruct.elementStates[htmlFunction].getBase64Icon(valueS.value, 20)">
                                         <ion-label>
-                                            &#160;{{valueS.value}}{{levelStruct.elementStates[htmlFunction].getUnit()}}
+                                            &#160;{{valueS.value | roundto1decstring}}{{levelStruct.elementStates[htmlFunction].getUnit()}}
                                         </ion-label>
                                     </ion-chip>
                                 </ng-container>
@@ -66,7 +67,8 @@
                         </ng-container>
                     </ng-container>
                     <ion-item-group *ngIf="withDetails && levelStruct.detailOpen">
-                        <ion-chip *ngFor="let elementState of levelStruct.elementStates  | keyvalue; let i = index; trackBy: trackById"
+                        <ion-chip
+                            *ngFor="let elementState of levelStruct.elementStates  | keyvalue; let i = index; trackBy: trackById"
                             outline="true">
                             <ng-container *ngIf="elementState.value.valueS$ | async as valueS">
                                 <img [src]="elementState.value.getBase64Icon(valueS.value, 20)">
@@ -113,7 +115,7 @@
                     </ion-button>
                     <ng-container *ngIf="levelStruct.batteryOk$ | async as batteryState">
                         <ion-button *ngIf="batteryState.value != true" size="small" color="light" fill="clear"
-                            style="--padding-end:0px; --padding-start:0px">
+                            (click)="presentsBadBattery(levelStruct)" style="--padding-end:0px; --padding-start:0px">
                             <img [src]="levelStruct.getBatteryIcon()">
                         </ion-button>
                     </ng-container>
@@ -140,7 +142,7 @@
                                     color="primary" size="small" fill="clear"
                                     style="--padding-end:0px; --padding-start:0px">
                                     <ion-label style="font-size: small;">
-                                        &#160;{{valueS.value}}{{levelStruct.elementStates[htmlFunction].getUnit()}}
+                                        &#160;{{valueS.value | roundto1decstring}}{{levelStruct.elementStates[htmlFunction].getUnit()}}
                                     </ion-label>
                                 </ion-button>
                             </ng-container>
@@ -177,12 +179,12 @@
                             </ion-button>
                             <ion-button *ngIf="levelStruct.elementStates[htmlFunction].valueS$ | async as valueS"
                                 (click)="levelStruct.elementStates[htmlFunction].toggleState()" size="small"
-                                color="light" fill="clear" style="--padding-end:0px; --padding-start:0px">
+                                fill="clear" size="small" class="input-button_image">
                                 <img [src]="levelStruct.elementStates[htmlFunction].getBase64Icon(valueS.value)">
                             </ion-button>
                             <ion-button *ngIf="levelStruct.elementStates[htmlFunction].getWrite()"
-                                (click)="levelStruct.elementStates[htmlFunction].setNewState(false)" color="medium"
-                                fill="outline">
+                                (click)="levelStruct.elementStates[htmlFunction].setNewState(false)" fill="outline"
+                                color="medium">
                                 <ion-label>OFF</ion-label>
                             </ion-button>
                         </ng-container>
@@ -190,11 +192,10 @@
                     <ng-container *ngFor="let htmlFunction of htmlNumberPanels">
                         <ng-container
                             *ngIf="levelStruct.elementStates[htmlFunction] &&  levelStruct.elementStates[htmlFunction].getType() === 'number'">
-                            <ion-chip *ngIf="levelStruct.elementStates[htmlFunction].valueS$ | async as valueS"
-                                color="dark" outline="true">
-                                <ion-label>{{valueS.value}}{{levelStruct.elementStates[htmlFunction].getUnit()}}
-                                </ion-label>
-                            </ion-chip>
+                            <ion-button *ngIf="levelStruct.elementStates[htmlFunction].valueS$ | async as valueS"
+                                class="input-button_text" fill="clear" size="small">
+                                {{valueS.value | roundto1decstring}}{{levelStruct.elementStates[htmlFunction].getUnit()}}
+                            </ion-button>
                         </ng-container>
                     </ng-container>
                 </ion-buttons>
@@ -207,7 +208,7 @@
             <ng-container *ngFor="let htmlFunction of htmlNumberPanels; let index = index">
                 <ng-container *ngIf="index !== 0">{{separator}}</ng-container>
                 <ng-container *ngIf="levelStruct.elementStates[htmlFunction].valueS$ | async as valueS">
-                    {{valueS.value}}{{levelStruct.elementStates[htmlFunction].getUnit()}}
+                    {{valueS.value | roundto1decstring}}{{levelStruct.elementStates[htmlFunction].getUnit()}}
                 </ng-container>
             </ng-container>
         </ion-label>

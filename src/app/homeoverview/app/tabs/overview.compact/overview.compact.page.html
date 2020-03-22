@@ -1,0 +1,59 @@
+<ion-header>
+    <ng-container *ngIf="(levelStruct$ | async) as level_struct">
+        <app-views-component [levelStruct]="level_struct" [htmlBoolPanels]="this.html_boolean_panel_functions_title"
+            [htmlNumberPanels]="this.html_number_panel_functions_title" [valueSelectionID]="this.valueSelectionID"
+            [valueSelectionFilters]="this.valueSelectionFilters" [view]="viewToShow.header">
+        </app-views-component>
+        <div style="padding-left: 0.5em!important; padding-right: 0.5em!important; height: 70px;">
+            <app-views-component [levelStruct]="level_struct" [htmlNumberPanels]="simpleValues"
+                [valueSelectionID]="this.valueSelectionID" [valueSelectionFilters]="this.valueSelectionFilters"
+                [view]="viewToShow.small_chart_row" [color]=''></app-views-component>
+        </div>
+        <div style="padding: 0.5em;">
+            <ion-segment *ngIf="level_struct.hasMembers()" [value]="level_struct.getMembers()[0]"
+                (ionChange)="segmentChanged($event)">
+                <ion-segment-button *ngFor="let member of level_struct.getMembers()" [value]="member">
+                    <ion-label><b>{{member.getName() | getname}}</b></ion-label>
+                    <app-views-component [levelStruct]="member" [htmlNumberPanels]="simpleValues"
+                        [valueSelectionID]="this.valueSelectionID" [valueSelectionFilters]="this.valueSelectionFilters"
+                        [view]="viewToShow.simple_value"></app-views-component>
+                </ion-segment-button>
+            </ion-segment>
+        </div>
+    </ng-container>
+</ion-header>
+
+<ion-content *ngIf="(levelStruct$ | async) as level_struct">
+    <ng-container *ngIf="getSelectedSegment(level_struct)  as selected_member">
+        <div style="padding-left: 0.5em; padding-right: 0.2em;">
+            <app-views-component [levelStruct]="selected_member"
+                [htmlBoolPanels]="this.html_boolean_panel_functions" [valueSelectionID]="this.valueSelectionID"
+                [valueSelectionFilters]="this.valueSelectionFilters" [view]="viewToShow.card_overview"
+                [level]="selected_member.level-1" [withDetails]="true" [withOpener]="false" [color]="'light'"
+                [emptyColor]="''">
+            </app-views-component>
+        </div>
+        <div style="padding-top:1em"></div>
+        <div style="padding-left: 0.5em; padding-right: 0.5em;">
+            <ng-container *ngFor="let member of selected_member.getMembers(); trackBy: trackById">
+                <ng-container *ngTemplateOutlet="recursiveList; context:{ $implicit: member }"></ng-container>
+            </ng-container>
+        </div>
+    </ng-container>
+
+    <ng-template #recursiveList let-level_struct>
+        <ng-container *ngIf="level_struct">
+            <app-views-component *ngIf="level_struct.level > 1" [levelStruct]="level_struct"
+                [htmlBoolPanels]="this.html_boolean_panel_functions" [htmlNumberPanels]="this.subFunctionNumbers"
+                [valueSelectionID]="this.valueSelectionID" [valueSelectionFilters]="this.valueSelectionFilters"
+                [view]="viewToShow.ultra_compact" [level]="level_struct.level-2" [withDetails]="false"
+                [withOpener]="true" [color]="'light'" [emptyColor]="''">
+            </app-views-component>
+            <ng-container *ngIf="level_struct.totalOpen">
+                <ng-container *ngFor="let member of level_struct.getMembers(); trackBy: trackById">
+                    <ng-container *ngTemplateOutlet="recursiveList; context:{ $implicit: member }"></ng-container>
+                </ng-container>
+            </ng-container>
+        </ng-container>
+    </ng-template>
+</ion-content>

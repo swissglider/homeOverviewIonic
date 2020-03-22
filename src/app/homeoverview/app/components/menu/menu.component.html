@@ -2,7 +2,7 @@
     <ion-button color="light" expand="full" fill="outline" shape="round"
         style="--padding-start: 0; --border-radius:15px; --box-shadow:2px 2px 15px -1px rgba(0, 0, 0, 0.2); --padding-end: 0; ">
         <ion-toolbar style="--border-style: none; background: transparent;" (click)="presentModal()">
-            <img *ngIf="route.snapshot.data.image" style="padding-left: 5px;" [src]="route.snapshot.data.image"
+            <img *ngIf="route.snapshot.data.image_selected_false" style="padding-left: 5px;" [src]="route.snapshot.data.image_selected_false"
                 slot="start">
             <ion-label style="padding-left:5px; margin-top: 0px;" slot="start">{{route.snapshot.data.title | getname}}
             </ion-label>

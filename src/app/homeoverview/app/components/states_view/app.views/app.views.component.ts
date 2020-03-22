@@ -3,7 +3,6 @@ import { Subscription, bindCallback, Observable, BehaviorSubject } from 'rxjs';
 import { ChartDataSets } from 'chart.js';
 import { Color, Label } from 'ng2-charts';
 import { IoBObjectQuery } from '../../../store/object/io-bobject.query';
-import { AlertController } from '@ionic/angular';
 import { ViewToShow } from './app.views.model';
 import { IOBrokerService } from '../../../../_global/services/iobroker.service/iobroker.service';
 import { LevelStructService } from '../../../../_global/services/level.service/level.struct.service';
@@ -11,6 +10,8 @@ import { ILevelStruct } from '../../../../_global/services/level.service/level.s
 import { GetNamePipe } from '../../../../_global/pipes/get-name.pipe';
 import { InputButtons } from '../../menu/menu.model';
 import { distinctUntilChanged } from 'rxjs/operators';
+import { MessageType, MessageScope } from '../../../store/message/messages.model';
+import { MessageStore } from '../../../store/message/messages.store';
 
 @Component({
   selector: 'app-views-component',
@@ -54,9 +55,9 @@ export class AppViewsComponent implements OnInit, OnDestroy {
     private ngZone: NgZone,
     private ioBrokerService: IOBrokerService,
     private objectQuery: IoBObjectQuery,
-    public alertController: AlertController,
     private getNamePipe: GetNamePipe,
-    private ref: ChangeDetectorRef
+    private ref: ChangeDetectorRef,
+    private messageStore: MessageStore,
   ) { }
 
   ngOnInit(): void {
@@ -126,11 +127,11 @@ export class AppViewsComponent implements OnInit, OnDestroy {
               if (valueS !== null && valueS !== undefined) {
                 if (this.menuButtons.buttons.some(e => e.buttonID === 'htmlNumberPanels' && 'id' in e.value && e.value.id === htmlFunction)) {
                   this.menuButtons.buttons.find(e => e.buttonID === 'htmlNumberPanels' && 'id' in e.value && e.value.id === htmlFunction)
-                    .showText = valueS.value + this.levelStruct.elementStates[htmlFunction].getUnit();
+                    .showText = Number(valueS.value).toFixed(1) + this.levelStruct.elementStates[htmlFunction].getUnit();
                 } else {
                   this.menuButtons.buttons.push({
                     buttonID: 'htmlNumberPanels',
-                    showText: valueS.value + this.levelStruct.elementStates[htmlFunction].getUnit(),
+                    showText: Number(valueS.value).toFixed(1) + this.levelStruct.elementStates[htmlFunction].getUnit(),
                     value: { id: htmlFunction },
                     order: 3,
                   });
@@ -157,7 +158,7 @@ export class AppViewsComponent implements OnInit, OnDestroy {
     if ($event.buttonID === 'hasNotUpdatedSince1Month') {
       this.presentsNotUpdatedSince1Month(this.levelStruct.getNotUpdatedSince1MonthIDs())
     }
-    if ($event.buttonID === 'htmlBoolPanels') {
+    if ($event.value['id'] === 'enum.functions.light') {
       this.levelStruct.elementStates[$event.value['id']].toggleState();
     }
     if ($event.buttonID === 'htmlNumberPanels') {
@@ -173,7 +174,7 @@ export class AppViewsComponent implements OnInit, OnDestroy {
       }
     })
     if (!firstChange) {
-      console.log('ngOnChanges', changes, this.view);
+      // console.log('ngOnChanges', changes, this.view);
     }
   }
 
@@ -224,7 +225,7 @@ export class AppViewsComponent implements OnInit, OnDestroy {
         lineChartPlugins: [],
         lineChartType: 'line',
       };
-      const observable = bindCallback(this.ioBrokerService.sendTo);
+      const observable = bindCallback(this.ioBrokerService.sendTo).bind(this.ioBrokerService);
       this.chartsSubscription = observable('influxdb.0', 'getHistory', {
         id: id,
         options: {
@@ -252,15 +253,45 @@ export class AppViewsComponent implements OnInit, OnDestroy {
   }
 
   async presentsNotUpdatedSince1Month(ids: string[]) {
-    console.log(ids)
-    const alert = await this.alertController.create({
-      header: 'Alert',
-      subHeader: 'Subtitle',
-      message: JSON.stringify(ids),
-      buttons: ['OK']
+    let notUpdatedListStr: string = '<b>' + this.getNamePipe.transform({ 
+      en: 'Please check the following States if still alive', 
+      de: 'Bitte folgende folgende Geräte ob sie noch funktionieren' 
+    }) + '</b>';
+    notUpdatedListStr = notUpdatedListStr + '<ul>';
+    ids.forEach(e => {
+      notUpdatedListStr = notUpdatedListStr + "<li> " + this.getNamePipe.transform(this.objectQuery.getEntity(e).common.name) + '</li>';
     });
+    notUpdatedListStr = notUpdatedListStr + '</ul>'
 
-    await alert.present();
+    this.messageStore.addNewMessage({
+      type: MessageType.ERROR,
+      scope: MessageScope.GLOBAL,
+      text: notUpdatedListStr,
+    });
+  }
+
+  async presentsBadBattery(level_Struct: ILevelStruct) {
+
+    let subm = level_Struct.batteryNotOkIDs$.pipe(distinctUntilChanged()).subscribe(async batt => {
+      if (batt && 'value' in batt) {
+        let battList: string = '<b>' + this.getNamePipe.transform({ 
+          en: 'Please check the following Baterries', 
+          de: 'Bitte folgende Batterien prüfen' 
+        }) + '</b>';
+        battList = battList + '<ul>'
+        batt.value.forEach(e => {
+          battList = battList + "<li> " + this.getNamePipe.transform(this.objectQuery.getEntity(e).common.name) + '</li>';
+        });
+        battList = battList + '</ul>'
+
+        this.messageStore.addNewMessage({
+          type: MessageType.ERROR,
+          scope: MessageScope.GLOBAL,
+          text: battList,
+          callback: (status: string) => { subm.unsubscribe(); },
+        });
+      }
+    });
   }
 
 }

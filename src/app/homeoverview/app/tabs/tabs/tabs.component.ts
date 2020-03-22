@@ -1,6 +1,6 @@
 import { Component, OnInit, ChangeDetectionStrategy, ViewChild, AfterViewInit } from '@angular/core';
 import { TestTab } from '../test.tab/test.tab'
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { IonTabs} from '@ionic/angular';
 
 @Component({
@@ -18,10 +18,10 @@ export class TabsComponent implements OnInit, AfterViewInit {
     activeTabName: string;
 
     trackByPath = (index: number, item: any) => item.path;
+    elementRef: any;
 
     constructor(
         private route: ActivatedRoute,
-        private router: Router,
     ) { }
 
     ngOnInit() {

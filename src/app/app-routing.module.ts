@@ -3,7 +3,7 @@ import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 import { AppRouteResolver } from './homeoverview/_global/resolver/app-route.resolver';
 import { RouterResolver } from './homeoverview/_global/resolver/route.resolver';
 import { StartUpComponent } from './homeoverview/start.up/start.up.component'
-import { TabsComponent } from './homeoverview/app/tabs/tabs/tabs.component';
+import { StartUpResolver } from './homeoverview/_global/resolver/startUp-resolver';
 // import { OldAppRouteResolver } from './oldapp/resolver/old-app-route.resolver'
 
 const routes: Routes = [
@@ -32,7 +32,7 @@ const routes: Routes = [
   },
   {
     path: 'startUp',
-    resolve: { loadRouts: RouterResolver },
+    resolve: { loader: StartUpResolver },
     // resolve: { model: AppRouteResolver, loadRouts: RouterResolver },
     // loadChildren: () => import('./homeoverview/start.up/start.up.module').then(m => m.StartUpModule)
     component: StartUpComponent,

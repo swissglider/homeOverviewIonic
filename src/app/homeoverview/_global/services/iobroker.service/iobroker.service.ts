@@ -191,11 +191,11 @@ export class IOBrokerService implements OnDestroy {
                 scope: ErrorMsgScope.LOCAL,
                 logging: [ErrorMsgLogging.CONSOLE],
             });
-            this.messageStore.addNewMessage({
-                type: MessageType.SUCCESS,
-                scope: MessageScope.GLOBAL,
-                text: 'Connected to IoBroker Server',
-            })
+            // this.messageStore.addNewMessage({
+            //     type: MessageType.SUCCESS,
+            //     scope: MessageScope.GLOBAL,
+            //     text: 'Connected to IoBroker Server',
+            // });
             this.socket.emit('name', this.namespace, () => {
                 setTimeout(() => {
                     const wait = setTimeout(() => {

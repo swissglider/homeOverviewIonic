@@ -24,6 +24,8 @@ export enum levelIDType {
     stringType = 3, // levelIDCases
 }
 
+const BATTERYPERCLOW: number = 20;
+
 class LevelStruct implements ILevelStruct {
     public id: string;
     public level: number;
@@ -36,7 +38,7 @@ class LevelStruct implements ILevelStruct {
     protected allFittingStates: string[];
     private members: ILevelStruct[];
     private valueSectionStates: {
-        states?: string[]
+        states?: string[],
         subStates?: {
             [key: string]: string[]
         }
@@ -61,7 +63,7 @@ class LevelStruct implements ILevelStruct {
         private levelStructService: LevelStructService,
         private parentLS: ILevelStruct,
         private parentMemberID: string,
-        valueSelectionStates?: {},
+        valueSelectionStates?: { states?: string[], subStates?: { [key: string]: string[] } },
     ) {
 
         if (!valueSelectionStates) {
@@ -354,6 +356,8 @@ class LevelStruct implements ILevelStruct {
 
     private selectBatteryOk() {
         let tmpVal: boolean;
+        if (this._batteryOk$) { this._batteryOk$.complete(); this._batteryOk$.observers.forEach(e => { e.complete() }) }
+        if (this._batteryNotOkIDs$) { this._batteryNotOkIDs$.complete(); this._batteryNotOkIDs$.observers.forEach(e => { e.complete() }) }
         this._batteryOk$ = new BehaviorSubject<{ value: boolean }>({ value: tmpVal });
         this._batteryNotOkIDs$ = new BehaviorSubject<{ value: string[] }>({ value: [] });
         if ('enum.functions.low_batterie' in this.elementStates && 'enum.functions.batterie' in this.elementStates) {
@@ -363,6 +367,20 @@ class LevelStruct implements ILevelStruct {
             this.batteryOkSubscription = tt$.pipe(distinctUntilChanged()).subscribe(p => {
                 this.levelStructService.ngZone.run(() => {
                     this._batteryOk = (!p[0].value && p[1].value) ? true : false
+                    if (!this._batteryOk) {
+                        let _ids: string[] = [];
+                        this.elementStates['enum.functions.low_batterie'].getStateIDs().forEach(id => {
+                            if (this.levelStructService.stateQuery.getEntity(id).val === true) {
+                                _ids.push(id);
+                            }
+                        });
+                        this.elementStates['enum.functions.batterie'].getStateIDs().forEach(id => {
+                            if (this.levelStructService.stateQuery.getEntity(id).val < BATTERYPERCLOW) {
+                                _ids.push(id);
+                            }
+                        });
+                        this._batteryNotOkIDs$.next({ value: [...new Set(_ids)] })
+                    }
                     this._batteryOk$.next({ value: this._batteryOk });
                     this._batteryIcon = this.elementStates['enum.functions.batterie'].getBase64Icon(this._batteryOk);
                 });
@@ -373,6 +391,15 @@ class LevelStruct implements ILevelStruct {
             this.batteryOkSubscription = lowBat$.pipe(distinctUntilChanged()).subscribe(p => {
                 this.levelStructService.ngZone.run(() => {
                     this._batteryOk = (!p.value) ? true : false
+                    if (!this._batteryOk) {
+                        let _ids: string[] = [];
+                        this.elementStates['enum.functions.low_batterie'].getStateIDs().forEach(id => {
+                            if (this.levelStructService.stateQuery.getEntity(id).val === true) {
+                                _ids.push(id);
+                            }
+                        });
+                        this._batteryNotOkIDs$.next({ value: [...new Set(_ids)] })
+                    }
                     this._batteryOk$.next({ value: this._batteryOk });
                     this._batteryIcon = this.elementStates['enum.functions.low_batterie'].getBase64Icon(this._batteryOk);
                 });
@@ -383,6 +410,15 @@ class LevelStruct implements ILevelStruct {
             this.batteryOkSubscription = bat$.pipe(distinctUntilChanged()).subscribe(p => {
                 this.levelStructService.ngZone.run(() => {
                     this._batteryOk = (p.value) ? true : false
+                    if (!this._batteryOk) {
+                        let _ids: string[] = [];
+                        this.elementStates['enum.functions.batterie'].getStateIDs().forEach(id => {
+                            if (this.levelStructService.stateQuery.getEntity(id).val < BATTERYPERCLOW) {
+                                _ids.push(id);
+                            }
+                        });
+                        this._batteryNotOkIDs$.next({ value: [...new Set(_ids)] })
+                    }
                     this._batteryOk$.next({ value: this._batteryOk });
                     this._batteryIcon = this.elementStates['enum.functions.batterie'].getBase64Icon(this._batteryOk);
                 });
@@ -438,12 +474,27 @@ class LevelStruct implements ILevelStruct {
             return 0;
         })
     }
+
+    public destroy() {
+        // ..
+        // console.log('LevelStruct: destroy : ', this.id)
+        if (this._batteryOk$) { this._batteryOk$.complete(); this._batteryOk$.observers.forEach(e => { e.complete() }) }
+        if (this._batteryNotOkIDs$) { this._batteryNotOkIDs$.complete(); this._batteryNotOkIDs$.observers.forEach(e => { e.complete() }) }
+        if (this.batteryOkSubscription) { this.batteryOkSubscription.unsubscribe(); }
+
+        this.members.forEach((e: LevelStruct) => e.destroy());
+        Object.values(this.elementStates).forEach((e: ElementState) => e.destroy());
+
+        // public elementStates: ElementStates;
+    }
 }
 
 export class ElementState implements IElementState {
 
     private subscription: Subscription;
+    private subject: BehaviorSubject<number | string | boolean>;
     private subscriptionS: Subscription;
+    private subjectS: BehaviorSubject<{ value: number | string | boolean }>;
     private _valueSectionCommon: {};
     private _value: number | string | boolean
 
@@ -468,6 +519,14 @@ export class ElementState implements IElementState {
     ) {
         this.uniqID = (Date.now().toString(36) + Math.random().toString(36).substr(2, 5)).toUpperCase();
         this._valueSectionCommon = this.levelStructService.enumQuery.getEntity(this.selectValueSelection).common;
+    }
+
+    public destroy() {
+        // console.log('ElementState: destroy : ', this.uniqID)
+        if (this.subscription) { this.subscription.unsubscribe(); }
+        if (this.subject) { this.subject.complete; }
+        if (this.subscriptionS) { this.subscriptionS.unsubscribe(); }
+        if (this.subjectS) { this.subjectS.complete; }
     }
 
     public getSelectValueSelection(): string {
@@ -535,9 +594,6 @@ export class ElementState implements IElementState {
     }
 
     public init() {
-        if (this.subscription) {
-            this.subscription.unsubscribe();
-        }
         if (this.subscriptionS) {
             this.subscriptionS.unsubscribe();
         }
@@ -546,8 +602,10 @@ export class ElementState implements IElementState {
     }
 
     private selectValueInit(): Observable<number | string | boolean> {
+        if (this.subscription) { this.subscription.unsubscribe(); }
+        if (this.subject) { this.subject.complete; }
         let tmpVal: number | string | boolean;
-        let subject = new BehaviorSubject<number | string | boolean>(tmpVal);
+        this.subject = new BehaviorSubject<number | string | boolean>(tmpVal);
         let tmpFunction;
         if (this.selectValueSelection in this.valueCalculatorsInit) {
             tmpFunction = this.valueCalculatorsInit[this.selectValueSelection];
@@ -565,18 +623,20 @@ export class ElementState implements IElementState {
             tmpFunction = () => { return undefined };
         }
         this.subscription = this.levelStructService.stateQuery.selectMany(this.stateIDs, (entity: IoBState) => entity.val)
-        .pipe(distinctUntilChanged()).subscribe((values: (string | number | boolean)[]) => {
+            .pipe(distinctUntilChanged()).subscribe((values: (string | number | boolean)[]) => {
                 this.levelStructService.ngZone.run(() => {
                     this._value = tmpFunction(values);
-                    subject.next(this._value);
+                    this.subject.next(this._value);
                 });
             })
-        return subject.asObservable();
+        return this.subject.asObservable();
     };
 
     private selectValueSInit(): Observable<{ value: number | string | boolean }> {
+        if (this.subscriptionS) { this.subscriptionS.unsubscribe(); }
+        if (this.subjectS) { this.subjectS.complete; }
         let tmpVal: number | string | boolean;
-        let subject = new BehaviorSubject<{ value: number | string | boolean }>({ value: tmpVal });
+        this.subjectS = new BehaviorSubject<{ value: number | string | boolean }>({ value: tmpVal });
         let tmpFunction;
         if (this.selectValueSelection in this.valueCalculatorsInit) {
             tmpFunction = this.valueCalculatorsInit[this.selectValueSelection];
@@ -594,12 +654,12 @@ export class ElementState implements IElementState {
             tmpFunction = () => { return undefined };
         }
         this.subscriptionS = this.levelStructService.stateQuery.selectMany(this.stateIDs, (entity: IoBState) => entity.val)
-        .pipe(distinctUntilChanged()).subscribe((values: (string | number | boolean)[]) => {
+            .pipe(distinctUntilChanged()).subscribe((values: (string | number | boolean)[]) => {
                 this.levelStructService.ngZone.run(() => {
-                    subject.next({ value: tmpFunction(values) });
+                    this.subjectS.next({ value: tmpFunction(values) });
                 });
             })
-        return subject.asObservable();
+        return this.subjectS.asObservable();
     };
 
     private _getBase64Icon(fall?: boolean | string, size?: number): string {
@@ -630,7 +690,7 @@ export class ElementState implements IElementState {
 
     private valueCalculatorsInit = {
         'enum.functions.batterie': (values: number[]): boolean => {
-            return !values.some(e => e < 20);
+            return !values.some(e => e < BATTERYPERCLOW);
         },
         'enum.functions.hum': (values: number[]): number => {
             return this.getAvarageInit(values);
@@ -686,7 +746,8 @@ export class ElementState implements IElementState {
             return 0;
         }
         let sum = values.reduce((previous, current) => current += previous);
-        return round(sum / values.length, 1);
+        // return round(sum / values.length, 1);
+        return sum / values.length;
     }
 
     private hasTrueInit(values: boolean[]): boolean {
@@ -704,7 +765,7 @@ export class ElementState implements IElementState {
 })
 export class LevelStructService implements OnDestroy {
 
-    private actionSubscriptions: Subscription[] = []
+    private _LevelStructs: { [key: string]: { ls: LevelStruct; sub$: BehaviorSubject<ILevelStruct>; subscribtions: Subscription[] } } = {};
     constructor(
         public enumQuery: IoBEnumQuery,
         public objectQuery: IoBObjectQuery,
@@ -717,34 +778,54 @@ export class LevelStructService implements OnDestroy {
     ) { }
 
     ngOnDestroy() {
-        this.actionSubscriptions.forEach(e => {
-            e.unsubscribe();
-        });
+        // Object.values(this._LevelStructs).forEach(e => { e.subscribtions.forEach(s => s.unsubscribe); e.sub$.complete(); e.ls.destroy();})
+        // Object.keys(this._LevelStructs).forEach(e => delete this._LevelStructs[e])
+        Object.keys(this._LevelStructs).forEach(e => this.destroyLSByKey(e));
     }
 
     public transformLevelObjectToLevelStruct(lo: IInputLevelObject, valueSelectionID: string, valueSelectionFilters: string[]): Observable<ILevelStruct> {
-        let subject = new BehaviorSubject<ILevelStruct>(undefined)
-        // this.ioBrokerService._loaded$.pipe(distinctUntilChanged()).subscribe(loaded => {
-        // if (loaded) {
-        let tmpILevelStruct = new LevelStruct(lo, valueSelectionID, valueSelectionFilters, this, null, null);
-        // this.ngZone.run(() => {
-        subject.next(tmpILevelStruct);
-        // });
-        this.actionSubscriptions.push(this.enumQuery.selectEntityAction().subscribe(action => {
+
+        let key = JSON.stringify(lo) + valueSelectionID + JSON.stringify(valueSelectionFilters);
+        if (key in this._LevelStructs) {
+            console.log(key);
+            return this._LevelStructs[key].sub$.asObservable();
+        }
+        this._LevelStructs[key] = {
+            ls: new LevelStruct(lo, valueSelectionID, valueSelectionFilters, this, null, null),
+            sub$: new BehaviorSubject<ILevelStruct>(undefined),
+            subscribtions: [],
+        }
+        this._LevelStructs[key].sub$.next(this._LevelStructs[key].ls);
+        this._LevelStructs[key].subscribtions.push(this.enumQuery.selectEntityAction().subscribe(action => {
+            if (key in this._LevelStructs) {
+                this._LevelStructs[key].ls.destroy();
+            }
             let t = new LevelStruct(lo, valueSelectionID, valueSelectionFilters, this, null, null);
-            // this.ngZone.run(() => {
-            subject.next(t);
-            // });
+            this._LevelStructs[key].ls = t;
+            this._LevelStructs[key].sub$.next(this._LevelStructs[key].ls);
         }));
-        this.actionSubscriptions.push(this.objectQuery.selectEntityAction().subscribe(action => {
+        this._LevelStructs[key].subscribtions.push(this.objectQuery.selectEntityAction().subscribe(action => {
+            if (key in this._LevelStructs) {
+                this._LevelStructs[key].ls.destroy();
+            }
             let t = new LevelStruct(lo, valueSelectionID, valueSelectionFilters, this, null, null);
-            // this.ngZone.run(() => {
-            subject.next(t);
-            // });
+            this._LevelStructs[key].ls = t;
+            this._LevelStructs[key].sub$.next(this._LevelStructs[key].ls);
         }));
-        // }
-        // });
-        return subject.asObservable();
+
+        return this._LevelStructs[key].sub$.asObservable();
+    }
+
+    public destroyLS(lo: IInputLevelObject, valueSelectionID: string, valueSelectionFilters: string[]) {
+        let key = JSON.stringify(lo) + valueSelectionID + JSON.stringify(valueSelectionFilters);
+        this.destroyLSByKey(key);
+    }
+
+    private destroyLSByKey(key) {
+        this._LevelStructs[key].subscribtions.forEach(s => s.unsubscribe);
+        this._LevelStructs[key].sub$.complete();
+        this._LevelStructs[key].ls.destroy();
+        delete this._LevelStructs[key];
     }
 
     public getLevelIDType(levelID: string): levelIDType {

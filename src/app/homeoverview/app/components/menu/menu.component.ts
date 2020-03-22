@@ -26,7 +26,8 @@ export class MenuComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngAfterViewInit() { }
 
-  ngOnInit(): void {  }
+  ngOnInit(): void { 
+   }
 
   async presentModal() {
     const modal = await this.modalController.create({
@@ -46,7 +47,6 @@ export class MenuComponent implements OnInit, AfterViewInit, OnDestroy {
   ngOnDestroy() {}
 
   outputButtonReturn(id:string, value:any){
-    console.log(id, value);
     this.buttonReturn.emit({buttonID: id, value: value});
   }
 

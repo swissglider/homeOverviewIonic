@@ -13,6 +13,7 @@ import { ErrorLoggerModal } from './error.logger.tab/error.logger.modal/error.lo
 import { ErrorLoggerPopoverComponent } from './error.logger.tab/popover/error.logger.popover.component';
 import { TwoLevelTabComponent } from './two.level.tab/two-level-tab.component';
 import { AppStatesViewModule } from '../components/states_view/app.states.view.module';
+import { OverviewCompactPage } from './overview.compact/overview.compact.page';
 
 @NgModule({
     imports: [
@@ -105,6 +106,22 @@ export class ErrorLoggerModule { }
     entryComponents: [],
 })
 export class TwoLevelTabModule { }
+
+@NgModule({
+    imports: [
+        IonicModule,
+        CommonModule,
+        MenuModule,
+        PipeModule,
+        AppStatesViewModule,
+        RouterModule.forChild([{ path: '', component: OverviewCompactPage }]),
+    ],
+    declarations: [
+        OverviewCompactPage,
+    ],
+    entryComponents: [],
+})
+export class OverviewCompactModule { }
 
 export const modules = {
     'TestTabModule': TestTabModule,

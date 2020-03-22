@@ -32,15 +32,9 @@ export class AppRouteResolver implements Resolve<any>{
     }
 
     resolve(route, state): Observable<any> {
+        // console.log('Resolve', route)
         const createRoute = (observer) => {
             observer.next(false);
-
-            // let ttt$ = selectPersistStateInit().pipe(take(1))
-            // ttt$.subscribe({
-            //   next: p => {
-            //     console.log(p)
-            //   }
-            // })
             let tt$ = combineLatest(this.ioBService.loaded$).pipe(distinctUntilChanged());
             this.subscriptions.push(tt$.subscribe(finished => {
                 if (finished.every(e => e)) {
