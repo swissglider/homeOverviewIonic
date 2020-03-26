@@ -1,0 +1,16 @@
+<ion-grid>
+    <ion-row *ngFor="let chart of lineChartDatas; let i = index">
+        <ion-col size='9'>
+            <canvas baseChart width="400" height="100" [datasets]="chart" [labels]="lineChartLabels"
+                [options]="lineChartOptions" [legend]="lineChartLegend" [chartType]="lineChartType"
+                [plugins]="lineChartPlugins" (chartHover)="chartHovered($event)"
+                (chartClick)="chartClicked($event)"></canvas>
+        </ion-col>
+        <ion-col size='3' class="chart_legende" >
+            <p *ngIf="overview[i] as over">Current: {{over.current.y}}</p>
+            <p *ngIf="overview[i] as over">Max: {{over.max.y}}</p>
+            <p *ngIf="overview[i] as over">Min: {{over.min.y}}</p>
+            <p *ngIf="overview[i] as over">Sel: {{over.selected.y}}</p>
+        </ion-col>
+    </ion-row>
+</ion-grid>

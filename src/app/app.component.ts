@@ -4,6 +4,7 @@ import { Platform } from '@ionic/angular';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { MessageToastService } from './homeoverview/_global/services/message.toast/message.toast.service';
+import { SentryService } from './homeoverview/_global/services/sentry.service/sentry.service';
 
 @Component({
   selector: 'app-root',
@@ -16,6 +17,7 @@ export class AppComponent {
     private splashScreen: SplashScreen,
     private statusBar: StatusBar,
     private messageToastService: MessageToastService,
+    private sentryService: SentryService,
   ) {
     this.initializeApp();
   }

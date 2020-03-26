@@ -7,7 +7,7 @@ import { ActivatedRoute } from '@angular/router';
 import { CONNECTION_STATUS } from '../../../_global/services/iobroker.service/iobroker.service.model';
 import { distinctUntilChanged } from 'rxjs/operators';
 import { IOBrokerService } from '../../../_global/services/iobroker.service/iobroker.service';
-import { OnReadOpts } from 'net';
+import { measureTime, wholeClassMeasureTime } from 'src/app/homeoverview/_global/decorator/timeMeasure.decorator';
 
 @Component({
   selector: 'app-two-level-tab',
@@ -15,6 +15,7 @@ import { OnReadOpts } from 'net';
   styleUrls: ['./two-level-tab.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
+@wholeClassMeasureTime({print:false})
 export class TwoLevelTabComponent implements OnInit, OnDestroy {
 
   private inputLevelObject: {};
@@ -49,54 +50,44 @@ export class TwoLevelTabComponent implements OnInit, OnDestroy {
     private ref: ChangeDetectorRef,
   ) {
     this.url = this.route.snapshot['_routerState'].url;
-    console.log(this.url, 'constructor');
+    // console.log(this.url, 'constructor');
   }
 
   ngOnDestroy() {
-    console.log(this.url, 'ngOnDestroy');
+    // console.log(this.url, 'ngOnDestroy');
     this.subscription.forEach(e => {
       e.unsubscribe()
     })
+    this.levelStructService.destroyLS(
+        this.inputLevelObject,
+        this.valueSelectionID,
+        this.valueSelectionFilters,
+    )
   }
 
+  @measureTime({print:true})
   ionViewWillEnter() {
     this.subscription.push(this.ioBrokerService.connectionState$.pipe(distinctUntilChanged()).subscribe(e => {
-      if (e === CONNECTION_STATUS.connected) {
-        let time1 = new Date().getTime()
-        this.levelStruct$ = this.levelStructService.transformLevelObjectToLevelStruct(
-          this.inputLevelObject,
-          this.valueSelectionID,
-          this.valueSelectionFilters,
-        );
-        this.ref.markForCheck();
-        let time2 = new Date().getTime()
-        console.log('In: ' + this.url, (time2 - time1));
-      }
+        if (e === CONNECTION_STATUS.connected) {
+            this.levelStruct$ = this.levelStructService.transformLevelObjectToLevelStruct(
+                this.inputLevelObject,
+                this.valueSelectionID,
+                this.valueSelectionFilters,
+            );
+            this.ref.markForCheck();
+        }
     }));
-    let time1 = new Date().getTime()
     this.levelStruct$ = this.levelStructService.transformLevelObjectToLevelStruct(
-      this.inputLevelObject,
-      this.valueSelectionID,
-      this.valueSelectionFilters,
+        this.inputLevelObject,
+        this.valueSelectionID,
+        this.valueSelectionFilters,
     );
     this.ref.markForCheck();
-    let time2 = new Date().getTime()
-    console.log('Out: ' + this.url, (time2 - time1));
   }
 
   // ionViewDidEnter() { console.log(this.url, 'ionViewDidEnter'); }
   // ionViewWillLeave() { console.log(this.url, 'ionViewWillLeave'); }
 
-  ionViewDidLeave() {
-    this.subscription.forEach(e => {
-      e.unsubscribe()
-    })
-    console.log(this.url, 'ionViewDidLeave'); 
-    this.levelStructService.destroyLS(
-      this.inputLevelObject,
-      this.valueSelectionID,
-      this.valueSelectionFilters,
-    )
-  }
+  ionViewDidLeave() {}
 
 }

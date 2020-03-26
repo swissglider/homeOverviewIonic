@@ -1,16 +1,16 @@
 import { ErrorHandler, Injectable } from '@angular/core';
 import { ErrorMsgStore } from '../../../app/store/error/error-msg.store';
 import { ErrorMsgSeverity, ErrorMsgScope, ErrorMsgLogging } from '../../../app/store/error/error-msg.model';
- 
+
 @Injectable()
 export class GlobalErrorHandler implements ErrorHandler {
- 
+
     constructor(
-        private errorMsgStore: ErrorMsgStore,) { }
- 
+        private errorMsgStore: ErrorMsgStore, ) { }
+
     handleError(error: Error) {
         console.error(error)
- 
+
         let message = {
             severity: ErrorMsgSeverity.ERROR,
             text: error.message ? error.message : error.message,

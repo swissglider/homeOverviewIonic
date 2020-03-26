@@ -6,10 +6,12 @@ import { IoBObject } from '../../../app/store/object/io-bobject.model';
 import { IoBState } from '../../../app/store/state/io-bstate.model';
 import { IoBEnumQuery } from '../../../app/store/enum/io-benum.query';
 import { IoBObjectQuery } from '../../../app/store/object/io-bobject.query';
-import { IOBrokerService } from '../iobroker.service/iobroker.service';
 import { distinctUntilChanged } from 'rxjs/operators';
 import { IoBStateQuery } from '../../../app/store/state/io-bstate.query';
 import { NewIOBStateStore } from '../../../app/store/newstate/new-iobstate.store';
+import { wholeClassMeasureTime } from '../../decorator/timeMeasure.decorator';
+import { ErrorMsgStore } from 'src/app/homeoverview/app/store/error/error-msg.store';
+import { ErrorMsgSeverity, ErrorMsgScope, ErrorMsgLogging } from 'src/app/homeoverview/app/store/error/error-msg.model';
 
 
 
@@ -26,6 +28,180 @@ export enum levelIDType {
 
 const BATTERYPERCLOW: number = 20;
 
+/**
+ * Creates an empty/base IInputLevelStruct to be used for example in a Form to select the Levels
+ * Creates an IInputLevelStruct from HTML Input values
+ * Creates an ILevelStruct from a IInputLevelStruct
+ */
+@Injectable({
+    providedIn: 'root'
+})
+@wholeClassMeasureTime({ print: false })
+export class LevelStructService implements OnDestroy {
+
+    private _LevelStructs: { [key: string]: { ls: LevelStruct; sub$: BehaviorSubject<ILevelStruct>; subscribtions: Subscription[] } } = {};
+    constructor(
+        public enumQuery: IoBEnumQuery,
+        public objectQuery: IoBObjectQuery,
+        public stateQuery: IoBStateQuery,
+        public newIoBStateStore: NewIOBStateStore,
+        public errorStateSotre: ErrorMsgStore,
+        // public iconsService: IconsService,
+        // public helperService: HelperService,
+        // private ioBrokerService: IOBrokerService,
+        public ngZone: NgZone,
+    ) { }
+
+    ngOnDestroy() {
+        // Object.values(this._LevelStructs).forEach(e => { e.subscribtions.forEach(s => s.unsubscribe()); e.sub$.complete(); e.ls.destroy();})
+        // Object.keys(this._LevelStructs).forEach(e => delete this._LevelStructs[e])
+        Object.keys(this._LevelStructs).forEach(e => this.destroyLSByKey(e));
+    }
+
+    public transformLevelObjectToLevelStruct(lo: IInputLevelObject, valueSelectionID: string, valueSelectionFilters: string[]): Observable<ILevelStruct> {
+
+        let key = JSON.stringify(lo) + valueSelectionID + JSON.stringify(valueSelectionFilters);
+        if (key in this._LevelStructs) {
+            return this._LevelStructs[key].sub$.asObservable();
+        }
+        this._LevelStructs[key] = {
+            ls: new LevelStruct(lo, valueSelectionID, valueSelectionFilters, this, null, null),
+            sub$: new BehaviorSubject<ILevelStruct>(undefined),
+            subscribtions: [],
+        }
+        this._LevelStructs[key].sub$.next(this._LevelStructs[key].ls);
+        let tempSub = this.enumQuery.selectEntityAction().subscribe(action => {
+            if (key in this._LevelStructs) {
+                this._LevelStructs[key].ls.destroy();
+            }
+            let t = new LevelStruct(lo, valueSelectionID, valueSelectionFilters, this, null, null);
+            if (!this._LevelStructs) {
+                this.errorStateSotre.addNewErrorMsg({
+                    errorcode: "LSST-05101",
+                    severity: ErrorMsgSeverity.ERROR,
+                    text: '_Levelstruct null : ' + key,
+                    action: '',
+                    scope: ErrorMsgScope.LOCAL,
+                    // stack: new Error().stack,
+                    logging: [ErrorMsgLogging.CONSOLE],
+                });
+            }
+            else if (!(key in this._LevelStructs)) {
+                this._LevelStructs[key] = {
+                    ls: null,
+                    sub$: null,
+                    subscribtions: [tempSub],
+                }
+            } else if (!('ls' in this._LevelStructs[key])) {
+                this.errorStateSotre.addNewErrorMsg({
+                    errorcode: "LSST-05102",
+                    severity: ErrorMsgSeverity.ERROR,
+                    text: 'ls nicht in _Levelstruct: ' + key,
+                    action: '',
+                    scope: ErrorMsgScope.LOCAL,
+                    // stack: new Error().stack,
+                    logging: [ErrorMsgLogging.CONSOLE],
+                });
+            }
+            this._LevelStructs[key].ls = t;
+            this._LevelStructs[key].sub$.next(this._LevelStructs[key].ls);
+        });
+        this._LevelStructs[key].subscribtions.push(tempSub);
+        let tempSub2 = this.objectQuery.selectEntityAction().subscribe(action => {
+            if (key in this._LevelStructs) {
+                this._LevelStructs[key].ls.destroy();
+            }
+            let t = new LevelStruct(lo, valueSelectionID, valueSelectionFilters, this, null, null);
+            if (!this._LevelStructs) {
+                this.errorStateSotre.addNewErrorMsg({
+                    errorcode: "LSST-05111",
+                    severity: ErrorMsgSeverity.ERROR,
+                    text: '_Levelstruct null : ' + key,
+                    action: '',
+                    scope: ErrorMsgScope.LOCAL,
+                    // stack: new Error().stack,
+                    logging: [ErrorMsgLogging.CONSOLE],
+                });
+            }
+            else if (!(key in this._LevelStructs)) {
+                this._LevelStructs[key] = {
+                    ls: null,
+                    sub$: null,
+                    subscribtions: [tempSub2],
+                }
+            } else if (!('ls' in this._LevelStructs[key])) {
+                this.errorStateSotre.addNewErrorMsg({
+                    errorcode: "LSST-05112",
+                    severity: ErrorMsgSeverity.ERROR,
+                    text: 'ls nicht in _Levelstruct: ' + key,
+                    action: '',
+                    scope: ErrorMsgScope.LOCAL,
+                    // stack: new Error().stack,
+                    logging: [ErrorMsgLogging.CONSOLE],
+                });
+            }
+            this._LevelStructs[key].ls = t;
+            this._LevelStructs[key].sub$.next(this._LevelStructs[key].ls);
+        });
+        this._LevelStructs[key].subscribtions.push(tempSub2);
+
+        return this._LevelStructs[key].sub$.asObservable();
+    }
+
+    public destroyLS(lo: IInputLevelObject, valueSelectionID: string, valueSelectionFilters: string[]) {
+        let key = JSON.stringify(lo) + valueSelectionID + JSON.stringify(valueSelectionFilters);
+        this.destroyLSByKey(key);
+    }
+
+    private destroyLSByKey(key) {
+        this._LevelStructs[key].subscribtions.forEach(s => s.unsubscribe());
+        this._LevelStructs[key].sub$.complete();
+        this._LevelStructs[key].ls.destroy();
+        delete this._LevelStructs[key];
+    }
+
+    public getLevelIDType(levelID: string): levelIDType {
+        if (!levelID || typeof levelID !== 'string') {
+            return levelIDType.noneType;
+        }
+        if (levelID.startsWith('enum')) {
+            return levelIDType.enumType;
+        } else if (levelID && (levelIDCases[levelID] || levelIDCases[levelID] === 0)) {
+            return levelIDType.stringType;
+        } else if (this.objectQuery.hasEntity(levelID)) {
+            return levelIDType.objectType
+        }
+        return levelIDType.noneType
+    }
+
+    /** gets the name of a id */
+    public getNameFromID(id: string): string | object {
+        return (this.enumQuery.hasEntity(id))
+            ? this.enumQuery.getEntity(id).common.name
+            : (this.objectQuery.hasEntity(id))
+                ? this.objectQuery.getEntity(id).common.name
+                : id;
+    }
+
+    public getAllRecursiveStates(id: string): string[] {
+        let performance = window.performance;
+        switch (this.getLevelIDType(id)) {
+            case levelIDType.enumType:
+                let ret1 = this.enumQuery.getAllStatesRecursiveFromEnumID(id);  // <= performance issue
+                return ret1;
+            case levelIDType.objectType:
+                let ret2 = this.objectQuery.getAllStatesIDWithinParentID(id);  // <= performance issue
+                return ret2;
+            case levelIDType.stringType:
+                break;
+            case levelIDType.noneType:
+                return [];
+        }
+        return [];
+    }
+}
+
+@wholeClassMeasureTime({ print: false })
 class LevelStruct implements ILevelStruct {
     public id: string;
     public level: number;
@@ -489,6 +665,7 @@ class LevelStruct implements ILevelStruct {
     }
 }
 
+@wholeClassMeasureTime({ print: false })
 export class ElementState implements IElementState {
 
     private subscription: Subscription;
@@ -752,116 +929,5 @@ export class ElementState implements IElementState {
 
     private hasTrueInit(values: boolean[]): boolean {
         return values.some(e => e);
-    }
-}
-
-/**
- * Creates an empty/base IInputLevelStruct to be used for example in a Form to select the Levels
- * Creates an IInputLevelStruct from HTML Input values
- * Creates an ILevelStruct from a IInputLevelStruct
- */
-@Injectable({
-    providedIn: 'root'
-})
-export class LevelStructService implements OnDestroy {
-
-    private _LevelStructs: { [key: string]: { ls: LevelStruct; sub$: BehaviorSubject<ILevelStruct>; subscribtions: Subscription[] } } = {};
-    constructor(
-        public enumQuery: IoBEnumQuery,
-        public objectQuery: IoBObjectQuery,
-        public stateQuery: IoBStateQuery,
-        public newIoBStateStore: NewIOBStateStore,
-        // public iconsService: IconsService,
-        // public helperService: HelperService,
-        // private ioBrokerService: IOBrokerService,
-        public ngZone: NgZone,
-    ) { }
-
-    ngOnDestroy() {
-        // Object.values(this._LevelStructs).forEach(e => { e.subscribtions.forEach(s => s.unsubscribe); e.sub$.complete(); e.ls.destroy();})
-        // Object.keys(this._LevelStructs).forEach(e => delete this._LevelStructs[e])
-        Object.keys(this._LevelStructs).forEach(e => this.destroyLSByKey(e));
-    }
-
-    public transformLevelObjectToLevelStruct(lo: IInputLevelObject, valueSelectionID: string, valueSelectionFilters: string[]): Observable<ILevelStruct> {
-
-        let key = JSON.stringify(lo) + valueSelectionID + JSON.stringify(valueSelectionFilters);
-        if (key in this._LevelStructs) {
-            console.log(key);
-            return this._LevelStructs[key].sub$.asObservable();
-        }
-        this._LevelStructs[key] = {
-            ls: new LevelStruct(lo, valueSelectionID, valueSelectionFilters, this, null, null),
-            sub$: new BehaviorSubject<ILevelStruct>(undefined),
-            subscribtions: [],
-        }
-        this._LevelStructs[key].sub$.next(this._LevelStructs[key].ls);
-        this._LevelStructs[key].subscribtions.push(this.enumQuery.selectEntityAction().subscribe(action => {
-            if (key in this._LevelStructs) {
-                this._LevelStructs[key].ls.destroy();
-            }
-            let t = new LevelStruct(lo, valueSelectionID, valueSelectionFilters, this, null, null);
-            this._LevelStructs[key].ls = t;
-            this._LevelStructs[key].sub$.next(this._LevelStructs[key].ls);
-        }));
-        this._LevelStructs[key].subscribtions.push(this.objectQuery.selectEntityAction().subscribe(action => {
-            if (key in this._LevelStructs) {
-                this._LevelStructs[key].ls.destroy();
-            }
-            let t = new LevelStruct(lo, valueSelectionID, valueSelectionFilters, this, null, null);
-            this._LevelStructs[key].ls = t;
-            this._LevelStructs[key].sub$.next(this._LevelStructs[key].ls);
-        }));
-
-        return this._LevelStructs[key].sub$.asObservable();
-    }
-
-    public destroyLS(lo: IInputLevelObject, valueSelectionID: string, valueSelectionFilters: string[]) {
-        let key = JSON.stringify(lo) + valueSelectionID + JSON.stringify(valueSelectionFilters);
-        this.destroyLSByKey(key);
-    }
-
-    private destroyLSByKey(key) {
-        this._LevelStructs[key].subscribtions.forEach(s => s.unsubscribe);
-        this._LevelStructs[key].sub$.complete();
-        this._LevelStructs[key].ls.destroy();
-        delete this._LevelStructs[key];
-    }
-
-    public getLevelIDType(levelID: string): levelIDType {
-        if (!levelID || typeof levelID !== 'string') {
-            return levelIDType.noneType;
-        }
-        if (levelID.startsWith('enum')) {
-            return levelIDType.enumType;
-        } else if (levelID && (levelIDCases[levelID] || levelIDCases[levelID] === 0)) {
-            return levelIDType.stringType;
-        } else if (this.objectQuery.hasEntity(levelID)) {
-            return levelIDType.objectType
-        }
-        return levelIDType.noneType
-    }
-
-    /** gets the name of a id */
-    public getNameFromID(id: string): string | object {
-        return (this.enumQuery.hasEntity(id))
-            ? this.enumQuery.getEntity(id).common.name
-            : (this.objectQuery.hasEntity(id))
-                ? this.objectQuery.getEntity(id).common.name
-                : id;
-    }
-
-    public getAllRecursiveStates(id: string): string[] {
-        switch (this.getLevelIDType(id)) {
-            case levelIDType.enumType:
-                return this.enumQuery.getAllStatesRecursiveFromEnumID(id);
-            case levelIDType.objectType:
-                return this.objectQuery.getAllStatesIDWithinParentID(id);
-            case levelIDType.stringType:
-                break;
-            case levelIDType.noneType:
-                return [];
-        }
-        return [];
     }
 }

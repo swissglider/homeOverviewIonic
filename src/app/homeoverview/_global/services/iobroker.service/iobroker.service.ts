@@ -17,10 +17,12 @@ import { DataService } from '../data.service/data-service';
 import { CONNECTION_STATUS } from './iobroker.service.model';
 import { MessageStore } from 'src/app/homeoverview/app/store/message/messages.store';
 import { MessageType, MessageScope } from 'src/app/homeoverview/app/store/message/messages.model';
+import { wholeClassMeasureTime } from '../../decorator/timeMeasure.decorator';
 
 @Injectable({
     providedIn: 'root'
 })
+@wholeClassMeasureTime({print:false})
 export class IOBrokerService implements OnDestroy {
 
     public loaded$ = new BehaviorSubject(false);
@@ -402,7 +404,7 @@ export class IOBrokerService implements OnDestroy {
         this.socket.on('error', (error) => {
             this.errorMsgStore.addNewErrorMsg({
                 errorcode: "IOBS-0008",
-                severity: ErrorMsgSeverity.FATAL,
+                severity: ErrorMsgSeverity.WARN,
                 text: '!! error :' + error,
                 action: 'Unexpected, do not know how to help',
                 scope: ErrorMsgScope.GLOBAL,

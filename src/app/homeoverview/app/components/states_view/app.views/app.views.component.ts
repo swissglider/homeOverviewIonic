@@ -215,9 +215,17 @@ export class AppViewsComponent implements OnInit, OnDestroy {
           legend: { display: false },
           title: { display: true, text: label, fontSize: 10, position: 'top', padding: 0 },
           scales: {
-            yAxes: [{ gridLines: { display: false, }, scaleLabel: { display: false }, ticks: { display: false } }],
-            xAxes: [{ gridLines: { display: false, }, scaleLabel: { display: false }, ticks: { display: false } }],
+            yAxes: [{gridLines: { display: false, }, scaleLabel: { display: false }, ticks: { display: false } }],
+            xAxes: [{ type: 'time',distribution: "linear",time: {
+              unit: 'day',
+              unitStepSize: 1,
+              displayFormats: { 'day': 'dd', }
+          },gridLines: { display: true, }, scaleLabel: { display: false }, ticks: { display: true, fontSize:8} }],
           },
+          tooltips: { enabled: false, },
+          plugins: { datalabels: { display: false, },
+          layout: { padding: { left:0, right:0, top:0, bottom:0}}
+        }
           // events: ['mousemove', 'touchstart', 'touchmove'],
         },
         lineChartColors: [{ borderColor: 'black', backgroundColor: 'rgba(255,255,0,0.28)', }],
@@ -236,11 +244,12 @@ export class AppViewsComponent implements OnInit, OnDestroy {
           aggregate: 'average',
         }
       }).subscribe((result) => {
-        for (let i = 0; i < result['result'].length; i++) {
+        // for (let i = 0; i < result['result'].length; i++) {
 
-          tempCharts[id].lineChartData[0].data.push(result['result'][i].val);
-          tempCharts[id].lineChartLabels.push(new Date(result['result'][i].ts).toLocaleString());
-        }
+        //   tempCharts[id].lineChartData[0].data.push(result['result'][i].val);
+        //   tempCharts[id].lineChartLabels.push(new Date(result['result'][i].ts).toLocaleString());
+        // }
+        tempCharts[id].lineChartData[0].data = result.result.map(e => { return { x: new Date(e.ts), y: e.val } });
         tempCharts[id].chartFinished = true;
 
         this.ngZone.run(() => {
@@ -253,9 +262,9 @@ export class AppViewsComponent implements OnInit, OnDestroy {
   }
 
   async presentsNotUpdatedSince1Month(ids: string[]) {
-    let notUpdatedListStr: string = '<b>' + this.getNamePipe.transform({ 
-      en: 'Please check the following States if still alive', 
-      de: 'Bitte folgende folgende Geräte ob sie noch funktionieren' 
+    let notUpdatedListStr: string = '<b>' + this.getNamePipe.transform({
+      en: 'Please check the following States if still alive',
+      de: 'Bitte folgende folgende Geräte ob sie noch funktionieren'
     }) + '</b>';
     notUpdatedListStr = notUpdatedListStr + '<ul>';
     ids.forEach(e => {
@@ -274,9 +283,9 @@ export class AppViewsComponent implements OnInit, OnDestroy {
 
     let subm = level_Struct.batteryNotOkIDs$.pipe(distinctUntilChanged()).subscribe(async batt => {
       if (batt && 'value' in batt) {
-        let battList: string = '<b>' + this.getNamePipe.transform({ 
-          en: 'Please check the following Baterries', 
-          de: 'Bitte folgende Batterien prüfen' 
+        let battList: string = '<b>' + this.getNamePipe.transform({
+          en: 'Please check the following Baterries',
+          de: 'Bitte folgende Batterien prüfen'
         }) + '</b>';
         battList = battList + '<ul>'
         batt.value.forEach(e => {

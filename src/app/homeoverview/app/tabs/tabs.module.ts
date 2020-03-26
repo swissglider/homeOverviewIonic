@@ -14,6 +14,7 @@ import { ErrorLoggerPopoverComponent } from './error.logger.tab/popover/error.lo
 import { TwoLevelTabComponent } from './two.level.tab/two-level-tab.component';
 import { AppStatesViewModule } from '../components/states_view/app.states.view.module';
 import { OverviewCompactPage } from './overview.compact/overview.compact.page';
+import { ChartingModule } from '../components/charts/charting.module';
 
 @NgModule({
     imports: [
@@ -35,6 +36,7 @@ export class TestTabModule { }
         CommonModule,
         MenuModule,
         PipeModule,
+        ChartingModule,
         RouterModule.forChild([{ path: '', component: TestTab1 }]),
     ],
     declarations: [

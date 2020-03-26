@@ -6,7 +6,10 @@ import { ViewToShow } from '../../components/states_view/app.views/app.views.mod
 import { IOBrokerService } from '../../../_global/services/iobroker.service/iobroker.service';
 import { distinctUntilChanged } from 'rxjs/operators';
 import { CONNECTION_STATUS } from 'src/app/homeoverview/_global/services/iobroker.service/iobroker.service.model';
+import { measureTime, wholeClassMeasureTime, measureTimeTotalC } from '../../../_global/decorator/timeMeasure.decorator';
 
+
+@wholeClassMeasureTime({print:false})
 @Component({
     selector: 'app-overview-compact',
     templateUrl: 'overview.compact.page.html',
@@ -77,31 +80,27 @@ export class OverviewCompactPage implements OnInit, OnDestroy {
     ) { }
 
     /** @ignore */
-    ngOnInit(): void {}
+    ngOnInit(): void { }
 
+    @measureTime({print:true})
     ionViewWillEnter() {
         this.subscription.push(this.ioBrokerService.connectionState$.pipe(distinctUntilChanged()).subscribe(e => {
             if (e === CONNECTION_STATUS.connected) {
-                let time1 = new Date().getTime()
                 this.levelStruct$ = this.levelStructService.transformLevelObjectToLevelStruct(
                     this.inputLevelObject,
                     this.valueSelectionID,
                     this.valueSelectionFilters,
                 );
                 this.ref.markForCheck();
-                let time2 = new Date().getTime()
-                console.log('In: ' + '/app/overview', (time2 - time1));
             }
         }));
-        let time1 = new Date().getTime()
         this.levelStruct$ = this.levelStructService.transformLevelObjectToLevelStruct(
             this.inputLevelObject,
             this.valueSelectionID,
             this.valueSelectionFilters,
         );
         this.ref.markForCheck();
-        let time2 = new Date().getTime()
-        console.log('Out: ' + '/app/overview', (time2 - time1));
+        console.log(measureTimeTotalC);
     }
 
     segmentChanged(ev: any) {
@@ -113,21 +112,26 @@ export class OverviewCompactPage implements OnInit, OnDestroy {
     }
 
     ngOnDestroy() {
-        console.log('/app/overview', 'ngOnDestroy');
+        // console.log('/app/overview', 'ngOnDestroy');
         this.subscription.forEach(e => {
             e.unsubscribe()
         })
-    }
-
-    ionViewDidLeave() {
-        this.subscription.forEach(e => {
-            e.unsubscribe()
-        })
-        console.log('/app/overview', 'ionViewDidLeave'); 
         this.levelStructService.destroyLS(
             this.inputLevelObject,
             this.valueSelectionID,
             this.valueSelectionFilters,
         )
+    }
+
+    ionViewDidLeave() {
+        // this.subscription.forEach(e => {
+        //     e.unsubscribe()
+        // })
+        // // console.log('/app/overview', 'ionViewDidLeave'); 
+        // this.levelStructService.destroyLS(
+        //     this.inputLevelObject,
+        //     this.valueSelectionID,
+        //     this.valueSelectionFilters,
+        // )
     }
 }
