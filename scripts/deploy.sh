@@ -7,4 +7,5 @@
 ng build --configuration=staging --prod --output-path www --base-href /homeoverview/ --deploy-url /homeoverview/
 # ng build --configuration=test --output-path www --base-href /homeoverview/ --deploy-url /homeoverview/
 
-scp -r www/* root@192.168.90.100:/var/www/html/homeoverview/
+# scp -r www/* root@192.168.90.100:/var/www/html/homeoverview/
+scp -r www/* root@192.168.88.100:/var/www/homeoverview/html/

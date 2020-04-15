@@ -10,10 +10,10 @@ if (environment.production) {
   enableProdMode();
   enableAkitaProdMode();
 } else {
-  persistState({
-    key: 'homeoverview',
-    include: ['ErrorMsgState']
-  });
+  // persistState({
+  //   key: 'homeoverview',
+  //   include: ['ErrorMsgState']
+  // });
 }
 
 // platformBrowserDynamic().bootstrapModule(AppModule)

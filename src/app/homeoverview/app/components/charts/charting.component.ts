@@ -6,85 +6,70 @@ import { bindCallback } from 'rxjs';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import * as pluginAnnotations from 'chartjs-plugin-annotation';
 import { DEF_getLineChartOptions } from './def.lineChartOptions';
+import { chartData, from, to, step } from './data';
+import { GetNamePipe } from 'src/app/homeoverview/_global/pipes/get-name.pipe';
+import { IoBObjectQuery } from '../../store/object/io-bobject.query';
+import { IoBStateQuery } from '../../store/state/io-bstate.query';
+import * as crosshair from 'chartjs-plugin-crosshair';
+import * as zoom from 'chartjs-plugin-zoom';
 
 
 @Component({
     selector: 'app-charting',
     templateUrl: 'charting.component.html',
     styleUrls: ['charting.component.scss'],
+    providers: [GetNamePipe],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ChartingComponent implements OnInit, AfterViewInit, OnDestroy {
-    public overview: {current:{x,y},max:{x,y},min:{x,y},selected:{x,y}, }[] = [{
-        current:{x:'',y:''},max:{x:'',y:''},min:{x:'',y:''},selected:{x:'',y:''},
-    },{
-        current:{x:'',y:''},max:{x:'',y:''},min:{x:'',y:''},selected:{x:'',y:''},
-    },{
-        current:{x:'',y:''},max:{x:'',y:''},min:{x:'',y:''},selected:{x:'',y:''},
-    },{
-        current:{x:'',y:''},max:{x:'',y:''},min:{x:'',y:''},selected:{x:'',y:''},
-    },{
-        current:{x:'',y:''},max:{x:'',y:''},min:{x:'',y:''},selected:{x:'',y:''},
-    }];
-    public lineChartDatas: ChartDataSets[][] = [
-        [{
-            data: [], label: 'Temperatur °C', borderColor: [],
-            datalabels: { align: function (context) { return context.active ? 'start' : 'center'; } }
-        }],
-        [
-            {
-                // data: [], label: 'Hum', yAxisID: 'y-axis-1',
-                data: [], label: 'Hum',
-                datalabels: { align: function (context) { return context.active ? 'start' : 'center'; } },
-                backgroundColor: 'rgba(255,0,0,0.3)',
-                borderColor: 'green',
-                pointBackgroundColor: 'rgba(148,159,177,1)',
-                pointBorderColor: '#fff',
-                pointHoverBackgroundColor: '#fff',
-                pointHoverBorderColor: 'rgba(148,159,177,0.8)'
-            }],
-        [
-            {
-                // data: [], label: 'Hum', yAxisID: 'y-axis-1',
-                data: [], label: 'Wind',
-                datalabels: { align: function (context) { return context.active ? 'start' : 'center'; } }
-            }],
-        [
-            {
-                // data: [], label: 'Hum', yAxisID: 'y-axis-1',
-                data: [], label: 'Luftdruck',
-                datalabels: { align: function (context) { return context.active ? 'start' : 'center'; } }
-            }],
-        [
-            {
-                // data: [], label: 'Hum', yAxisID: 'y-axis-1',
-                data: [], label: 'Regen',
-                datalabels: { align: function (context) { return context.active ? 'start' : 'center'; } }
-            }],
-    ];
-    public lineChartLabels: Label[] = [];
-    public lineChartOptions: (ChartOptions & { annotation: any }) = DEF_getLineChartOptions();
-    public lineChartLegend = true;
-    public lineChartType = 'line';
-    // public lineChartPlugins = [ChartDataLabels, pluginAnnotations];
-    public lineChartPlugins = [pluginAnnotations];
-
-    // @ViewChild(BaseChartDirective, { static: true }) chart: BaseChartDirective;
+    public chartData = chartData;
+    public from = from;
+    public to = to;
+    public step = step;
     @ViewChildren(BaseChartDirective) charts: QueryList<BaseChartDirective>
 
     constructor(
         private ioBrokerService: IOBrokerService,
-        private ref: ChangeDetectorRef
+        private ref: ChangeDetectorRef,
+        private objectQuery: IoBObjectQuery,
+        private stateQuery: IoBStateQuery,
+        private getNamePipe: GetNamePipe,
     ) { }
 
     ngOnInit() {
-        let onWeekAgo = new Date().getTime() - (1000 * 60 * 60 * 24 * 7);
-        let now = new Date().getTime();
-        this.getData('jeelink.1.LaCrosseWS_balkon.temp', onWeekAgo, now, 0, 0);
-        this.getData('jeelink.1.LaCrosseWS_balkon.humid', onWeekAgo, now, 1, 0);
-        this.getData('jeelink.1.LaCrosseWS_balkon.wspeed2', onWeekAgo, now, 2, 0);
-        this.getData('mihome.0.devices.weather_v1_158d000321709f.pressure', onWeekAgo, now, 3, 0);
-        this.getData('jeelink.1.LaCrosseWS_balkon.rain', onWeekAgo, now, 4, 0);
+        this.chartData.forEach(chart => {
+            chart['lineChartLabels'] = [];
+            chart['lineChartOptions'] = DEF_getLineChartOptions();
+            if('plugins' in chart['lineChartOptions'] && 'zoom' in chart['lineChartOptions']['plugins'] && 'pan' in chart['lineChartOptions']['plugins']['zoom']){
+                chart['lineChartOptions']['plugins']['zoom']['pan']['onPan'] = this.onPan.bind(this);
+                chart['lineChartOptions']['plugins']['zoom']['zoom']['onZoom'] = this.onPan.bind(this);
+            }
+            chart['lineChartOptions'].title.text = this.getNamePipe.transform(chart.name);
+            chart['lineChartLegend'] = true;
+            chart['lineChartType'] = 'line';
+            // chart['lineChartPlugins'] = [pluginAnnotations, crosshair];
+            chart['lineChartPlugins'] = [crosshair, zoom];
+            chart.childCharts.forEach(childChart => {
+                if (!('name' in childChart)) { (childChart as any)['name'] = this.objectQuery.getEntity(childChart['ioBrokerID']).common.name }
+                if (!('lineChartData' in childChart)) { (childChart as any)['lineChartData'] = {} }
+                if (!('label' in childChart['lineChartData'])) { (childChart as any)['lineChartData']['label'] = this.getNamePipe.transform(childChart['name']) }
+                if (!('data' in childChart['lineChartData'])) { (childChart as any)['lineChartData']['data'] = [] }
+                if (!('datalabels' in childChart['lineChartData'])) {
+                    childChart['lineChartData']['datalabels'] = { align: function (context) { return context.active ? 'start' : 'center'; } };
+                }
+                if (!('from' in childChart)) {
+                    (childChart as any)['from'] = this.from;
+                }
+                if (!('to' in childChart)) {
+                    (childChart as any)['to'] = this.to;
+                }
+                if (!('step' in childChart)) {
+                    (childChart as any)['step'] = this.step;
+                }
+                this.calculateData(childChart, chart);
+            });
+            chart['dataset'] = (chart.childCharts as any).map(e => e.lineChartData);
+        });
     }
 
     // events
@@ -93,28 +78,27 @@ export class ChartingComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     public chartHovered({ event, active }: { event: MouseEvent, active: {}[] }): void {
-        active.forEach(e => {
-            let index = e['_index'];
-            this.charts.forEach((child) => {
-                this.setAnnotation(child, 0, index);
-                this.setSelected(child, 0, index);
-                this.openTooltips(child.chart, 0, index);
-            });
-        })
+        if (active.length > 0) {
+            let index = active[0]['_index'];
+            // this.charts.forEach((child, i) => {
+            //     this.setAnnotation(child, index);
+            // });
+            this.setSelected(index);
+        }
     }
 
     ngAfterViewInit(): void { }
 
     ngOnDestroy(): void { }
 
-    getData(id: string, from: number, to: number, chartNumber, dataSetNumber) {
+    calculateData(childChart, chart) {
         const observable = bindCallback(this.ioBrokerService.sendTo).bind(this.ioBrokerService);
         let obs$ = observable('influxdb.0', 'getHistory', {
-            id: id,
+            id: childChart.ioBrokerID,
             options: {
-                start: from,
-                end: to,
-                step: (1000 * 60 * 60),
+                start: childChart.from,
+                end: childChart.to,
+                step: childChart.step,
                 limit: false,
                 aggregate: 'average',
             }
@@ -122,21 +106,39 @@ export class ChartingComponent implements OnInit, AfterViewInit, OnDestroy {
         obs$.subscribe((result) => {
             // console.log(result.result);
             let results = result.result.map(e => { return { x: new Date(e.ts), y: e.val } })
-            this.overview[chartNumber] = {
-                current: results[results.length - 1],
-                max: results.find(e=> e.y === Math.max(...results.map(e=>e.y))),
-                min: results.find(e=> e.y === Math.min(...results.map(e=>e.y))),
-                selected:{x:'', y:''},
+            let current = this.stateQuery.getEntity(childChart.ioBrokerID);
+            childChart.overviewValue = {
+                // current: results[results.length - 1],
+                current: { x: new Date(current['ls']), y: current['val'] },
+                max: results.find(e => e.y === Math.max(...results.map(e => e.y))),
+                min: results.find(e => e.y === Math.min(...results.map(e => e.y))),
+                selected: { x: '', y: '' },
+            }
+            childChart.lineChartData.data = results;
+            if (childChart.ioBrokerID === 'jeelink.1.LaCrosseWS_balkon.rain') {
+                // childChart.lineChartData.pointBackgroundColor = (context) => {
+                //     var index = context.dataIndex;
+                //     var value = context.dataset.data[index]['y'];
+                //     return value < 0 ? 'blue' : 'red';
+                // };
+                let newResult = []
+                results.forEach((e, i, a) => {
+                    if (i === 0) {
+                        newResult.push({ x: e.x, y: 0 })
+                    } else {
+                        newResult.push({ x: e.x, y: (e.y - a[i - 1].y) })
+                    }
+                });
+                childChart.overviewValue = {
+                    current: newResult[results.length - 1],
+                    max: newResult.find(e => e.y === Math.max(...newResult.map(e => e.y))),
+                    total: { x: '', y: newResult.map(e => e.y).reduce((a, c) => a + c) },
+                    selected: { x: '', y: '' },
+                }
+                childChart.lineChartData.data = newResult;
+                chart['lineChartType'] = 'bar';
             }
             this.ref.markForCheck();
-            this.lineChartDatas[chartNumber][dataSetNumber].data = results;
-            if (this.lineChartDatas[chartNumber][dataSetNumber].label === 'Temperatur °C') {
-                this.lineChartDatas[chartNumber][dataSetNumber].pointBackgroundColor = (context) => {
-                    var index = context.dataIndex;
-                    var value = context.dataset.data[index]['y'];
-                    return value < 0 ? 'blue' : 'red';
-                };
-            }
             this.charts.forEach((child) => {
                 child.chart.update()
             });
@@ -159,41 +161,53 @@ export class ChartingComponent implements OnInit, AfterViewInit, OnDestroy {
         oChart.draw();
     }
 
-    setSelected(child, datasetIndex, pointIndex) {
-        let index = this.lineChartDatas.findIndex(e => e[0].label === child.datasets[datasetIndex].label)
-        this.overview[index].selected = child.datasets[datasetIndex].data[pointIndex];
+    setSelected(pointIndex) {
+        this.chartData.forEach(mChart => {
+            mChart.childCharts.forEach(cChart => {
+                cChart['overviewValue'].selected = cChart.lineChartData['data'][pointIndex];
+            });
+        });
     }
 
-    setAnnotation(child, datasetIndex, pointIndex) {
+    setAnnotation(child, pointIndex) {
+        if (child.datasets.length == 0) { return };
+        let ds = child.datasets[0];
         let anno = {
             type: 'line',
             mode: 'vertical',
             scaleID: 'x-axis-0',
-            // value: time,
             borderColor: 'orange',
             borderWidth: 2,
-            label: {
-                backgroundColor: 'rgba(4,16,47,0.8)',
-                enabled: true,
-                fontColor: '#FD2B28',
-                fontSize: 10,
-                position: "center",
-                // content: [label, time, value + '°C', 'Guido']
-            }
+            label: {}
         }
-        if(pointIndex <= child.datasets[datasetIndex].data.length/2){
+        if (pointIndex <= ds.data.length / 2) {
             anno['label']['xAdjust'] = 70;
             anno['label']['yAdjust'] = -10;
         } else {
             anno['label']['xAdjust'] = -70;
             anno['label']['yAdjust'] = -10;
         }
-        let time = child.datasets[datasetIndex].data[pointIndex]['x'];
-        let value = child.datasets[datasetIndex].data[pointIndex]['y'];
-        let label = child.datasets[datasetIndex].label;
+        let time = ds.data[pointIndex]['x'];
         anno['value'] = time;
-        // anno.label['content'] = [label, new Date(time).toLocaleString(), value]
         child.chart.options['annotation'].annotations = [anno];
         child.chart.update();
+    }
+
+    resetAllZoomes(){
+        this.charts.forEach((child) => {
+            child.chart['resetZoom']();
+        });
+    }
+
+    onPan ({ chart }) { 
+        let ticksMinX = chart.options.scales.xAxes[0].ticks.min;
+        let ticksMaxX = chart.options.scales.xAxes[0].ticks.max;
+        this.charts.forEach((child, i) => {
+            child.chart.options.scales.xAxes[0].ticks['min'] = ticksMinX;
+            child.chart.options.scales.xAxes[0].ticks['max'] = ticksMaxX;
+            child.chart.options.scales.xAxes[0]['times']['min'] = ticksMinX;
+            child.chart.options.scales.xAxes[0]['times']['max'] = ticksMaxX;
+            child.chart.update();
+        })
     }
 }

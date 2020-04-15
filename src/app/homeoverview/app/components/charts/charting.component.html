@@ -1,16 +1,83 @@
+<ion-button (click)="resetAllZoomes()" size="small">Reset Zoom</ion-button>
 <ion-grid>
-    <ion-row *ngFor="let chart of lineChartDatas; let i = index">
-        <ion-col size='9'>
-            <canvas baseChart width="400" height="100" [datasets]="chart" [labels]="lineChartLabels"
-                [options]="lineChartOptions" [legend]="lineChartLegend" [chartType]="lineChartType"
-                [plugins]="lineChartPlugins" (chartHover)="chartHovered($event)"
+    <ion-row *ngFor="let chart of chartData let i = index">
+        <ion-col size='12'>
+            <canvas baseChart [id]="'chart_' + i" width="400" height="100" [datasets]="chart.dataset"
+                [labels]="chart.lineChartLabels" [options]="chart.lineChartOptions" [legend]="chart.lineChartLegend"
+                [chartType]="chart.lineChartType" [plugins]="chart.lineChartPlugins" (chartHover)="chartHovered($event)"
                 (chartClick)="chartClicked($event)"></canvas>
+            <ion-grid class="chart_legende"
+                style="border: 1px solid rgba(255, 0, 0, 0.096);background: rgba(255, 0, 0, 0.010);">
+                <ion-row style="border-bottom: 1px solid red;">
+                    <ion-col size="3"></ion-col>
+                    <ion-col size="2">Current</ion-col>
+                    <ion-col size="2">Max</ion-col>
+                    <ion-col size="2"
+                        *ngIf="chart.childCharts[0].overviewValue && chart.childCharts[0].overviewValue.min">Min
+                    </ion-col>
+                    <ion-col size="2"
+                        *ngIf="chart.childCharts[0].overviewValue && chart.childCharts[0].overviewValue.total">Total
+                    </ion-col>
+                    <ion-col size="3"><span
+                            *ngIf="chart.childCharts[0].overviewValue && chart.childCharts[0].overviewValue.selected">{{chart.childCharts[0].overviewValue.selected.x | date2localstring}}</span>
+                    </ion-col>
+                </ion-row>
+                <ion-row *ngFor="let childChart of chart.childCharts">
+                    <ng-container *ngIf="childChart.overviewValue">
+                        <ion-col size="3" [ngStyle]="{'color':childChart.lineChartData.borderColor}">
+                            {{childChart.lineChartData.label}}</ion-col>
+                        <ion-col size="2">{{childChart.overviewValue.current.y | number:'1.1-1'}}</ion-col>
+                        <ion-col size="2">{{childChart.overviewValue.max.y | number:'1.1-1'}}</ion-col>
+                        <ion-col size="2"
+                            *ngIf="chart.childCharts[0].overviewValue && chart.childCharts[0].overviewValue.min">
+                            {{childChart.overviewValue.min.y | number:'1.1-1'}}</ion-col>
+                        <ion-col size="2"
+                            *ngIf="chart.childCharts[0].overviewValue && chart.childCharts[0].overviewValue.total">
+                            {{childChart.overviewValue.total.y | number:'1.1-1'}}</ion-col>
+                        <ion-col size="3"
+                            *ngIf="chart.childCharts[0].overviewValue && chart.childCharts[0].overviewValue.selected">
+                            {{childChart.overviewValue.selected.y | number:'1.1-1'}}</ion-col>
+                    </ng-container>
+                </ion-row>
+            </ion-grid>
         </ion-col>
-        <ion-col size='3' class="chart_legende" >
-            <p *ngIf="overview[i] as over">Current: {{over.current.y}}</p>
-            <p *ngIf="overview[i] as over">Max: {{over.max.y}}</p>
-            <p *ngIf="overview[i] as over">Min: {{over.min.y}}</p>
-            <p *ngIf="overview[i] as over">Sel: {{over.selected.y}}</p>
-        </ion-col>
+        <!-- <ion-col size='3' class="chart_legende">
+            <ng-container *ngFor="let childChart of chart.value.childCharts | keyvalue">
+                <ng-container *ngIf="childChart.value.overviewValue">
+                    <p>{{childChart.value.lineChartData.label}}</p>
+                    <p>Current: {{childChart.value.overviewValue.current.y}}</p>
+                    <p>Max: {{childChart.value.overviewValue.max.y}}</p>
+                    <p>Min: {{childChart.value.overviewValue.min.y}}</p>
+                    <p>Sel: {{childChart.value.overviewValue.selected.y}}</p>
+                </ng-container>
+            </ng-container>
+        </ion-col> -->
     </ion-row>
 </ion-grid>
+<!-- <div style="border: 1px solid black;"></div>
+<ion-grid class="chart_legende">
+    <ion-row style="border 1px solid black;">
+        <ion-col>Chart</ion-col>
+        <ion-col>Current</ion-col>
+        <ion-col>Max</ion-col>
+        <ion-col>Min</ion-col>
+        <ion-col>Selected</ion-col>
+    </ion-row>
+
+    <ng-container *ngFor="let chart of chartData let i = index">
+        <ion-row *ngFor="let childChart of chart.childCharts" style="border-bottom: 1px solid black;">
+            <ng-container *ngIf="childChart.overviewValue">
+                <ion-col>{{childChart.lineChartData.label}}</ion-col>
+                <ion-col>{{childChart.overviewValue.current.y}}</ion-col>
+                <ion-col>{{childChart.overviewValue.max.y}}</ion-col>
+                <ion-col>{{childChart.overviewValue.min.y}}</ion-col>
+                <ion-col>{{childChart.overviewValue.selected.y}}</ion-col>
+            </ng-container>
+        </ion-row>
+    </ng-container>
+</ion-grid> -->
+
+
+<!-- <ul *ngFor="let chart of chartData | keyvalue; let i = index">
+    <li>{{chart.value.name.de}}</li>
+</ul> -->
